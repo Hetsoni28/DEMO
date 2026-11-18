@@ -50,7 +50,29 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         {children}
         <StoreHydrator />
         <WelcomeOverlay />
-        <Toaster position="top-center" richColors closeButton />
+        {/* Calm app-style notifications: a small dark pill at the bottom, clear of the
+            header and above the phone tab bar. */}
+        <Toaster
+          position="bottom-center"
+          offset={24}
+          mobileOffset={{ bottom: 104 }}
+          duration={2600}
+          visibleToasts={2}
+          toastOptions={{
+            unstyled: true,
+            classNames: {
+              toast:
+                "flex w-full max-w-sm items-center gap-3 rounded-2xl bg-ink px-4 py-3 text-cream shadow-[0_18px_40px_-16px_rgba(40,43,74,0.55)] sm:w-auto sm:min-w-72",
+              title: "text-[13.5px] font-semibold leading-snug",
+              description: "mt-0.5 text-[12px] leading-snug text-cream/65",
+              icon: "shrink-0 [&>svg]:h-4.5 [&>svg]:w-4.5",
+              success: "[&_[data-icon]]:text-emerald-300",
+              error: "[&_[data-icon]]:text-rose-300",
+              info: "[&_[data-icon]]:text-sky-300",
+              actionButton: "ml-auto shrink-0 rounded-lg bg-cream px-2.5 py-1 text-[12px] font-semibold text-ink",
+            },
+          }}
+        />
       </body>
     </html>
   );

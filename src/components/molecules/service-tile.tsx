@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { Check, Clock, Plus, Star } from "lucide-react";
-import { toast } from "sonner";
 import { categoryIcons } from "@/components/atoms/icons";
 import { formatDuration, formatINR, priceLabel } from "@/lib/format";
 import { getCategory, type Service } from "@/lib/mock-data";
@@ -53,7 +52,6 @@ export function ServiceTile({ service, className }: { service: Service; classNam
               return;
             }
             add(service.slug);
-            toast.success(`${service.title} added`, { description: "Book everything in your basket with one visit time and one payment." });
           }}
           aria-pressed={inCart}
           aria-label={inCart ? `Remove ${service.title} from basket` : `Add ${service.title} to basket`}

@@ -74,7 +74,7 @@ function CustomerHome() {
           </h1>
           <p className="mt-0.5 text-[14px] text-ink/60">What needs fixing at home today?</p>
         </div>
-        <div className="flex gap-2 overflow-x-auto pb-0.5">
+        <div className="no-scrollbar flex gap-2 overflow-x-auto pb-0.5">
           {[
             { k: "Upcoming", v: String(upcoming.length), href: "/customer/bookings" },
             { k: "Paid", v: formatINR(spent), href: "/customer/bookings" },
@@ -181,7 +181,7 @@ function CustomerHome() {
 
       {/* popular */}
       <Section title={`Popular in ${zone}`} href="/services">
-        <div className="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0 lg:grid-cols-5">
+        <div className="no-scrollbar -mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0 lg:grid-cols-5">
           {popular.map((s) => (
             <ServiceTile key={s.slug} service={s} className="w-40 shrink-0 snap-start sm:w-auto" />
           ))}
@@ -191,7 +191,7 @@ function CustomerHome() {
       {/* book again */}
       {bookAgain.length > 0 && (
         <Section title="Book again" href="/customer/bookings">
-          <div className="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0 lg:grid-cols-5">
+          <div className="no-scrollbar -mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0 lg:grid-cols-5">
             {bookAgain.map((s) => (
               <ServiceTile key={s.slug} service={s} className="w-40 shrink-0 snap-start sm:w-auto" />
             ))}

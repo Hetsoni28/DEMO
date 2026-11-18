@@ -33,13 +33,12 @@ export function AddToCartButton({ slug, variant = "icon", className }: { slug: s
     e.stopPropagation();
     if (inCart) {
       remove(slug);
-      toast(`${title} removed from your booking`);
+      toast("Removed from basket");
       return;
     }
     add(slug);
-    toast.success(`${title} added`, {
-      description: `${count + 1} service${count + 1 > 1 ? "s" : ""} in your booking · pay once at checkout`,
-      action: { label: "View basket", onClick: () => setOpen(true) },
+    toast.success(`Added to basket · ${count + 1} ${count + 1 > 1 ? "services" : "service"}`, {
+      action: { label: "View", onClick: () => setOpen(true) },
     });
   };
 
