@@ -1,5 +1,6 @@
+import { cacheLife } from "next/cache";
 import { ImageResponse } from "next/og";
-import { OG, OgFrame, OgPill, ogFonts } from "@/lib/og";
+import { OG, OgFrame, OgPill, ogFonts, pngResponse } from "@/lib/og";
 import { formatDuration, priceLabel, pricingTypeLabel } from "@/lib/format";
 import {
   getCategory,
@@ -17,13 +18,20 @@ export function generateStaticParams() {
   return services.map((s) => ({ slug: s.slug }));
 }
 
-/** Per-service share card. Every figure comes from the same data the page renders. */
-export default async function Image({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+/** Per-service share card. Every figure comes from the same data the page renders. Prerendered and cached. */
+export default async function Image({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
+  return pngResponse(await renderServiceCard(slug));
+}
+
+async function renderServiceCard(slug: string) {
+  "use cache";
+  cacheLife("max");
+  const res = await buildServiceCard(slug);
+  return new Uint8Array(await res.arrayBuffer());
+}
+
+async function buildServiceCard(slug: string) {
   const service = getService(slug);
   const fonts = await ogFonts();
 

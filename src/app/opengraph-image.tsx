@@ -1,5 +1,6 @@
+import { cacheLife } from "next/cache";
 import { ImageResponse } from "next/og";
-import { OG, OgFrame, OgPill, ogFonts } from "@/lib/og";
+import { OG, OgFrame, OgPill, ogFonts, pngResponse } from "@/lib/og";
 import { categories, SERVICE_AREA } from "@/lib/mock-data";
 import { siteConfig } from "@/lib/site-config";
 
@@ -7,9 +8,15 @@ export const alt = `${siteConfig.name} — Home problems. Professionally solved.
 export const size = OG.size;
 export const contentType = "image/png";
 
-/** Site-wide share card — used by every page without a more specific image. */
+/** Site-wide share card — used by every page without a more specific image. Prerendered and cached. */
 export default async function Image() {
-  return new ImageResponse(
+  return pngResponse(await renderCard());
+}
+
+async function renderCard() {
+  "use cache";
+  cacheLife("max");
+  const res = new ImageResponse(
     <OgFrame
       meta={`Home services · ${SERVICE_AREA.city}`}
       footerStart={
@@ -56,4 +63,5 @@ export default async function Image() {
     </OgFrame>,
     { ...size, fonts: await ogFonts() },
   );
+  return new Uint8Array(await res.arrayBuffer());
 }

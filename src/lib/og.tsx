@@ -177,3 +177,17 @@ export function OgPill({ children }: { children: ReactNode }) {
     </div>
   );
 }
+
+/**
+ * Serve cached PNG bytes with long-lived CDN headers. Link-preview crawlers
+ * (WhatsApp especially) give up after a few seconds, so share cards must never
+ * be rendered on the request path.
+ */
+export function pngResponse(bytes: Uint8Array) {
+  return new Response(bytes as BodyInit, {
+    headers: {
+      "Content-Type": "image/png",
+      "Cache-Control": "public, max-age=86400, s-maxage=31536000, stale-while-revalidate=86400",
+    },
+  });
+}
