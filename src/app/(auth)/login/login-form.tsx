@@ -80,6 +80,15 @@ export function LoginForm() {
     const next = new URLSearchParams(window.location.search).get("next");
     const home = PORTAL_HOME[account.role];
     router.push(next && next.startsWith(home.split("/").slice(0, 2).join("/")) ? next : home);
+    // Next keeps this page alive in the background after navigating away; reset it so
+    // coming back here after logging out shows a ready form, not a stuck spinner.
+    setTimeout(() => {
+      setLoading(false);
+      setStep("enter");
+      setOtp("");
+      setPassword("");
+      setErrors({});
+    }, 1200);
   };
 
   /** Fill the email form with a demo account (user can still press Sign in). */

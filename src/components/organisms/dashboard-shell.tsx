@@ -106,7 +106,8 @@ export function DashboardShell({
   const pro = useApp((s) => s.pros.find((p) => p.id === account?.proId));
   const user = account?.name ?? fallbackUser;
   // RBAC: only an active account with this portal's role may use it.
-  const allowed = !!account && account.role === role && account.status === "ACTIVE";
+  const allowed =
+    !!account && account.role === role && account.status === "ACTIVE";
 
   // Close the account sheet on navigation.
   const [lastPath, setLastPath] = useState(pathname);
@@ -157,55 +158,62 @@ export function DashboardShell({
         </div>
       </div>
 
-      <div className="px-6 pb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-cream/40">
-        Menu
-      </div>
-      <nav
-        data-tour="tabs"
-        className="flex-1 space-y-1 overflow-y-auto px-3"
-        aria-label={`${roleLabel[role]} navigation`}
+      {/* Menu + role card scroll together, so the profile and Log out below stay
+          pinned and visible on short laptop screens. */}
+      <div
+        data-lenis-prevent
+        className="flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain"
       >
-        {nav.map((item, i) => {
-          const active = isActive(item.href);
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              data-tour={item.cta ? "cta" : undefined}
-              aria-current={active ? "page" : undefined}
-              className={cn(
-                "group relative flex items-center gap-3 rounded-2xl px-3 py-2.5 text-[14px] font-medium transition-colors",
-                active ? "text-ink" : "text-cream/70 hover:text-cream",
-              )}
-            >
-              {active && (
-                <motion.span
-                  layoutId="nav-pill-desktop"
-                  className="absolute inset-0 rounded-2xl bg-cream"
-                  transition={{ duration: 0.45, ease: EASE }}
-                />
-              )}
-              {!active && (
-                <span className="absolute inset-0 rounded-2xl bg-cream/0 transition-colors group-hover:bg-cream/6" />
-              )}
-              <span
+        <div className="px-6 pb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-cream/40">
+          Menu
+        </div>
+        <nav
+          data-tour="tabs"
+          className="space-y-1 px-3"
+          aria-label={`${roleLabel[role]} navigation`}
+        >
+          {nav.map((item, i) => {
+            const active = isActive(item.href);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                data-tour={item.cta ? "cta" : undefined}
+                aria-current={active ? "page" : undefined}
                 className={cn(
-                  "relative w-6 font-mono text-[10.5px]",
-                  active ? "text-ink/45" : "text-cream/35",
+                  "group relative flex items-center gap-3 rounded-2xl px-3 py-2.5 text-[14px] font-medium transition-colors",
+                  active ? "text-ink" : "text-cream/70 hover:text-cream",
                 )}
               >
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <item.icon className="relative h-4 w-4" />
-              <span className="relative">{item.label}</span>
-            </Link>
-          );
-        })}
-      </nav>
+                {active && (
+                  <motion.span
+                    layoutId="nav-pill-desktop"
+                    className="absolute inset-0 rounded-2xl bg-cream"
+                    transition={{ duration: 0.45, ease: EASE }}
+                  />
+                )}
+                {!active && (
+                  <span className="absolute inset-0 rounded-2xl bg-cream/0 transition-colors group-hover:bg-cream/6" />
+                )}
+                <span
+                  className={cn(
+                    "relative w-6 font-mono text-[10.5px]",
+                    active ? "text-ink/45" : "text-cream/35",
+                  )}
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <item.icon className="relative h-4 w-4" />
+                <span className="relative">{item.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
 
-      {aside && <div className="px-3 pb-3">{aside}</div>}
+        {aside && <div className="mt-auto px-3 pb-3 pt-4">{aside}</div>}
+      </div>
 
-      <div className="border-t border-cream/10 p-3">
+      <div className="shrink-0 border-t border-cream/10 p-3">
         <div
           data-tour="account"
           className="flex items-center gap-3 rounded-2xl px-3 py-2.5"
@@ -319,7 +327,8 @@ export function DashboardShell({
               type="button"
               onClick={logout}
               aria-label="Log out"
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-ink/10 bg-paper text-ink/70 transition-colors hover:border-ink/30 hover:text-ink active:scale-95 lg:hidden"
+              title="Log out"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-ink/10 bg-paper text-ink/70 transition-colors hover:border-ink/30 hover:text-ink active:scale-95"
             >
               <LogOut className="h-4 w-4" />
             </button>
@@ -354,7 +363,9 @@ export function DashboardShell({
         role={role}
       />
       <Tour role={role} />
-      {role === "professional" && account?.approvalSeen === false && <ApprovalWelcome account={account} pro={pro} onTour={replayTour} />}
+      {role === "professional" && account?.approvalSeen === false && (
+        <ApprovalWelcome account={account} pro={pro} onTour={replayTour} />
+      )}
     </div>
   );
 }
@@ -557,8 +568,15 @@ function AccountSheet({
             {more.length > 0 && (
               <ul className="mt-4 overflow-hidden rounded-2xl bg-cream/6">
                 {more.map((item, i) => (
-                  <li key={item.href} className={cn(i > 0 && "border-t border-cream/10")}>
-                    <Link href={item.href} onClick={tap} className="flex w-full items-center gap-3 px-4 py-3.5 text-[15px] font-medium transition-colors active:bg-cream/8">
+                  <li
+                    key={item.href}
+                    className={cn(i > 0 && "border-t border-cream/10")}
+                  >
+                    <Link
+                      href={item.href}
+                      onClick={tap}
+                      className="flex w-full items-center gap-3 px-4 py-3.5 text-[15px] font-medium transition-colors active:bg-cream/8"
+                    >
                       <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-cream text-ink">
                         <item.icon className="h-4 w-4" />
                       </span>
