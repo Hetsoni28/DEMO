@@ -85,6 +85,8 @@ type State = {
   accounts: Account[];
   /** The signed-in account, if any. */
   accountId: string | null;
+  /** Set on a fresh sign-in to play the welcome animation (never persisted). */
+  welcome: { accountId: string; at: number } | null;
 };
 
 export type ProApplication = { name: string; email: string; phone: string; categorySlugs: string[]; zone: string; experience: string };
@@ -96,6 +98,7 @@ type Actions = {
   /** Sign in as an existing account. Fails for unknown or paused accounts. */
   signIn: (accountId: string) => Result;
   signOut: () => void;
+  dismissWelcome: () => void;
   /** New professional application: creates a pending profile + account and signs the applicant in. */
   applyAsPro: (input: ProApplication) => string;
   registerCustomer: (input: { name: string; email: string; phone: string }) => string;
@@ -242,7 +245,7 @@ function seed(): Pick<State, "bookings" | "addresses" | "events" | "seq" | "pros
   };
 }
 
-const initial: State = { ready: false, role: null, bookings: [], pros: [], addresses: [], events: [], seq: 1, cart: [], accounts: [], accountId: null };
+const initial: State = { ready: false, role: null, bookings: [], pros: [], addresses: [], events: [], seq: 1, cart: [], accounts: [], accountId: null, welcome: null };
 
 const push = (b: Booking, status: string, note?: string): Booking => ({
   ...b,
@@ -298,10 +301,11 @@ export const useApp = create<State & Actions>()(
           const a = get().accounts.find((x) => x.id === accountId);
           if (!a) return { ok: false, error: "No account found with those details." };
           if (a.status === "SUSPENDED") return { ok: false, error: "This account's access is paused. Contact support." };
-          set({ accountId: a.id, role: a.role });
+          set({ accountId: a.id, role: a.role, welcome: { accountId: a.id, at: Date.now() } });
           return { ok: true, id: a.id };
         },
-        signOut: () => set({ accountId: null, role: null }),
+        signOut: () => set({ accountId: null, role: null, welcome: null }),
+        dismissWelcome: () => set({ welcome: null }),
 
         applyAsPro: (input) => {
           const n = get().pros.length + 1;

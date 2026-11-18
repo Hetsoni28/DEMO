@@ -116,10 +116,14 @@ html[data-intro-seen] .pp-intro {
   display: none;
 }
 
-/* Subtle paper grain for large cream surfaces */
+/* Subtle paper grain for large cream surfaces.
+   In the components layer so positioning utilities (fixed / absolute / sticky)
+   on the same element win over the default `position: relative`. */
+@layer components {
 .grain {
   position: relative;
   isolation: isolate;
+}
 }
 .grain::after {
   content: "";

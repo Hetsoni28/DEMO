@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "sonner";
 import { StoreHydrator } from "@/components/organisms/store-hydrator";
+import { WelcomeOverlay } from "@/components/auth/welcome-overlay";
 import { DEFAULT_OG_IMAGE } from "@/lib/seo";
 import { siteConfig } from "@/lib/site-config";
 import "./globals.css";
@@ -48,6 +49,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="flex min-h-full flex-col font-sans">
         {children}
         <StoreHydrator />
+        <WelcomeOverlay />
         <Toaster position="top-center" richColors closeButton />
       </body>
     </html>

@@ -98,7 +98,6 @@ function SignInRequired({ role }: { role: Role }) {
                 onClick={() => {
                   const r = signIn(a.id);
                   if (!r.ok) return toast.error(r.error);
-                  toast.success(`Signed in as ${a.name}`);
                 }}
                 className="inline-flex h-10 shrink-0 items-center gap-1.5 rounded-full bg-ink px-4 text-[13px] font-semibold text-cream transition-transform active:scale-95"
               >

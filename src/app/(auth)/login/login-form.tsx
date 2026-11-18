@@ -65,17 +65,14 @@ export function LoginForm() {
       return;
     }
     setLoading(true);
-    await wait(600);
+    await wait(350);
     const r = signInAccount(account.id);
     if (!r.ok) {
       setLoading(false);
       setErrors({ form: r.error });
       return;
     }
-    const first = account.name.split(" ")[0];
-    if (account.status === "PENDING") toast.message(`Hi ${first}, your application is still in review`);
-    else if (account.status === "REJECTED") toast.message(`Hi ${first}, see the update on your application`);
-    else toast.success(`Welcome back, ${first}`, { description: `Signed in as ${ROLE_LABEL[account.role].toLowerCase()}` });
+    // The full-screen welcome (WelcomeOverlay) plays from here while the portal loads.
     // Return to the page that asked for sign-in, if it belongs to this account's portal.
     const next = new URLSearchParams(window.location.search).get("next");
     const home = PORTAL_HOME[account.role];
