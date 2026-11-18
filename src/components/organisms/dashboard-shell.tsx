@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import type { LucideIcon } from "lucide-react";
 import {
@@ -34,6 +34,8 @@ export type NavItem = {
   cta?: boolean;
   /** false = not in the mobile tab bar; reachable from the account sheet instead. */
   tab?: boolean;
+  /** Small count shown next to the item (things that need attention). */
+  badge?: number;
 };
 
 const roleLabel: Record<Role, string> = {
@@ -147,41 +149,55 @@ export function DashboardShell({
 
   if (ready && !allowed) return <AccessGate role={role} account={account} />;
 
+  const ctaItem = nav.find((n) => n.cta);
+  const menuItems = nav.filter((n) => !n.cta);
+
   const sidebar = (
     <div className="flex h-full flex-col bg-ink text-cream">
-      {/* Logo on its own line; the role sits underneath so long role names never crowd it */}
-      <div className="px-6 pb-6 pt-6">
+      <div className="shrink-0 px-5 pb-5 pt-6">
         <Logo light />
-        <div className="mt-3 flex items-center gap-2 pl-0.5 font-mono text-[10px] uppercase tracking-[0.16em] text-cream/55">
-          <span className="h-1.5 w-1.5 rounded-full bg-cream/60" aria-hidden />
+        <div className="mt-3 flex items-center gap-2 pl-0.5 text-[12px] text-cream/55">
+          <span
+            className="h-1.5 w-1.5 rounded-full bg-emerald-400"
+            aria-hidden
+          />
           {roleLabel[role]} workspace
         </div>
       </div>
 
-      {/* Menu + role card scroll together, so the profile and Log out below stay
-          pinned and visible on short laptop screens. */}
+      {/* Main action first — one clear button instead of a menu item + a duplicate card */}
+      {ctaItem && (
+        <div className="shrink-0 px-4 pb-4">
+          <Link
+            href={ctaItem.href}
+            data-tour="cta"
+            className="group flex h-11 items-center justify-center gap-2 rounded-2xl bg-cream text-[14px] font-semibold text-ink transition-transform active:scale-[0.98]"
+          >
+            <ctaItem.icon className="h-4 w-4 transition-transform duration-300 group-hover:rotate-90" />
+            {ctaItem.label}
+          </Link>
+        </div>
+      )}
+
+      {/* Menu + role card scroll together, so the profile below stays pinned on short screens */}
       <div
         data-lenis-prevent
         className="flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain"
       >
-        <div className="px-6 pb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-cream/40">
-          Menu
-        </div>
         <nav
           data-tour="tabs"
-          className="space-y-1 px-3"
+          className="space-y-0.5 px-3"
           aria-label={`${roleLabel[role]} navigation`}
         >
-          {nav.map((item, i) => {
+          {menuItems.map((item) => {
             const active = isActive(item.href);
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                data-tour={item.cta ? "cta" : undefined}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "group relative flex items-center gap-3 rounded-2xl px-3 py-2.5 text-[14px] font-medium transition-colors",
+                  "group relative flex items-center gap-3 rounded-2xl px-2 py-2 text-[14px] font-medium transition-colors",
                   active ? "text-ink" : "text-cream/70 hover:text-cream",
                 )}
               >
@@ -189,7 +205,7 @@ export function DashboardShell({
                   <motion.span
                     layoutId="nav-pill-desktop"
                     className="absolute inset-0 rounded-2xl bg-cream"
-                    transition={{ duration: 0.45, ease: EASE }}
+                    transition={{ type: "spring", stiffness: 420, damping: 36 }}
                   />
                 )}
                 {!active && (
@@ -197,56 +213,77 @@ export function DashboardShell({
                 )}
                 <span
                   className={cn(
-                    "relative w-6 font-mono text-[10.5px]",
-                    active ? "text-ink/45" : "text-cream/35",
+                    "relative flex h-8 w-8 shrink-0 items-center justify-center rounded-xl transition-colors",
+                    active
+                      ? "bg-ink text-cream"
+                      : "bg-cream/8 text-cream/75 group-hover:bg-cream/12 group-hover:text-cream",
                   )}
                 >
-                  {String(i + 1).padStart(2, "0")}
+                  <item.icon className="h-4 w-4" />
                 </span>
-                <item.icon className="relative h-4 w-4" />
-                <span className="relative">{item.label}</span>
+                <span className="relative flex-1 truncate">{item.label}</span>
+                {!!item.badge && (
+                  <span
+                    className={cn(
+                      "relative min-w-5.5 rounded-full px-1.5 py-0.5 text-center text-[11px] font-semibold tabular-nums",
+                      active ? "bg-ink text-cream" : "bg-cream/12 text-cream",
+                    )}
+                    aria-label={`${item.badge} need attention`}
+                  >
+                    {item.badge}
+                  </span>
+                )}
               </Link>
             );
           })}
         </nav>
 
-        {aside && <div className="mt-auto px-3 pb-3 pt-4">{aside}</div>}
+        {aside && <div className="mt-auto px-3 pb-3 pt-6">{aside}</div>}
       </div>
 
+      {/* Profile: who you are + log out, with quiet links underneath */}
       <div className="shrink-0 border-t border-cream/10 p-3">
         <div
           data-tour="account"
-          className="flex items-center gap-3 rounded-2xl px-3 py-2.5"
+          className="flex items-center gap-3 rounded-2xl bg-cream/6 p-2.5"
         >
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-cream text-[12px] font-bold text-ink">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-cream text-[12.5px] font-bold text-ink">
             {initials(user)}
           </span>
-          <div className="min-w-0 flex-1">
+          <div className="min-w-0 flex-1 leading-tight">
             <div className="truncate text-[13.5px] font-semibold">{user}</div>
-            <div className="truncate text-[12px] text-cream/50">{subtitle}</div>
+            <div className="mt-0.5 truncate text-[11.5px] text-cream/50">
+              {subtitle}
+            </div>
           </div>
+          <button
+            type="button"
+            onClick={logout}
+            aria-label="Log out"
+            title="Log out"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-cream/60 transition-colors hover:bg-rose-500/15 hover:text-rose-200"
+          >
+            <LogOut className="h-4 w-4" />
+          </button>
         </div>
-        <div className="mt-1 grid grid-cols-3 gap-1">
-          {actions.map((a) => (
-            <button
-              key={a.label}
-              type="button"
-              onClick={a.onClick}
-              className="flex flex-col items-center gap-1 rounded-xl py-2 text-[10.5px] text-cream/55 transition-colors hover:bg-cream/6 hover:text-cream"
-            >
-              <a.icon className="h-3.5 w-3.5" />
-              {a.label === "How it works" ? "Guide" : a.label.split(" ")[0]}
-            </button>
+        <div className="mt-2 flex items-center justify-center gap-1 text-[11.5px] text-cream/45">
+          {actions.map((a, i) => (
+            <span key={a.label} className="flex items-center gap-1">
+              {i > 0 && (
+                <span aria-hidden className="text-cream/20">
+                  ·
+                </span>
+              )}
+              <button
+                type="button"
+                onClick={a.onClick}
+                className="rounded-md px-1.5 py-1 transition-colors hover:text-cream"
+              >
+                {a.label === "How it works" ? "Guide" : a.label}
+              </button>
+            </span>
           ))}
         </div>
-        <button
-          type="button"
-          onClick={logout}
-          className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl border border-cream/15 py-2.5 text-[13px] font-semibold text-cream/85 transition-colors hover:border-cream/40 hover:bg-cream/6 hover:text-cream"
-        >
-          <LogOut className="h-4 w-4" />
-          Log out
-        </button>
       </div>
     </div>
   );
@@ -297,44 +334,92 @@ export function DashboardShell({
               </AnimatePresence>
             </div>
 
-            <div className="hidden min-w-0 items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-ink/45 lg:flex">
-              <span>{roleLabel[role]}</span>
-              <span className="text-ink/25">/</span>
-              <span className="truncate text-ink">{activeItem.label}</span>
-            </div>
+            {/* Desktop: where you are — role tile + current page */}
+            <nav
+              aria-label="Breadcrumb"
+              className="hidden min-w-0 items-center gap-3 lg:flex"
+            >
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-ink text-cream">
+                <activeItem.icon className="h-4 w-4" />
+              </span>
+              <div className="min-w-0 leading-tight">
+                <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-ink/45">
+                  {roleLabel[role]}
+                </div>
+                <AnimatePresence mode="wait" initial={false}>
+                  <motion.div
+                    key={activeItem.href}
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -5 }}
+                    transition={{ duration: 0.2, ease: EASE }}
+                    className="truncate text-[15px] font-bold tracking-[-0.01em] text-ink"
+                  >
+                    {activeItem.label}
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+            </nav>
 
             <button
               type="button"
               onClick={() => setPalette(true)}
               aria-label="Search or jump to"
               data-tour="search"
-              className="ml-auto flex h-10 w-10 shrink-0 items-center justify-center gap-2.5 rounded-full border border-ink/10 bg-paper text-[13px] text-ink/50 transition-colors hover:border-ink/30 active:scale-95 lg:w-75 lg:justify-start lg:px-4"
+              className="group ml-auto flex h-10 w-10 shrink-0 items-center justify-center gap-2.5 rounded-full border border-ink/10 bg-paper text-[13.5px] text-ink/50 transition-all hover:border-ink/25 hover:shadow-[0_6px_20px_-12px_rgba(40,43,74,0.45)] active:scale-95 lg:w-80 lg:justify-start lg:pl-4 lg:pr-2 xl:w-96"
             >
-              <Search className="h-4 w-4 shrink-0" />
+              <Search className="h-4 w-4 shrink-0 text-ink/45 transition-colors group-hover:text-ink" />
               <span className="hidden truncate lg:inline">
-                Search or jump to…
+                Search pages, bookings, people…
               </span>
-              <kbd className="ml-auto hidden rounded-md border border-ink/15 px-1.5 py-0.5 font-mono text-[10px] text-ink/50 lg:inline">
-                Ctrl K
-              </kbd>
+              <span
+                className="ml-auto hidden items-center gap-1 lg:flex"
+                aria-hidden
+              >
+                <kbd className="rounded-md border border-ink/12 bg-cream px-1.5 py-0.5 font-mono text-[10px] text-ink/55">
+                  Ctrl
+                </kbd>
+                <kbd className="rounded-md border border-ink/12 bg-cream px-1.5 py-0.5 font-mono text-[10px] text-ink/55">
+                  K
+                </kbd>
+              </span>
             </button>
 
-            <span className="hidden font-mono text-[11px] uppercase tracking-[0.12em] text-ink/50 xl:inline">
-              <LiveClock /> IST
-            </span>
+            {/* Desktop: one status pill instead of a loose clock + dashed tag */}
+            <div
+              className="hidden h-10 shrink-0 items-center gap-2 rounded-full border border-ink/10 bg-paper px-3.5 text-[12.5px] text-ink/65 xl:flex"
+              title="Demo data · India time"
+            >
+              <span className="relative flex h-2 w-2" aria-hidden>
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500/50" />
+                <span className="relative h-2 w-2 rounded-full bg-emerald-600" />
+              </span>
+              <span className="font-medium text-ink/80">Demo</span>
+              <span className="text-ink/25">·</span>
+              <LiveClock />
+            </div>
+
             <Notifications role={role} />
+
+            {/* Phone: quick log out next to the bell (desktop uses the account menu) */}
             <button
               type="button"
               onClick={logout}
               aria-label="Log out"
               title="Log out"
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-ink/10 bg-paper text-ink/70 transition-colors hover:border-ink/30 hover:text-ink active:scale-95"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-ink/10 bg-paper text-ink/70 transition-colors hover:border-ink/30 hover:text-ink active:scale-95 lg:hidden"
             >
               <LogOut className="h-4 w-4" />
             </button>
-            <span className="hidden rounded-full border border-dashed border-ink/25 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-ink/55 md:inline">
-              Demo
-            </span>
+
+            <AccountMenu
+              user={user}
+              email={account?.email}
+              subtitle={subtitle}
+              role={role}
+              actions={actions}
+              onLogout={logout}
+            />
           </div>
         </header>
 
@@ -366,6 +451,138 @@ export function DashboardShell({
       {role === "professional" && account?.approvalSeen === false && (
         <ApprovalWelcome account={account} pro={pro} onTour={replayTour} />
       )}
+    </div>
+  );
+}
+
+/* ───────────── Desktop: account menu ───────────── */
+function AccountMenu({
+  user,
+  email,
+  subtitle,
+  role,
+  actions,
+  onLogout,
+}: {
+  user: string;
+  email?: string;
+  subtitle: string;
+  role: Role;
+  actions: { icon: LucideIcon; label: string; onClick: () => void }[];
+  onLogout: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: PointerEvent) =>
+      ref.current && !ref.current.contains(e.target as Node) && setOpen(false);
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("pointerdown", onDown);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("pointerdown", onDown);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  return (
+    <div ref={ref} className="relative hidden shrink-0 lg:block">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        aria-haspopup="menu"
+        aria-expanded={open}
+        aria-label="Account menu"
+        className={cn(
+          "flex h-10 items-center gap-2.5 rounded-full border bg-paper py-1 pl-1 pr-3 transition-all hover:border-ink/25",
+          open
+            ? "border-ink/30 shadow-[0_6px_20px_-12px_rgba(40,43,74,0.45)]"
+            : "border-ink/10",
+        )}
+      >
+        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-ink text-[11.5px] font-bold text-cream">
+          {initials(user)}
+        </span>
+        <span className="hidden max-w-36 text-left leading-tight 2xl:block">
+          <span className="block truncate text-[13px] font-semibold text-ink">
+            {user}
+          </span>
+          <span className="block truncate text-[11px] text-ink/50">
+            {roleLabel[role]}
+          </span>
+        </span>
+        <ChevronDown
+          className={cn(
+            "h-4 w-4 text-ink/50 transition-transform duration-300",
+            open && "rotate-180",
+          )}
+        />
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            role="menu"
+            initial={{ opacity: 0, y: -6, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -6, scale: 0.97 }}
+            transition={{ duration: 0.18, ease: EASE }}
+            style={{ transformOrigin: "top right" }}
+            className="absolute right-0 top-[calc(100%+10px)] z-50 w-72 overflow-hidden rounded-3xl border border-ink/10 bg-paper shadow-[0_24px_60px_-24px_rgba(40,43,74,0.45)]"
+          >
+            <div className="flex items-center gap-3 border-b border-ink/8 p-4">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-ink text-[13px] font-bold text-cream">
+                {initials(user)}
+              </span>
+              <div className="min-w-0 flex-1">
+                <div className="truncate text-[14.5px] font-semibold text-ink">
+                  {user}
+                </div>
+                <div className="truncate text-[12px] text-ink/55">
+                  {email || subtitle}
+                </div>
+              </div>
+              <span className="shrink-0 rounded-full border border-ink/15 px-2 py-0.5 font-mono text-[9.5px] uppercase tracking-[0.12em] text-ink/60">
+                {roleLabel[role]}
+              </span>
+            </div>
+            <ul className="p-1.5">
+              {actions.map((a) => (
+                <li key={a.label}>
+                  <button
+                    type="button"
+                    role="menuitem"
+                    onClick={() => {
+                      setOpen(false);
+                      a.onClick();
+                    }}
+                    className="flex w-full items-center gap-3 rounded-2xl px-3 py-2.5 text-left text-[13.5px] font-medium text-ink/80 transition-colors hover:bg-ink/5 hover:text-ink"
+                  >
+                    <a.icon className="h-4 w-4 text-ink/50" />
+                    {a.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <div className="border-t border-ink/8 p-1.5">
+              <button
+                type="button"
+                role="menuitem"
+                onClick={() => {
+                  setOpen(false);
+                  onLogout();
+                }}
+                className="flex w-full items-center gap-3 rounded-2xl px-3 py-2.5 text-left text-[13.5px] font-semibold text-rose-700 transition-colors hover:bg-rose-50"
+              >
+                <LogOut className="h-4 w-4" />
+                Log out
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -440,13 +657,20 @@ function MobileTabBar({
                     transition={{ type: "spring", stiffness: 420, damping: 34 }}
                   />
                 )}
-                <item.icon
-                  className={cn(
-                    "relative h-5 w-5 transition-colors",
-                    active ? "text-cream" : "text-cream/50",
+                <span className="relative">
+                  <item.icon
+                    className={cn(
+                      "h-5 w-5 transition-colors",
+                      active ? "text-cream" : "text-cream/50",
+                    )}
+                    strokeWidth={active ? 2.3 : 1.9}
+                  />
+                  {!!item.badge && (
+                    <span className="absolute -right-2.5 -top-1.5 min-w-4 rounded-full bg-cream px-1 text-center text-[9.5px] font-bold leading-4 text-ink">
+                      {item.badge}
+                    </span>
                   )}
-                  strokeWidth={active ? 2.3 : 1.9}
-                />
+                </span>
                 <span
                   className={cn(
                     "relative text-[10.5px] leading-none transition-colors",
