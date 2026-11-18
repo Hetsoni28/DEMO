@@ -257,11 +257,11 @@ function ProDashboard() {
         )}
 
         <div className="grid grid-cols-2 gap-5 lg:grid-cols-1">
-          <Kpi label="Earned · last 7 days" value={week} format={formatINR} icon={IndianRupee} hint={`${formatINR(total)} all time on PipePilot`}>
+          <Kpi label="Earned · last 7 days" value={week} format={formatINR} icon={IndianRupee} hint={`${formatINR(total)} all time on HomeCrew`}>
             <Sparkline values={earningsByDay.map((d) => d.value)} />
           </Kpi>
           <Kpi label="Rating" value={pro.rating} format={(n) => (n / 1).toFixed(1)} icon={Star} hint={`${pro.jobsDone.toLocaleString("en-IN")} lifetime jobs`} />
-          <Kpi label="Done on PipePilot" value={completed.length} icon={CircleCheck} className="col-span-2 lg:col-span-1" hint={completed[0] ? `Last: ${getService(completed[0].serviceSlug)?.title}` : "No jobs yet"} />
+          <Kpi label="Done on HomeCrew" value={completed.length} icon={CircleCheck} className="col-span-2 lg:col-span-1" hint={completed[0] ? `Last: ${getService(completed[0].serviceSlug)?.title}` : "No jobs yet"} />
         </div>
       </div>
 

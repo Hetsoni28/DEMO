@@ -121,13 +121,13 @@ export function Hero() {
           <video
             ref={videoRef}
             className="h-full w-full object-cover object-[64%_center] md:object-[58%_center] lg:object-center"
-            src="/media/pipepilot-film.mp4"
-            poster="/media/pipepilot-film-poster.jpg"
+            src="/media/homecrew-film.mp4"
+            poster="/media/homecrew-film-poster.jpg"
             muted
             loop
             playsInline
             preload="metadata"
-            aria-label="PipePilot brand film: professionals cleaning, fixing a kitchen sink, servicing an AC and installing a light while a homeowner relaxes."
+            aria-label="HomeCrew brand film: professionals cleaning, fixing a kitchen sink, servicing an AC and installing a light while a homeowner relaxes."
             onPlay={() => setPlaying(true)}
             onPause={() => setPlaying(false)}
           />
@@ -148,7 +148,7 @@ export function Hero() {
 
         <motion.div style={{ y: headY, opacity: fade }} className="flex flex-1 flex-col justify-center py-10">
           <h1 className="text-[clamp(3.6rem,15.5vw,13.5rem)] font-black uppercase leading-[0.82] tracking-[-0.065em] text-cream drop-shadow-[0_8px_40px_rgba(0,0,0,0.25)]">
-            <span className="sr-only">PipePilot — home problems, professionally solved.</span>
+            <span className="sr-only">HomeCrew — home problems, professionally solved.</span>
             <span aria-hidden>
               <LineReveal lines={["Home,", "sorted."]} delay={0.2} stagger={0.12} play={play} />
             </span>
@@ -230,7 +230,7 @@ export function Hero() {
           <motion.div initial={{ opacity: 0 }} animate={play ? { opacity: 1 } : undefined} transition={{ delay: 1.2 }} className="flex items-center gap-3">
             <span className="hidden items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.16em] text-cream/65 sm:flex">
               <span className={`h-1.5 w-1.5 rounded-full ${playing ? "animate-pulse bg-cream" : "bg-cream/40"}`} />
-              PipePilot · Film
+              HomeCrew · Film
             </span>
             <button
               type="button"

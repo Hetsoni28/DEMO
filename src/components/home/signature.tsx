@@ -118,7 +118,7 @@ export function PriceApproval() {
               <div className="flex items-start justify-between">
                 <div>
                   <div className="font-mono text-[11px] uppercase tracking-[0.14em] text-ink/50">
-                    Booking PP-1042
+                    Booking HC-1042
                   </div>
                   <div className="mt-1 text-2xl font-bold tracking-[-0.03em]">
                     Tap Repair

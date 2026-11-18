@@ -110,7 +110,7 @@ export function SiteFooter() {
             </div>
 
             {socials.length > 0 && (
-              <ul className="mt-6 flex gap-2" aria-label="PipePilot on social media">
+              <ul className="mt-6 flex gap-2" aria-label="HomeCrew on social media">
                 {socials.map(([key, url]) => {
                   const { icon: Icon, label } = socialIcons[key];
                   return (
@@ -151,15 +151,15 @@ export function SiteFooter() {
       </div>
 
       {/* Wordmark */}
-      <div aria-hidden className="pointer-events-none select-none px-3 text-center text-[clamp(4rem,19.5vw,19rem)] font-black leading-[0.78] tracking-[-0.06em] text-cream/[0.07]">
-        PIPEPILOT
+      <div aria-hidden className="pointer-events-none select-none px-3 text-center text-[clamp(3rem,16.5vw,16.5rem)] font-black leading-[0.78] tracking-[-0.06em] text-cream/[0.07]">
+        HOMECREW
       </div>
 
       {/* Legal bar */}
       <div className="border-t border-cream/10">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 py-6 sm:px-8 md:flex-row md:items-center md:justify-between">
           <p className="text-[11px] uppercase tracking-[0.14em] text-cream/45">
-            © {siteConfig.copyrightYear} PipePilot · All rights reserved · Demo build — no real payments
+            © {siteConfig.copyrightYear} HomeCrew · All rights reserved · Demo build — no real payments
           </p>
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
             {legalPages.slice(0, 2).map((l) => (

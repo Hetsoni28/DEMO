@@ -696,7 +696,7 @@ function PaymentStep({ group, onRestart }: { group: string; onRestart: () => voi
             Razorpay Checkout · Test mode
           </div>
           <div className="font-semibold">
-            PipePilot · {items.length} service{items.length > 1 ? "s" : ""}
+            HomeCrew · {items.length} service{items.length > 1 ? "s" : ""}
           </div>
         </div>
         <div className="text-right">

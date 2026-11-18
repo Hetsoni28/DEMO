@@ -356,7 +356,7 @@ export function SiteHeader() {
               {[
                 { href: primaryNav.howItWorks.href, label: primaryNav.howItWorks.label },
                 { href: primaryNav.pros.href, label: primaryNav.pros.label },
-                ...companyMenu.filter((c) => c.href !== "/professionals").map((c) => ({ href: c.href, label: c.label.replace(" PipePilot", "") })),
+                ...companyMenu.filter((c) => c.href !== "/professionals").map((c) => ({ href: c.href, label: c.label.replace(" HomeCrew", "") })),
               ].map((n, idx) => (
                 <MobileItem key={n.href} i={idx + 2} href={n.href} label={n.label} onClick={() => setMobileOpen(false)} />
               ))}

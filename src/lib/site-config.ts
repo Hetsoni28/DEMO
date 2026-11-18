@@ -6,7 +6,7 @@
 export type SocialPlatform = "instagram" | "facebook" | "linkedin" | "x" | "youtube";
 
 export const siteConfig = {
-  name: "PipePilot",
+  name: "HomeCrew",
   tagline: "Home Problems. Professionally Solved.",
   description:
     "Book verified professionals for plumbing, electrical, cleaning, AC & appliance repair, carpentry, painting and pest control — real time slots, transparent pricing, all in one place.",

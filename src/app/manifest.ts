@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "PipePilot",
-    short_name: "PipePilot",
+    name: "HomeCrew",
+    short_name: "HomeCrew",
     description: "Book verified home-service professionals with genuine availability and secure payments.",
     start_url: "/",
     display: "standalone",

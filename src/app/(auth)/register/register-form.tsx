@@ -137,7 +137,7 @@ export function RegisterForm() {
             <h1 className="mt-3 text-[clamp(2.5rem,6vw,3.5rem)] font-black leading-[0.9] tracking-[-0.05em]">
               <LineReveal lines={["Let’s get", "you set up."]} />
             </h1>
-            <p className="mt-3 text-[15px] text-ink/60">How will you use PipePilot?</p>
+            <p className="mt-3 text-[15px] text-ink/60">How will you use HomeCrew?</p>
             <div className="mt-8 grid gap-3" role="radiogroup" aria-label="Account type">
               {[
                 { v: "customer" as const, icon: Home, title: "I need a service", text: "Book verified professionals, track visits and keep your home’s service record." },

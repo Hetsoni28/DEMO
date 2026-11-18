@@ -28,7 +28,7 @@ async function LegalContent({ params }: Props) {
         <div className="rounded-[28px] border border-dashed border-ink/25 p-8 text-ink/70">
           <p className="font-semibold text-ink">This policy is being finalised.</p>
           <p className="mt-2 leading-relaxed">
-            The {page.title.toLowerCase()} for PipePilot will be published here before launch. This page exists so links across the site resolve correctly during development.
+            The {page.title.toLowerCase()} for HomeCrew will be published here before launch. This page exists so links across the site resolve correctly during development.
           </p>
         </div>
       </div>

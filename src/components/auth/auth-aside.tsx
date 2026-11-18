@@ -84,7 +84,7 @@ export function AuthAside() {
 
       <div className="relative flex items-end justify-between border-t border-cream/10 px-12 py-6 text-[12px] text-cream/50">
         <span>Home problems. Professionally solved.</span>
-        <span className="font-mono uppercase tracking-[0.14em]">PipePilot</span>
+        <span className="font-mono uppercase tracking-[0.14em]">HomeCrew</span>
       </div>
     </aside>
   );

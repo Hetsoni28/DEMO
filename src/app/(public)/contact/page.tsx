@@ -6,7 +6,7 @@ import { LiveStatus } from "./live-status";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: "Get help with a booking, a payment or joining PipePilot as a professional. Real people, fast replies.",
+  description: "Get help with a booking, a payment or joining HomeCrew as a professional. Real people, fast replies.",
   alternates: { canonical: "/contact" },
 };
 

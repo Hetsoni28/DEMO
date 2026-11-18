@@ -63,7 +63,7 @@ export function Split() {
         word="Guesswork"
         caption="Who : unknown · When : “10 to 6” · Cost : ???"
         metaL={["The old way", "Calling around"]}
-        footL={["Before", "PipePilot"]}
+        footL={["Before", "HomeCrew"]}
         progress={scrollYProgress}
         range={[0, 0.35]}
       />
@@ -71,7 +71,7 @@ export function Split() {
         tone="ink"
         word="Certainty"
         caption="Who : verified pro · When : 11:00 AM · Cost : ₹412 fixed"
-        metaL={["The PipePilot way", "Booked in 60 sec"]}
+        metaL={["The HomeCrew way", "Booked in 60 sec"]}
         footL={["2026", "Best way to fix a leak"]}
         progress={scrollYProgress}
         range={[0.3, 0.7]}
@@ -386,7 +386,7 @@ export function ProCta() {
           <p className="text-lg leading-relaxed text-ink/70">Set your own hours, skills and service zones. Every job is paid before you leave home — no chasing customers for money.</p>
           <Magnetic strength={0.2}>
             <Link href="/professionals" className="group inline-flex h-14 items-center gap-3 rounded-full bg-ink pl-7 pr-2 font-medium text-cream">
-              Join PipePilot
+              Join HomeCrew
               <span className="flex h-10 w-10 items-center justify-center rounded-full bg-cream text-ink transition-transform duration-500 group-hover:rotate-45">
                 <ArrowUpRight className="h-4 w-4" />
               </span>

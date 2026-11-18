@@ -17,7 +17,7 @@ const roles: { value: Role; label: string; icon: typeof User }[] = [
   { value: "admin", label: "Admin", icon: ShieldCheck },
 ];
 const destination: Record<Role, string> = { customer: "/customer/dashboard", professional: "/professional/dashboard", admin: "/admin/dashboard" };
-const demoEmail: Record<Role, string> = { customer: "aarav@example.com", professional: "ramesh@pipepilot.example", admin: "ops@pipepilot.example" };
+const demoEmail: Record<Role, string> = { customer: "aarav@example.com", professional: "ramesh@homecrew.example", admin: "ops@homecrew.example" };
 
 /** Demo accounts — shared credentials for clients and testers. Not real people. */
 const DEMO_PASSWORD = "demo1234";
@@ -307,7 +307,7 @@ export function LoginForm() {
         <DemoNote>Demo build: these accounts are samples, and any valid-looking number with any 6-digit code also works. Nothing is sent or stored on a server.</DemoNote>
 
         <p className="pt-2 text-center text-[14px] text-ink/60">
-          New to PipePilot?{" "}
+          New to HomeCrew?{" "}
           <Link href="/register" className="link-underline pb-0.5 font-semibold text-ink">
             Create an account
           </Link>

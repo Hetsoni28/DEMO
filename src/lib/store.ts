@@ -153,7 +153,7 @@ function seed(): Pick<State, "bookings" | "addresses" | "events" | "seq" | "pros
 
     return {
       id: `b${n}`,
-      code: `PP-${1040 + n}`,
+      code: `HC-${1040 + n}`,
       serviceSlug,
       customerId: customer.id,
       customerName: customer.name,
@@ -276,7 +276,7 @@ export const useApp = create<State & Actions>()(
           const amounts = priceBreakdown(svc.pricePaise); // trusted price, not from the browser
           const booking: Booking = {
             id: `b${n}`,
-            code: `PP-${1040 + n}`,
+            code: `HC-${1040 + n}`,
             serviceSlug,
             customerId: DEMO_CUSTOMER.id,
             customerName: DEMO_CUSTOMER.name,
@@ -331,7 +331,7 @@ export const useApp = create<State & Actions>()(
               const svc = getService(item.slug)!;
               created.push({
                 id: `b${n}`,
-                code: `PP-${1040 + n}`,
+                code: `HC-${1040 + n}`,
                 serviceSlug: item.slug,
                 customerId: DEMO_CUSTOMER.id,
                 customerName: DEMO_CUSTOMER.name,
@@ -526,7 +526,7 @@ export const useApp = create<State & Actions>()(
       };
     },
     {
-      name: "pipepilot-demo-v2",
+      name: "homecrew-demo-v1",
       skipHydration: true,
       partialize: ({ role, bookings, pros, addresses, events, seq, cart }) => ({ role, bookings, pros, addresses, events, seq, cart }),
     },

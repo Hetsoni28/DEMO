@@ -1,5 +1,5 @@
 // Demo-only catalogue and seed data. Nothing here touches a database.
-// PipePilot is a marketplace for ALL home services — plumbing is one category among many.
+// HomeCrew is a marketplace for ALL home services — plumbing is one category among many.
 // Money is stored as integer paise.
 
 export type CategoryIcon = "droplets" | "zap" | "sparkles" | "air-vent" | "hammer" | "paint-roller" | "bug";

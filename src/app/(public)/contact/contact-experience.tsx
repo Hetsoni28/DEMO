@@ -17,7 +17,7 @@ type Topic = "booking" | "refund" | "partners" | "business" | "other";
 const channels: { topic: Topic; icon: typeof CalendarCheck; title: string; text: string; sla: string }[] = [
   { topic: "booking", icon: CalendarCheck, title: "Booking help", text: "Change a time, reach your professional or report a problem with a visit.", sla: "Reply · ~2 h" },
   { topic: "refund", icon: ReceiptText, title: "Payments & refunds", text: "Questions about a charge, an invoice or a refund in progress.", sla: "Reply · same day" },
-  { topic: "partners", icon: HardHat, title: "For professionals", text: "Joining PipePilot, verification status or payouts.", sla: "Reply · 1 day" },
+  { topic: "partners", icon: HardHat, title: "For professionals", text: "Joining HomeCrew, verification status or payouts.", sla: "Reply · 1 day" },
   { topic: "business", icon: Briefcase, title: "Business & press", text: "Societies, builders, property managers and media.", sla: "Reply · 2 days" },
 ];
 
@@ -86,7 +86,7 @@ export function ContactExperience() {
     if (form.name.trim().length < 2) e.name = "Tell us your name";
     if (form.replyVia === "email" && !z.email().safeParse(form.email).success) e.email = "Enter a valid email";
     if (form.replyVia === "whatsapp" && !/^[6-9]\d{9}$/.test(form.phone)) e.phone = "Enter a valid 10-digit number";
-    if (needsRef && form.reference && !/^PP-\d{3,6}$/i.test(form.reference.trim())) e.reference = "Booking IDs look like PP-1042";
+    if (needsRef && form.reference && !/^HC-\d{3,6}$/i.test(form.reference.trim())) e.reference = "Booking IDs look like HC-1042";
     if (form.message.trim().length < 15) e.message = "A little more detail helps us reply faster (15+ characters)";
     setErrors(e);
     if (Object.keys(e).length) return;
@@ -257,8 +257,8 @@ export function ContactExperience() {
                   <AnimatePresence initial={false}>
                     {needsRef && (
                       <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.3, ease: EASE }} className="overflow-hidden">
-                        <Field label="Booking ID" htmlFor="c-ref" error={errors.reference} aside={<span className="text-[12px] text-ink/40">Optional</span>} hint="Find it on your booking page, e.g. PP-1042.">
-                          <TextInput id="c-ref" placeholder="PP-1042" value={form.reference} invalid={!!errors.reference} onChange={(e) => setForm({ ...form, reference: e.target.value.toUpperCase() })} className="font-mono uppercase" />
+                        <Field label="Booking ID" htmlFor="c-ref" error={errors.reference} aside={<span className="text-[12px] text-ink/40">Optional</span>} hint="Find it on your booking page, e.g. HC-1042.">
+                          <TextInput id="c-ref" placeholder="HC-1042" value={form.reference} invalid={!!errors.reference} onChange={(e) => setForm({ ...form, reference: e.target.value.toUpperCase() })} className="font-mono uppercase" />
                         </Field>
                       </motion.div>
                     )}
@@ -370,7 +370,7 @@ export function ContactExperience() {
           {[
             { label: "Track or change a booking", note: "Your booking page has live status, your professional and your service QR.", href: "/customer/bookings" },
             { label: "Cancellation & refunds", note: "Free cancellation up to 2 hours before the visit.", href: "/legal/cancellation" },
-            { label: "How PipePilot works", note: "Real slots, payment verification and QR-checked visits.", href: "/#how-it-works" },
+            { label: "How HomeCrew works", note: "Real slots, payment verification and QR-checked visits.", href: "/#how-it-works" },
           ].map((l, i) => (
             <Reveal as="li" key={l.href} delay={i * 0.05} y={14}>
               <Link href={l.href} className="group relative block overflow-hidden border-b border-ink/20">

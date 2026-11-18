@@ -17,7 +17,7 @@ export const serviceMenu = categories.map((c) => {
 });
 
 export const companyMenu: NavLink[] = [
-  { label: "About PipePilot", href: "/about", description: "Why we built a better way to book home services" },
+  { label: "About HomeCrew", href: "/about", description: "Why we built a better way to book home services" },
   { label: "For professionals", href: "/professionals", description: "Pre-paid jobs on your own schedule" },
   { label: "Contact", href: "/contact", description: "Bookings, refunds and partnerships" },
 ];

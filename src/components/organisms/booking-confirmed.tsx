@@ -98,7 +98,7 @@ export function BookingConfirmed({ bookings }: { bookings: Booking[] }) {
             {/* header */}
             <div className="flex items-start justify-between px-6 pt-6">
               <div>
-                <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-ink/50">PipePilot · Booking</div>
+                <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-ink/50">HomeCrew · Booking</div>
                 <div className="mt-1 text-[22px] font-black leading-tight tracking-[-0.03em]">{multi ? `${bookings.length} services` : svc.title}</div>
                 {multi && (
                   <ul className="mt-1.5 space-y-0.5 text-[12.5px] text-ink/65">

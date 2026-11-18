@@ -114,7 +114,7 @@ export function CommandPalette({ open, onOpenChange, nav, role }: { open: boolea
                 </Command.Group>
               </Command.List>
               <div className="flex items-center justify-between border-t border-ink/10 px-5 py-2.5 font-mono text-[10.5px] uppercase tracking-[0.12em] text-ink/45">
-                <span>PipePilot · {role}</span>
+                <span>HomeCrew · {role}</span>
                 <span className="flex items-center gap-1.5">
                   <CornerDownLeft className="h-3 w-3" /> to select
                 </span>

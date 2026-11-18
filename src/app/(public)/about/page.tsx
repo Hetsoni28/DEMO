@@ -14,7 +14,7 @@ const values = [
 export default function AboutPage() {
   return (
     <>
-      <PageHero eyebrow={["About PipePilot", "Ahmedabad, 2026"]} index="(02)" lines={["Home services,", "done properly."]} caption="Started in one city on purpose · Growing only when it works" />
+      <PageHero eyebrow={["About HomeCrew", "Ahmedabad, 2026"]} index="(02)" lines={["Home services,", "done properly."]} caption="Started in one city on purpose · Growing only when it works" />
       <section className="mx-auto max-w-7xl px-5 py-24 sm:px-8">
         <h2 className="max-w-4xl text-[clamp(1.75rem,3.6vw,3rem)] font-semibold leading-[1.1] tracking-[-0.035em]">
           <LineReveal
