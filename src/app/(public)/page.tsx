@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { ArrowUpRight } from "lucide-react";
 import { Hero } from "@/components/home/hero";
 import { IntroProvider } from "@/components/home/intro";
@@ -14,13 +15,7 @@ import { siteConfig } from "@/lib/site-config";
 
 const title = `${siteConfig.name} — ${siteConfig.tagline}`;
 
-export const metadata: Metadata = {
-  title: { absolute: title },
-  description: siteConfig.description,
-  alternates: { canonical: "/" },
-  openGraph: { type: "website", url: "/", siteName: siteConfig.name, title, description: siteConfig.description, locale: "en_IN" },
-  twitter: { card: "summary", title, description: siteConfig.description },
-};
+export const metadata: Metadata = pageMetadata({ title, path: "/", absoluteTitle: true });
 
 export default function Home() {
   const popular = services.filter((s) => s.popular);

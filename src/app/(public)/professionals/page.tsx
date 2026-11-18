@@ -1,10 +1,15 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { ArrowUpRight } from "lucide-react";
 import { PageHero } from "@/components/molecules/page-hero";
 import { CountUp, Magnetic, Reveal } from "@/components/motion/motion";
 
-export const metadata: Metadata = { title: "Join as a professional" };
+export const metadata: Metadata = pageMetadata({
+  title: "Join as a professional",
+  description: "Plumbers, electricians, cleaners, AC technicians, carpenters, painters and pest-control pros: get verified on HomeCrew and receive paid, scheduled jobs in Ahmedabad.",
+  path: "/professionals",
+});
 
 const steps = [
   { title: "Register & upload documents", text: "ID, trade certificate and police verification — stored in a private bucket." },

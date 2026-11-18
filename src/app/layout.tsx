@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "sonner";
 import { StoreHydrator } from "@/components/organisms/store-hydrator";
+import { DEFAULT_OG_IMAGE } from "@/lib/seo";
 import { siteConfig } from "@/lib/site-config";
 import "./globals.css";
 
@@ -20,6 +21,17 @@ export const metadata: Metadata = {
   title: { default: `${siteConfig.name} — ${siteConfig.tagline}`, template: `%s · ${siteConfig.name}` },
   description: siteConfig.description,
   applicationName: siteConfig.name,
+  keywords: ["home services", "plumber", "electrician", "home cleaning", "AC service", "carpenter", "painter", "pest control", "Ahmedabad"],
+  openGraph: {
+    type: "website",
+    siteName: siteConfig.name,
+    locale: "en_IN",
+    url: "/",
+    title: `${siteConfig.name} — ${siteConfig.tagline}`,
+    description: siteConfig.description,
+    images: [DEFAULT_OG_IMAGE],
+  },
+  twitter: { card: "summary_large_image", title: `${siteConfig.name} — ${siteConfig.tagline}`, description: siteConfig.description, images: [DEFAULT_OG_IMAGE] },
 };
 
 export const viewport: Viewport = {

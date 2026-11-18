@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { Logo } from "@/components/atoms/logo";
 import { Skeleton } from "@/components/atoms/ui";
 import { BookingFlow } from "@/components/organisms/booking-flow";
@@ -14,7 +15,13 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  return { title: `Book ${getService(slug)?.title ?? "service"}` };
+  const s = getService(slug);
+  return pageMetadata({
+    title: `Book ${s?.title ?? "service"}`,
+    description: s ? `Pick an address and a real time slot, then pay once to confirm ${s.title} with a verified HomeCrew professional.` : undefined,
+    path: `/book/${slug}`,
+    noIndex: true,
+  });
 }
 
 /** Reads the URL param inside Suspense so navigation stays instant. */

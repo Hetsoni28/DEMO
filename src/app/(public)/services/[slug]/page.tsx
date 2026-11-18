@@ -2,13 +2,14 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { ArrowLeft, BadgeCheck, Check, Clock, ShieldCheck, Star, X } from "lucide-react";
 import { categoryIcons } from "@/components/atoms/icons";
 import { Badge, Card, LinkButton } from "@/components/atoms/ui";
 import { ServiceCard } from "@/components/molecules/service-card";
 import { AddToCartButton } from "@/components/cart/cart";
 import { LineReveal } from "@/components/motion/motion";
-import { formatDuration, formatINR, pricingTypeLabel, priceBreakdown } from "@/lib/format";
+import { formatDuration, formatINR, priceLabel, pricingTypeLabel, priceBreakdown } from "@/lib/format";
 import { getCategory, getService, GST_RATE, services } from "@/lib/mock-data";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -19,7 +20,15 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  return { title: getService(slug)?.title ?? "Service" };
+  const s = getService(slug);
+  if (!s) return { title: "Service not found", robots: { index: false } };
+  const warranty = s.warrantyDays ? ` · ${s.warrantyDays}-day warranty` : "";
+  return pageMetadata({
+    title: s.title,
+    description: `${s.short} ${priceLabel(s.pricePaise, s.pricingType)} + ${GST_RATE * 100}% GST · ${formatDuration(s.durationMin)}${warranty}. Book a verified professional in Ahmedabad.`,
+    path: `/services/${slug}`,
+    ownImage: true,
+  });
 }
 
 /** Reads the URL param inside Suspense so navigation stays instant. */

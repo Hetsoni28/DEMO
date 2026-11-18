@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { PageHero } from "@/components/molecules/page-hero";
 import { legalPages } from "@/lib/legal";
 
@@ -13,7 +14,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const page = legalPages.find((p) => p.slug === slug);
-  return { title: page?.title ?? "Legal", alternates: { canonical: `/legal/${slug}` }, robots: { index: false } };
+  return pageMetadata({ title: page?.title ?? "Legal", description: `HomeCrew ${page?.title ?? "legal information"} (demo build).`, path: `/legal/${slug}`, noIndex: true });
 }
 
 /** Reads the URL param inside a Suspense boundary so navigation stays instant. */

@@ -11,7 +11,7 @@ export const siteConfig = {
   description:
     "Book verified professionals for plumbing, electrical, cleaning, AC & appliance repair, carpentry, painting and pest control — real time slots, transparent pricing, all in one place.",
   /** Set NEXT_PUBLIC_SITE_URL in each environment; used for canonical URLs, OG and the sitemap. */
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://demo-two-phi-91.vercel.app",
   /** Static so pages stay fully prerenderable (Cache Components forbids `new Date()` in the shell). */
   copyrightYear: 2026,
   contact: {

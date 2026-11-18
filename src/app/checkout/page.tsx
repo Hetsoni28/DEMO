@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { Logo } from "@/components/atoms/logo";
 import { CheckoutFlow } from "./checkout-flow";
 
-export const metadata: Metadata = { title: "Checkout", robots: { index: false } };
+export const metadata: Metadata = pageMetadata({ title: "Checkout", description: "Review your HomeCrew basket and pay once for every service.", path: "/checkout", noIndex: true });
 
 export default function CheckoutPage() {
   return (

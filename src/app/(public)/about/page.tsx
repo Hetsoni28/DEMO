@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { PageHero } from "@/components/molecules/page-hero";
 import { LineReveal, Reveal } from "@/components/motion/motion";
 
-export const metadata: Metadata = { title: "About" };
+export const metadata: Metadata = pageMetadata({
+  title: "About",
+  description: "Why HomeCrew exists: verified professionals, fixed upfront prices and QR-checked visits for every home service in Ahmedabad.",
+  path: "/about",
+});
 
 const values = [
   { k: "Specialists only", v: "One standard across seven trades. Every professional is verified for identity, trade skills and background before taking a job." },

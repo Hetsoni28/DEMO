@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { PageHero } from "@/components/molecules/page-hero";
 import { siteConfig } from "@/lib/site-config";
 import { ContactExperience } from "./contact-experience";
 import { LiveStatus } from "./live-status";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Contact",
   description: "Get help with a booking, a payment or joining HomeCrew as a professional. Real people, fast replies.",
-  alternates: { canonical: "/contact" },
-};
+  path: "/contact",
+});
 
 export default function ContactPage() {
   const { email, phone } = siteConfig.contact;
