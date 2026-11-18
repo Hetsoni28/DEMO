@@ -23,6 +23,7 @@ import { toast } from "sonner";
 import { Logo } from "@/components/atoms/logo";
 import { AccessGate, ApprovalWelcome } from "@/components/auth/access-gate";
 import { GetAppButton, InstallBanner } from "@/components/organisms/get-app";
+import { CartDrawer, useCartUi } from "@/components/cart/cart";
 import { AppDensityContext } from "@/components/dashboard/kit";
 import { formatINR } from "@/lib/format";
 import { getService, GST_RATE } from "@/lib/mock-data";
@@ -195,7 +196,12 @@ export function DashboardShell({
             />
             {children}
           </main>
-          {role === "customer" && <BasketBar />}
+          {role === "customer" && (
+            <>
+              <BasketBar />
+              <CartDrawer />
+            </>
+          )}
           <MobileTabBar nav={nav} isActive={isActive} hidden={sheet} />
           <AccountSheet
             open={sheet}
@@ -823,9 +829,11 @@ function useBasket() {
 
 function BasketButton() {
   const { items } = useBasket();
+  const openBasket = useCartUi((st) => st.setOpen);
   return (
-    <Link
-      href="/checkout"
+    <button
+      type="button"
+      onClick={() => openBasket(true)}
       aria-label={`Basket, ${items.length} ${items.length === 1 ? "service" : "services"}`}
       className="relative flex h-10 w-10 items-center justify-center rounded-full border border-ink/10 bg-white text-ink transition-colors hover:border-ink/25 lg:w-auto lg:gap-2 lg:rounded-xl lg:px-3"
     >
@@ -836,13 +844,14 @@ function BasketButton() {
           {items.length}
         </span>
       )}
-    </Link>
+    </button>
   );
 }
 
-/** Sticky "View basket" bar, like the cart bar in Blinkit / Zepto. */
+/** Sticky "View basket" bar, like the cart bar in Blinkit / Zepto. Opens the basket. */
 function BasketBar() {
   const { items, subtotal } = useBasket();
+  const openBasket = useCartUi((st) => st.setOpen);
   return (
     <AnimatePresence>
       {items.length > 0 && (
@@ -853,9 +862,10 @@ function BasketBar() {
           transition={{ type: "spring", stiffness: 380, damping: 32 }}
           className="fixed inset-x-3 bottom-[calc(6.25rem+env(safe-area-inset-bottom))] z-40 lg:inset-x-auto lg:bottom-6 lg:right-6 lg:w-90"
         >
-          <Link
-            href="/checkout"
-            className="mx-auto flex max-w-md items-center gap-3 rounded-2xl bg-emerald-700 px-4 py-3 text-white shadow-[0_18px_40px_-16px_rgba(4,80,50,0.6)] transition-transform active:scale-[0.98]"
+          <button
+            type="button"
+            onClick={() => openBasket(true)}
+            className="mx-auto flex w-full max-w-md items-center gap-3 rounded-2xl bg-emerald-700 text-left px-4 py-3 text-white shadow-[0_18px_40px_-16px_rgba(4,80,50,0.6)] transition-transform active:scale-[0.98]"
           >
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/15">
               <ShoppingBag className="h-4.5 w-4.5" />
@@ -872,7 +882,7 @@ function BasketBar() {
             <span className="flex items-center gap-1 text-[14px] font-bold">
               View basket <ArrowRight className="h-4 w-4" />
             </span>
-          </Link>
+          </button>
         </motion.div>
       )}
     </AnimatePresence>
