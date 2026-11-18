@@ -2,11 +2,16 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import type { LucideIcon } from "lucide-react";
 import {
+  ArrowRight,
   ChevronDown,
+  MapPin,
+  Menu,
+  ShoppingBag,
+  X,
   ChevronRight,
   CircleHelp,
   Globe,
@@ -17,6 +22,10 @@ import {
 import { toast } from "sonner";
 import { Logo } from "@/components/atoms/logo";
 import { AccessGate, ApprovalWelcome } from "@/components/auth/access-gate";
+import { GetAppButton } from "@/components/organisms/app-frame";
+import { AppDensityContext } from "@/components/dashboard/kit";
+import { formatINR } from "@/lib/format";
+import { getService, GST_RATE } from "@/lib/mock-data";
 import { CommandPalette } from "@/components/dashboard/command-palette";
 import { Notifications } from "@/components/dashboard/notifications";
 import { Tour, replayTour } from "@/components/dashboard/tour";
@@ -111,11 +120,16 @@ export function DashboardShell({
   const allowed =
     !!account && account.role === role && account.status === "ACTIVE";
 
-  // Close the account sheet on navigation.
+  // Customer + Professional are apps (Zepto/Blinkit style, full width); Admin is a website console.
+  const isApp = role !== "admin";
+  const [consoleMenu, setConsoleMenu] = useState(false);
+
+  // Close the account sheet / console menu on navigation.
   const [lastPath, setLastPath] = useState(pathname);
   if (pathname !== lastPath) {
     setLastPath(pathname);
     setSheet(false);
+    setConsoleMenu(false);
   }
 
   const isActive = (href: string) =>
@@ -128,7 +142,11 @@ export function DashboardShell({
       label: "How it works",
       onClick: () => setTimeout(replayTour, 450),
     },
-    { icon: Globe, label: "Website", onClick: () => router.push("/") },
+    {
+      icon: Globe,
+      label: "Website",
+      onClick: () => router.push("/"),
+    },
     {
       icon: RotateCcw,
       label: "Reset demo",
@@ -142,12 +160,64 @@ export function DashboardShell({
   /** Sign out of the demo portal and return to the login screen. */
   const logout = () => {
     setSheet(false);
+    setConsoleMenu(false);
     signOut();
     toast.success("Logged out");
     router.push("/login");
   };
 
   if (ready && !allowed) return <AccessGate role={role} account={account} />;
+
+  // ── App layout (customer + professional): sticky app header, desktop tab row,
+  //    bottom tab bar on phones, compact type everywhere. No sidebar.
+  if (isApp)
+    return (
+      <AppDensityContext.Provider value={true}>
+        <div className="min-h-screen w-full bg-cream">
+          <AppHeader
+            role={role}
+            user={user}
+            email={account?.email}
+            subtitle={subtitle}
+            nav={nav}
+            isActive={isActive}
+            actions={actions}
+            onLogout={logout}
+            onOpenSheet={() => {
+              tap();
+              setSheet(true);
+            }}
+            onSearch={() => setPalette(true)}
+          />
+          <main className="mx-auto w-full max-w-6xl px-4 pb-[calc(10rem+env(safe-area-inset-bottom))] pt-4 lg:px-6 lg:pb-24 lg:pt-6">
+            {children}
+          </main>
+          {role === "customer" && <BasketBar />}
+          <MobileTabBar nav={nav} isActive={isActive} hidden={sheet} />
+          <AccountSheet
+            open={sheet}
+            onClose={() => setSheet(false)}
+            role={role}
+            user={user}
+            subtitle={subtitle}
+            aside={aside}
+            actions={actions}
+            onLogout={logout}
+            more={nav.filter((n) => n.tab === false)}
+          />
+          <CommandPalette
+            open={palette}
+            onOpenChange={setPalette}
+            nav={nav}
+            role={role}
+          />
+          <Tour role={role} />
+          {role === "professional" && account?.approvalSeen === false && (
+            <ApprovalWelcome account={account} pro={pro} onTour={replayTour} />
+          )}
+        </div>
+      </AppDensityContext.Provider>
+    );
 
   const ctaItem = nav.find((n) => n.cta);
   const menuItems = nav.filter((n) => !n.cta);
@@ -271,8 +341,13 @@ export function DashboardShell({
   );
 
   return (
-    <div className="flex min-h-screen w-full bg-cream">
-      <aside className="sticky top-0 hidden h-screen w-68 shrink-0 lg:block">
+    <div className={cn("flex min-h-screen w-full bg-cream")}>
+      <aside
+        className={cn(
+          "sticky top-0 hidden h-screen w-68 shrink-0",
+          isApp ? "" : "lg:block",
+        )}
+      >
         {sidebar}
       </aside>
 
@@ -280,6 +355,21 @@ export function DashboardShell({
         <header className="sticky top-0 z-30 border-b border-ink/10 bg-cream/85 pt-[env(safe-area-inset-top)] backdrop-blur-xl">
           <div className="flex h-14 items-center gap-3 px-4 lg:h-16 lg:px-8">
             {/* Mobile: avatar opens the account sheet, title names the current screen */}
+            {!isApp && (
+              <button
+                type="button"
+                onClick={() => setConsoleMenu((o) => !o)}
+                aria-label={consoleMenu ? "Close menu" : "Open menu"}
+                aria-expanded={consoleMenu}
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-ink/12 bg-paper text-ink lg:hidden"
+              >
+                {consoleMenu ? (
+                  <X className="h-4.5 w-4.5" />
+                ) : (
+                  <Menu className="h-4.5 w-4.5" />
+                )}
+              </button>
+            )}
             <button
               type="button"
               onClick={() => {
@@ -288,6 +378,7 @@ export function DashboardShell({
               }}
               aria-label="Open account"
               data-tour="account"
+              hidden={!isApp}
               className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-ink text-[12px] font-bold text-cream transition-transform active:scale-90 lg:hidden"
             >
               {initials(user)}
@@ -405,13 +496,30 @@ export function DashboardShell({
           </div>
         </header>
 
+        {!isApp && (
+          <ConsoleMobileMenu
+            open={consoleMenu}
+            onClose={() => setConsoleMenu(false)}
+            nav={nav}
+            isActive={isActive}
+            user={user}
+            actions={actions}
+            onLogout={logout}
+          />
+        )}
+
         {/* Bottom padding keeps the last card clear of the floating tab bar on phones */}
-        <main className="mx-auto w-full max-w-7xl flex-1 px-4 pb-[calc(7.5rem+env(safe-area-inset-bottom))] pt-6 lg:px-10 lg:py-10">
+        <main
+          className={cn(
+            "mx-auto w-full max-w-7xl flex-1 px-4 pt-6 lg:px-10 lg:py-10",
+            isApp ? "pb-[calc(7.5rem+env(safe-area-inset-bottom))]" : "pb-12",
+          )}
+        >
           {children}
         </main>
       </div>
 
-      <MobileTabBar nav={nav} isActive={isActive} hidden={sheet} />
+      {isApp && <MobileTabBar nav={nav} isActive={isActive} hidden={sheet} />}
       <AccountSheet
         open={sheet}
         onClose={() => setSheet(false)}
@@ -430,9 +538,452 @@ export function DashboardShell({
         role={role}
       />
       <Tour role={role} />
-      {role === "professional" && account?.approvalSeen === false && (
-        <ApprovalWelcome account={account} pro={pro} onTour={replayTour} />
+    </div>
+  );
+}
+
+/* ───────────── Apps: header (location / status · search · basket · account) ───────────── */
+function AppHeader({
+  role,
+  user,
+  email,
+  subtitle,
+  nav,
+  isActive,
+  actions,
+  onLogout,
+  onOpenSheet,
+  onSearch,
+}: {
+  role: Role;
+  user: string;
+  email?: string;
+  subtitle: string;
+  nav: NavItem[];
+  isActive: (href: string) => boolean;
+  actions: { icon: LucideIcon; label: string; onClick: () => void }[];
+  onLogout: () => void;
+  onOpenSheet: () => void;
+  onSearch: () => void;
+}) {
+  const addresses = useApp((s) => s.addresses);
+  const home = addresses[0];
+  const cta = nav.find((n) => n.cta);
+  const tabs = nav.filter((n) => !n.cta && n.tab !== false);
+  const more = nav.filter((n) => n.tab === false);
+
+  return (
+    <header className="sticky top-0 z-30 border-b border-ink/8 bg-cream/92 pt-[env(safe-area-inset-top)] backdrop-blur-xl">
+      <div className="mx-auto flex h-16 w-full max-w-6xl items-center gap-3 px-4 lg:gap-5 lg:px-6">
+        <div className="hidden lg:block">
+          <Logo />
+        </div>
+
+        {role === "customer" ? (
+          <Link
+            href="/customer/addresses"
+            className="group min-w-0 text-left lg:border-l lg:border-ink/10 lg:pl-5"
+            aria-label="Change booking address"
+          >
+            <div className="text-[11.5px] font-medium text-ink/55">
+              Booking for · {home?.label ?? "Home"}
+            </div>
+            <div className="flex items-center gap-1 text-[15px] font-bold tracking-tight text-ink">
+              <MapPin className="h-4 w-4 shrink-0" />
+              <span className="truncate">
+                {home ? `${home.zone}, Ahmedabad` : "Add your address"}
+              </span>
+              <ChevronDown className="h-4 w-4 shrink-0 text-ink/50 transition-transform group-hover:translate-y-0.5" />
+            </div>
+          </Link>
+        ) : (
+          <Link
+            href="/professional/availability"
+            className="min-w-0 text-left lg:border-l lg:border-ink/10 lg:pl-5"
+            aria-label="Working hours and status"
+          >
+            <div className="text-[11.5px] font-medium text-ink/55">
+              {subtitle}
+            </div>
+            <div className="flex items-center gap-1.5 text-[15px] font-bold tracking-tight text-ink">
+              <span className="relative flex h-2 w-2" aria-hidden>
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500/50" />
+                <span className="relative h-2 w-2 rounded-full bg-emerald-600" />
+              </span>
+              <span className="truncate">Accepting jobs</span>
+              <ChevronDown className="h-4 w-4 shrink-0 text-ink/50" />
+            </div>
+          </Link>
+        )}
+
+        <AppSearch
+          role={role}
+          onSearch={onSearch}
+          className="mx-auto hidden max-w-xl flex-1 lg:flex"
+        />
+
+        <div className="ml-auto flex shrink-0 items-center gap-2 lg:ml-0">
+          <div className="hidden xl:block">
+            <GetAppButton
+              app={role === "customer" ? "customer" : "professional"}
+            />
+          </div>
+          <Notifications role={role} />
+          {role === "customer" && <BasketButton />}
+          <button
+            type="button"
+            onClick={onOpenSheet}
+            aria-label="Open account"
+            data-tour="account"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-ink text-[12px] font-bold text-cream transition-transform active:scale-90 lg:hidden"
+          >
+            {initials(user)}
+          </button>
+          <AccountMenu
+            user={user}
+            email={email}
+            subtitle={subtitle}
+            role={role}
+            actions={actions}
+            onLogout={onLogout}
+          />
+        </div>
+      </div>
+
+      {/* phones: full-width search under the location, like Blinkit */}
+      <div className="px-4 pb-3 lg:hidden">
+        <AppSearch role={role} onSearch={onSearch} className="flex" />
+      </div>
+
+      {/* desktop: tab row instead of a sidebar */}
+      <div className="hidden border-t border-ink/6 lg:block">
+        <nav
+          data-tour="tabs"
+          aria-label={`${roleLabel[role]} navigation`}
+          className="mx-auto flex h-12 w-full max-w-6xl items-center gap-1 px-6"
+        >
+          {[...tabs, ...more].map((item) => {
+            const active = isActive(item.href);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                aria-current={active ? "page" : undefined}
+                className={cn(
+                  "relative flex h-12 items-center gap-2 px-3 text-[14px] font-semibold transition-colors",
+                  active ? "text-ink" : "text-ink/55 hover:text-ink",
+                )}
+              >
+                <item.icon className="h-4 w-4" />
+                {item.label}
+                {!!item.badge && (
+                  <span className="rounded-full bg-ink px-1.5 py-px text-[11px] font-bold leading-4 text-cream">
+                    {item.badge}
+                  </span>
+                )}
+                {active && (
+                  <motion.span
+                    layoutId="app-tab-underline"
+                    className="absolute inset-x-3 bottom-0 h-0.75 rounded-full bg-ink"
+                    transition={{ type: "spring", stiffness: 420, damping: 36 }}
+                  />
+                )}
+              </Link>
+            );
+          })}
+          {cta && (
+            <Link
+              href={cta.href}
+              data-tour="cta"
+              className="ml-auto flex h-9 items-center gap-2 rounded-xl bg-ink px-4 text-[13.5px] font-semibold text-cream transition-transform active:scale-95"
+            >
+              <cta.icon className="h-4 w-4" />
+              {cta.label}
+            </Link>
+          )}
+        </nav>
+      </div>
+    </header>
+  );
+}
+
+const SEARCH_HINTS = [
+  "AC service",
+  "tap repair",
+  "deep cleaning",
+  "fan installation",
+  "pest control",
+  "wall painting",
+];
+
+/** Customer: search services (goes to the catalogue). Pro: jump to jobs/pages. */
+function AppSearch({
+  role,
+  onSearch,
+  className,
+}: {
+  role: Role;
+  onSearch: () => void;
+  className?: string;
+}) {
+  const router = useRouter();
+  const [q, setQ] = useState("");
+  const [hint, setHint] = useState(0);
+  useEffect(() => {
+    const t = setInterval(
+      () => setHint((h) => (h + 1) % SEARCH_HINTS.length),
+      2600,
+    );
+    return () => clearInterval(t);
+  }, []);
+
+  if (role !== "customer")
+    return (
+      <button
+        type="button"
+        onClick={onSearch}
+        data-tour="search"
+        className={cn(
+          "h-11 w-full items-center gap-2.5 rounded-xl border border-ink/10 bg-white px-3.5 text-left text-[14px] text-ink/50 transition-colors hover:border-ink/25",
+          className,
+        )}
+      >
+        <Search className="h-4 w-4 shrink-0" />
+        <span className="truncate">Search jobs, customers, pages…</span>
+      </button>
+    );
+
+  return (
+    <form
+      role="search"
+      data-tour="search"
+      onSubmit={(e) => {
+        e.preventDefault();
+        router.push(
+          q.trim()
+            ? `/services?q=${encodeURIComponent(q.trim())}`
+            : "/services",
+        );
+      }}
+      className={cn(
+        "relative h-11 w-full items-center rounded-xl border border-ink/10 bg-white transition-colors focus-within:border-ink/35",
+        className,
       )}
+    >
+      <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink/45" />
+      <input
+        value={q}
+        onChange={(e) => setQ(e.target.value)}
+        aria-label="Search services"
+        className="h-full w-full rounded-xl bg-transparent pl-10 pr-3 text-[14px] text-ink outline-none"
+      />
+      {!q && (
+        <span
+          aria-hidden
+          className="pointer-events-none absolute left-10 top-1/2 flex -translate-y-1/2 items-center gap-1 text-[14px] text-ink/45"
+        >
+          Search for
+          <span className="relative inline-block h-5 overflow-hidden">
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.span
+                key={hint}
+                className="block font-medium text-ink/60"
+                initial={{ y: 14, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: -14, opacity: 0 }}
+                transition={{ duration: 0.3, ease: EASE }}
+              >
+                “{SEARCH_HINTS[hint]}”
+              </motion.span>
+            </AnimatePresence>
+          </span>
+        </span>
+      )}
+    </form>
+  );
+}
+
+function useBasket() {
+  const cart = useApp((s) => s.cart);
+  const items = cart
+    .map((slug) => getService(slug))
+    .filter((x): x is NonNullable<ReturnType<typeof getService>> => !!x);
+  const subtotal = items.reduce((sum, s) => sum + s.pricePaise, 0);
+  return { items, subtotal };
+}
+
+function BasketButton() {
+  const { items } = useBasket();
+  return (
+    <Link
+      href="/checkout"
+      aria-label={`Basket, ${items.length} ${items.length === 1 ? "service" : "services"}`}
+      className="relative flex h-10 w-10 items-center justify-center rounded-full border border-ink/10 bg-white text-ink transition-colors hover:border-ink/25 lg:w-auto lg:gap-2 lg:rounded-xl lg:px-3"
+    >
+      <ShoppingBag className="h-4.5 w-4.5" />
+      <span className="hidden text-[13px] font-semibold lg:inline">Basket</span>
+      {items.length > 0 && (
+        <span className="absolute -right-1 -top-1 flex h-4.5 min-w-4.5 items-center justify-center rounded-full bg-ink px-1 text-[10.5px] font-bold text-cream lg:static lg:h-5 lg:min-w-5">
+          {items.length}
+        </span>
+      )}
+    </Link>
+  );
+}
+
+/** Sticky "View basket" bar, like the cart bar in Blinkit / Zepto. */
+function BasketBar() {
+  const { items, subtotal } = useBasket();
+  return (
+    <AnimatePresence>
+      {items.length > 0 && (
+        <motion.div
+          initial={{ y: 40, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: 40, opacity: 0 }}
+          transition={{ type: "spring", stiffness: 380, damping: 32 }}
+          className="fixed inset-x-3 bottom-[calc(6.25rem+env(safe-area-inset-bottom))] z-40 lg:inset-x-auto lg:bottom-6 lg:right-6 lg:w-90"
+        >
+          <Link
+            href="/checkout"
+            className="mx-auto flex max-w-md items-center gap-3 rounded-2xl bg-emerald-700 px-4 py-3 text-white shadow-[0_18px_40px_-16px_rgba(4,80,50,0.6)] transition-transform active:scale-[0.98]"
+          >
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/15">
+              <ShoppingBag className="h-4.5 w-4.5" />
+            </span>
+            <span className="min-w-0 flex-1 leading-tight">
+              <span className="block text-[13.5px] font-bold">
+                {items.length} {items.length === 1 ? "service" : "services"} ·{" "}
+                {formatINR(subtotal)}
+              </span>
+              <span className="block text-[11.5px] text-white/75">
+                + {GST_RATE * 100}% GST · one visit time, one payment
+              </span>
+            </span>
+            <span className="flex items-center gap-1 text-[14px] font-bold">
+              View basket <ArrowRight className="h-4 w-4" />
+            </span>
+          </Link>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+/* ───────────── Admin on a phone: website-style menu ───────────── */
+function ConsoleMobileMenu({
+  open,
+  onClose,
+  nav,
+  isActive,
+  user,
+  actions,
+  onLogout,
+}: {
+  open: boolean;
+  onClose: () => void;
+  nav: NavItem[];
+  isActive: (href: string) => boolean;
+  user: string;
+  actions: { icon: LucideIcon; label: string; onClick: () => void }[];
+  onLogout: () => void;
+}) {
+  const [noteHidden, setNoteHidden] = useState(false);
+  return (
+    <div className="lg:hidden">
+      {!noteHidden && (
+        <div className="flex items-center gap-3 border-b border-ink/10 bg-paper px-4 py-2.5 text-[12.5px] text-ink/70">
+          <span className="flex-1">
+            The operations console works best on a laptop or desktop.
+          </span>
+          <button
+            type="button"
+            onClick={() => setNoteHidden(true)}
+            aria-label="Dismiss"
+            className="rounded-full p-1 text-ink/45 hover:text-ink"
+          >
+            <X className="h-3.5 w-3.5" />
+          </button>
+        </div>
+      )}
+      <AnimatePresence>
+        {open && (
+          <>
+            <motion.div
+              className="fixed inset-0 top-14 z-20 bg-ink/30"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={onClose}
+            />
+            <motion.nav
+              aria-label="Operations menu"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.22, ease: EASE }}
+              className="fixed inset-x-0 top-[calc(3.5rem+env(safe-area-inset-top))] z-30 max-h-[calc(100vh-4rem)] overflow-y-auto border-b border-ink/10 bg-cream px-4 pb-5 pt-3 shadow-[0_24px_40px_-24px_rgba(40,43,74,0.4)]"
+            >
+              <ul className="space-y-1">
+                {nav.map((item) => {
+                  const active = isActive(item.href);
+                  return (
+                    <li key={item.href}>
+                      <Link
+                        href={item.href}
+                        onClick={onClose}
+                        aria-current={active ? "page" : undefined}
+                        className={cn(
+                          "flex items-center gap-3 rounded-2xl px-3 py-3 text-[15px] font-medium",
+                          active
+                            ? "bg-ink text-cream"
+                            : "text-ink hover:bg-ink/5",
+                        )}
+                      >
+                        <item.icon className="h-4.5 w-4.5" />
+                        <span className="flex-1">{item.label}</span>
+                        {!!item.badge && (
+                          <span
+                            className={cn(
+                              "rounded-full px-2 py-0.5 text-[11.5px] font-semibold",
+                              active
+                                ? "bg-cream text-ink"
+                                : "bg-ink text-cream",
+                            )}
+                          >
+                            {item.badge}
+                          </span>
+                        )}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+              <div className="mt-3 border-t border-ink/10 pt-3">
+                <div className="flex flex-wrap gap-2">
+                  {actions.map((a) => (
+                    <button
+                      key={a.label}
+                      type="button"
+                      onClick={() => (onClose(), a.onClick())}
+                      className="inline-flex h-9 items-center gap-1.5 rounded-full border border-ink/15 px-3 text-[13px] text-ink/75"
+                    >
+                      <a.icon className="h-3.5 w-3.5" /> {a.label}
+                    </button>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  onClick={onLogout}
+                  className="mt-3 flex h-11 w-full items-center justify-center gap-2 rounded-full bg-ink text-[14.5px] font-semibold text-cream"
+                >
+                  <LogOut className="h-4 w-4" /> Log out {user.split(" ")[0]}
+                </button>
+              </div>
+            </motion.nav>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -477,6 +1028,7 @@ function AccountMenu({
         aria-haspopup="menu"
         aria-expanded={open}
         aria-label="Account menu"
+        data-tour="account"
         className={cn(
           "flex h-10 items-center gap-2.5 rounded-full border bg-paper py-1 pl-1 pr-3 transition-all hover:border-ink/25",
           open
@@ -852,14 +1404,22 @@ export function PageTitle({
   description?: string;
   action?: ReactNode;
 }) {
+  const compact = useContext(AppDensityContext);
   return (
-    <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-      <div>
-        <h1 className="text-[clamp(2rem,4vw,3rem)] font-black leading-[0.95] tracking-tighter text-ink">
+    <div className={cn("flex flex-col sm:flex-row sm:items-end sm:justify-between", compact ? "mb-5 gap-3" : "mb-8 gap-4")}>
+      <div className="min-w-0">
+        <h1
+          className={cn(
+            "text-ink",
+            compact
+              ? "text-[22px] font-bold leading-tight tracking-tight"
+              : "text-[clamp(2rem,4vw,3rem)] font-black leading-[0.95] tracking-tighter",
+          )}
+        >
           {title}
         </h1>
         {description && (
-          <p className="mt-2 max-w-2xl text-[15px] text-ink/60">
+          <p className={cn("mt-1 max-w-2xl text-ink/60", compact ? "text-[14px]" : "mt-2 text-[15px]")}>
             {description}
           </p>
         )}

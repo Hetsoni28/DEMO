@@ -1,25 +1,17 @@
-"use client";
+import type { Metadata, Viewport } from "next";
+import type { ReactNode } from "react";
+import { CustomerShell } from "./shell";
 
-import { BookOpenCheck, CalendarCheck, LayoutDashboard, MapPin, Plus } from "lucide-react";
-import { DashboardShell, type NavItem } from "@/components/organisms/dashboard-shell";
-import { DEMO_CUSTOMER } from "@/lib/mock-data";
-import { useApp, useMyCustomerId } from "@/lib/store";
+// The customer portal is an installable app ("HomeCrew"), separate from the website.
+export const metadata: Metadata = {
+  manifest: "/apps/customer.webmanifest",
+  icons: { icon: "/icon.svg", apple: "/apps/customer-apple-180.png" },
+  appleWebApp: { capable: true, title: "HomeCrew", statusBarStyle: "default" },
+  robots: { index: false, follow: false },
+};
 
-const UPCOMING = ["CONFIRMED", "ASSIGNED", "IN_PROGRESS"];
+export const viewport: Viewport = { themeColor: "#EEEBDA" };
 
-export default function CustomerLayout({ children }: { children: React.ReactNode }) {
-  const me = useMyCustomerId();
-  const upcoming = useApp((s) => s.bookings.filter((b) => b.customerId === me && UPCOMING.includes(b.status)).length);
-  const nav: NavItem[] = [
-    { href: "/customer/dashboard", label: "Overview", short: "Home", icon: LayoutDashboard },
-    { href: "/customer/bookings", label: "My bookings", short: "Bookings", icon: CalendarCheck, badge: upcoming },
-    { href: "/customer/home-passport", label: "Home passport", short: "Passport", icon: BookOpenCheck },
-    { href: "/customer/addresses", label: "Addresses", short: "Places", icon: MapPin },
-    { href: "/services", label: "Book a service", short: "Book", icon: Plus, cta: true },
-  ];
-  return (
-    <DashboardShell role="customer" user={DEMO_CUSTOMER.name} subtitle="Customer · Satellite" nav={nav}>
-      {children}
-    </DashboardShell>
-  );
+export default function CustomerLayout({ children }: { children: ReactNode }) {
+  return <CustomerShell>{children}</CustomerShell>;
 }

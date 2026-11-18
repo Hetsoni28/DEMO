@@ -209,13 +209,13 @@ function ProDashboard() {
 
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1.55fr_1fr]">
         {next ? (
-          <Panel tour="next-job" tone="ink" bodyClassName="p-6 sm:p-8">
+          <Panel tour="next-job" tone="ink" bodyClassName="p-4">
             <div className="font-mono text-[10.5px] uppercase tracking-[0.16em] text-cream/50">
               Next job · {next.code} · {statusLabel(next.status)}
             </div>
             <div className="mt-3 flex flex-wrap items-end justify-between gap-4">
               <div className="min-w-0">
-                <div className="text-[clamp(1.75rem,3vw,2.5rem)] font-black leading-[0.95] tracking-[-0.045em]">{getService(next.serviceSlug)?.title}</div>
+                <div className="text-[20px] font-bold leading-tight tracking-tight">{getService(next.serviceSlug)?.title}</div>
                 <div className="mt-2 text-[15px] text-cream/75">
                   {next.customerName} · <span className="font-mono text-[12.5px]">{fmtTime(next.start)} – {fmtTime(next.end)}</span>
                 </div>
@@ -250,9 +250,9 @@ function ProDashboard() {
             </div>
           </Panel>
         ) : (
-          <Panel tone="ink" bodyClassName="p-8">
+          <Panel tone="ink" bodyClassName="p-4">
             <div className="font-mono text-[10.5px] uppercase tracking-[0.16em] text-cream/50">No upcoming jobs</div>
-            <div className="mt-3 text-[clamp(1.75rem,3vw,2.5rem)] font-black leading-[0.95] tracking-[-0.045em]">Enjoy the breather.</div>
+            <div className="mt-3 text-[20px] font-bold leading-tight tracking-tight">Enjoy the breather.</div>
             <p className="mt-2 text-cream/60">New assignments appear here as soon as admin confirms them.</p>
           </Panel>
         )}

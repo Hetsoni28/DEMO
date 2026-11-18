@@ -1,0 +1,48 @@
+{
+  "id": "/customer/",
+  "name": "HomeCrew",
+  "short_name": "HomeCrew",
+  "description": "Book verified home-service professionals, pay once, and show your QR at the door.",
+  "start_url": "/customer/dashboard",
+  "scope": "/customer/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#EEEBDA",
+  "theme_color": "#282B4A",
+  "icons": [
+    {
+      "src": "/apps/customer-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/apps/customer-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/apps/customer-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "My bookings",
+      "url": "/customer/bookings"
+    },
+    {
+      "name": "Home passport",
+      "url": "/customer/home-passport"
+    }
+  ]
+}

@@ -1,11 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { motion } from "framer-motion";
 import { ArrowUpRight, type LucideIcon } from "lucide-react";
 import { CountUp, EASE } from "@/components/motion/motion";
 import { cn } from "@/lib/utils";
+
+/* ───────────── App density ─────────────
+ * Customer + Professional screens are apps (Zepto/Blinkit style): one compact type
+ * scale and uniform white cards. The admin console keeps the larger editorial look.
+ * The dashboard shell turns this on for app portals; every kit component follows it.
+ */
+export const AppDensityContext = createContext(false);
+export const useAppDensity = () => useContext(AppDensityContext);
 
 /* ───────────── Time helpers (client-only screens) ───────────── */
 
@@ -64,6 +72,18 @@ export function todayLabel(now: number) {
 /* ───────────── Layout primitives ───────────── */
 
 export function DashHeader({ eyebrow, title, sub, actions }: { eyebrow: ReactNode; title: ReactNode; sub?: ReactNode; actions?: ReactNode }) {
+  const compact = useAppDensity();
+  if (compact)
+    return (
+      <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div className="min-w-0">
+          <div className="text-[12.5px] font-medium text-ink/55">{eyebrow}</div>
+          <h1 className="mt-1 text-[22px] font-bold leading-tight tracking-tight text-ink">{title}</h1>
+          {sub && <p className="mt-1 text-[14px] text-ink/60">{sub}</p>}
+        </div>
+        {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
+      </div>
+    );
   return (
     <div className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
       <div>
@@ -97,13 +117,24 @@ export function Panel({
   tone?: "paper" | "ink";
 }) {
   const isInk = tone === "ink";
+  const compact = useAppDensity();
   return (
-    <section data-tour={tour} className={cn("min-w-0 rounded-[26px] border", isInk ? "border-ink bg-ink text-cream" : "border-ink/10 bg-paper", className)}>
+    <section
+      data-tour={tour}
+      className={cn(
+        "min-w-0 border",
+        compact ? "rounded-2xl" : "rounded-[26px]",
+        isInk ? "border-ink bg-ink text-cream" : compact ? "border-ink/8 bg-white" : "border-ink/10 bg-paper",
+        className,
+      )}
+    >
       {(title || action) && (
-        <header className="flex items-start justify-between gap-4 px-6 pt-5">
+        <header className={cn("flex items-start justify-between gap-4", compact ? "px-4 pt-4" : "px-6 pt-5")}>
           <div>
-            {eyebrow && <div className={cn("font-mono text-[10.5px] uppercase tracking-[0.16em]", isInk ? "text-cream/50" : "text-ink/45")}>{eyebrow}</div>}
-            {title && <h2 className="mt-1 text-[17px] font-bold tracking-[-0.02em]">{title}</h2>}
+            {eyebrow && (
+              <div className={cn(compact ? "text-[11.5px] font-medium" : "font-mono text-[10.5px] uppercase tracking-[0.16em]", isInk ? "text-cream/50" : "text-ink/45")}>{eyebrow}</div>
+            )}
+            {title && <h2 className={cn("mt-0.5 font-bold", compact ? "text-[16px] tracking-tight" : "text-[17px] tracking-[-0.02em]")}>{title}</h2>}
           </div>
           {action && typeof action === "object" && "href" in (action as object) ? (
             <Link
@@ -118,7 +149,7 @@ export function Panel({
           )}
         </header>
       )}
-      <div className={cn("p-6", (title || action) && "pt-4", bodyClassName)}>{children}</div>
+      <div className={cn(compact ? "p-4" : "p-6", (title || action) && (compact ? "pt-3" : "pt-4"), bodyClassName)}>{children}</div>
     </section>
   );
 }
@@ -142,13 +173,21 @@ export function Kpi({
   emphasis?: boolean;
   className?: string;
 }) {
+  const compact = useAppDensity();
   return (
-    <div className={cn("flex min-w-0 flex-col rounded-3xl border p-5", emphasis ? "border-ink bg-ink text-cream" : "border-ink/10 bg-paper", className)}>
+    <div
+      className={cn(
+        "flex min-w-0 flex-col border",
+        compact ? "rounded-2xl p-4" : "rounded-3xl p-5",
+        emphasis ? "border-ink bg-ink text-cream" : compact ? "border-ink/8 bg-white" : "border-ink/10 bg-paper",
+        className,
+      )}
+    >
       <div className="flex items-center justify-between gap-3">
-        <span className={cn("font-mono text-[10.5px] uppercase tracking-[0.14em]", emphasis ? "text-cream/55" : "text-ink/50")}>{label}</span>
+        <span className={cn(compact ? "text-[12px] font-medium" : "font-mono text-[10.5px] uppercase tracking-[0.14em]", emphasis ? "text-cream/55" : "text-ink/50")}>{label}</span>
         {Icon && <Icon className={cn("h-4 w-4", emphasis ? "text-cream/60" : "text-ink/40")} />}
       </div>
-      <div className="mt-4 truncate text-[clamp(1.9rem,3vw,2.6rem)] font-black leading-none tracking-tighter">
+      <div className={cn("truncate leading-none", compact ? "mt-2 text-[22px] font-bold tracking-tight" : "mt-4 text-[clamp(1.9rem,3vw,2.6rem)] font-black tracking-tighter")}>
         {format ? <FormattedCount to={value} format={format} /> : <CountUp to={value} />}
       </div>
       {hint && <div className={cn("mt-2 text-[12.5px]", emphasis ? "text-cream/60" : "text-ink/55")}>{hint}</div>}

@@ -1,0 +1,48 @@
+{
+  "id": "/professional/",
+  "name": "HomeCrew Pro",
+  "short_name": "HomeCrew Pro",
+  "description": "Your HomeCrew jobs, hours and earnings. Scan the customer's QR to start a job.",
+  "start_url": "/professional/dashboard",
+  "scope": "/professional/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#EEEBDA",
+  "theme_color": "#282B4A",
+  "icons": [
+    {
+      "src": "/apps/professional-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/apps/professional-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/apps/professional-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Scan QR",
+      "url": "/professional/scan"
+    },
+    {
+      "name": "My jobs",
+      "url": "/professional/jobs"
+    }
+  ]
+}
