@@ -828,19 +828,30 @@ function useBasket() {
 }
 
 function BasketButton() {
-  const { items } = useBasket();
+  const { items, subtotal } = useBasket();
+  const filled = items.length > 0;
   const openBasket = useCartUi((st) => st.setOpen);
   return (
     <button
       type="button"
       onClick={() => openBasket(true)}
       aria-label={`Basket, ${items.length} ${items.length === 1 ? "service" : "services"}`}
-      className="relative flex h-10 w-10 items-center justify-center rounded-full border border-ink/10 bg-white text-ink transition-colors hover:border-ink/25 lg:w-auto lg:gap-2 lg:rounded-xl lg:px-3"
+      className={cn(
+        "relative flex h-10 w-10 items-center justify-center rounded-full border transition-colors lg:w-auto lg:gap-2 lg:rounded-xl lg:px-3",
+        filled ? "border-ink/10 bg-white text-ink lg:border-emerald-700 lg:bg-emerald-700 lg:text-white lg:hover:bg-emerald-800" : "border-ink/10 bg-white text-ink hover:border-ink/25",
+      )}
     >
       <ShoppingBag className="h-4.5 w-4.5" />
-      <span className="hidden text-[13px] font-semibold lg:inline">Basket</span>
-      {items.length > 0 && (
-        <span className="absolute -right-1 -top-1 flex h-4.5 min-w-4.5 items-center justify-center rounded-full bg-ink px-1 text-[10.5px] font-bold text-cream lg:static lg:h-5 lg:min-w-5">
+      {filled ? (
+        <span className="hidden text-left text-[12.5px] font-bold leading-tight lg:block">
+          {items.length} {items.length === 1 ? "service" : "services"}
+          <span className="block text-[12px] font-semibold opacity-90">{formatINR(subtotal)}</span>
+        </span>
+      ) : (
+        <span className="hidden text-[13px] font-semibold lg:inline">Basket</span>
+      )}
+      {filled && (
+        <span className="absolute -right-1 -top-1 flex h-4.5 min-w-4.5 items-center justify-center rounded-full bg-ink px-1 text-[10.5px] font-bold text-cream lg:hidden">
           {items.length}
         </span>
       )}
@@ -860,7 +871,7 @@ function BasketBar() {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 40, opacity: 0 }}
           transition={{ type: "spring", stiffness: 380, damping: 32 }}
-          className="fixed inset-x-3 bottom-[calc(6.25rem+env(safe-area-inset-bottom))] z-40 lg:inset-x-auto lg:bottom-6 lg:right-6 lg:w-90"
+          className="fixed inset-x-3 bottom-[calc(6.25rem+env(safe-area-inset-bottom))] z-40 lg:hidden"
         >
           <button
             type="button"

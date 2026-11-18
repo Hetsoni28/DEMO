@@ -169,7 +169,7 @@ function CustomerHome() {
             const Icon = categoryIcons[c.icon];
             return (
               <Link key={c.slug} href={`/services?category=${c.slug}`} className="group flex flex-col items-center gap-1.5 text-center">
-                <span className="flex aspect-square w-full items-center justify-center rounded-2xl border border-ink/8 bg-white transition-colors group-hover:border-ink/25">
+                <span className="flex aspect-square w-full items-center justify-center rounded-2xl border border-ink/8 bg-white transition-colors group-hover:border-ink/25 lg:aspect-auto lg:h-24">
                   <Icon className="h-6 w-6 text-ink" strokeWidth={1.8} />
                 </span>
                 <span className="line-clamp-2 min-h-[2.4em] text-[12px] font-medium leading-[1.2] text-ink/80">{c.name}</span>
