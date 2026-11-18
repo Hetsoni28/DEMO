@@ -7,11 +7,11 @@ import { usePro } from "@/lib/store";
 import { ProfessionalAside } from "@/components/dashboard/role-asides";
 
 const nav: NavItem[] = [
-  { href: "/professional/dashboard", label: "Today", icon: LayoutDashboard },
-  { href: "/professional/jobs", label: "My jobs", icon: ClipboardList },
-  { href: "/professional/scan", label: "Scan QR", icon: ScanLine },
-  { href: "/professional/availability", label: "Availability", icon: CalendarClock },
-  { href: "/professional/earnings", label: "Earnings", icon: IndianRupee },
+  { href: "/professional/dashboard", label: "Today", short: "Today", icon: LayoutDashboard },
+  { href: "/professional/jobs", label: "My jobs", short: "Jobs", icon: ClipboardList },
+  { href: "/professional/scan", label: "Scan QR", short: "Scan", icon: ScanLine, cta: true },
+  { href: "/professional/availability", label: "Availability", short: "Hours", icon: CalendarClock },
+  { href: "/professional/earnings", label: "Earnings", short: "Earnings", icon: IndianRupee },
 ];
 
 export default function ProfessionalLayout({ children }: { children: React.ReactNode }) {

@@ -208,7 +208,7 @@ function ProDashboard() {
 
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1.55fr_1fr]">
         {next ? (
-          <Panel tone="ink" bodyClassName="p-6 sm:p-8">
+          <Panel tour="next-job" tone="ink" bodyClassName="p-6 sm:p-8">
             <div className="font-mono text-[10.5px] uppercase tracking-[0.16em] text-cream/50">
               Next job · {next.code} · {statusLabel(next.status)}
             </div>
@@ -266,7 +266,7 @@ function ProDashboard() {
       </div>
 
       <div className="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-[1.55fr_1fr]">
-        <Panel eyebrow="Schedule" title="Your day" action={{ label: "All jobs", href: "/professional/jobs" }}>
+        <Panel tour="schedule" eyebrow="Schedule" title="Your day" action={{ label: "All jobs", href: "/professional/jobs" }}>
           <Schedule jobs={active} hours={pro.hours} now={now} />
         </Panel>
 

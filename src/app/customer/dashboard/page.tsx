@@ -66,7 +66,7 @@ function CustomerDashboard() {
       {/* Next visit + KPIs */}
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1.55fr_1fr]">
         {next ? (
-          <Panel tone="ink" className="relative overflow-hidden" bodyClassName="p-6 sm:p-8">
+          <Panel tour="next-visit" tone="ink" className="relative overflow-hidden" bodyClassName="p-6 sm:p-8">
             <div className="flex flex-col gap-8 sm:flex-row sm:items-stretch sm:justify-between">
               <div className="min-w-0 flex-1">
                 <div className="font-mono text-[10.5px] uppercase tracking-[0.16em] text-cream/50">
@@ -134,6 +134,7 @@ function CustomerDashboard() {
                 href={`/customer/bookings/${next.id}`}
                 className="group flex shrink-0 flex-col items-center justify-between rounded-[22px] bg-cream p-4 text-ink sm:w-[190px]"
                 aria-label="Open service QR"
+                data-tour="qr"
               >
                 {next.qr && !next.qr.consumedAt ? <ServiceQr token={next.qr.token} size={150} /> : <QrCode className="m-8 h-16 w-16 text-ink/30" />}
                 <span className="mt-3 inline-flex items-center gap-1 text-[12.5px] font-semibold">

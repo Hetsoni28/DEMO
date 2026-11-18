@@ -84,7 +84,10 @@ export function Panel({
   bodyClassName,
   children,
   tone = "paper",
+  tour,
 }: {
+  /** Anchor for the guided tour (data-tour). */
+  tour?: string;
   title?: ReactNode;
   eyebrow?: ReactNode;
   action?: { label: string; href: string } | ReactNode;
@@ -95,7 +98,7 @@ export function Panel({
 }) {
   const isInk = tone === "ink";
   return (
-    <section className={cn("min-w-0 rounded-[26px] border", isInk ? "border-ink bg-ink text-cream" : "border-ink/10 bg-paper", className)}>
+    <section data-tour={tour} className={cn("min-w-0 rounded-[26px] border", isInk ? "border-ink bg-ink text-cream" : "border-ink/10 bg-paper", className)}>
       {(title || action) && (
         <header className="flex items-start justify-between gap-4 px-6 pt-5">
           <div>

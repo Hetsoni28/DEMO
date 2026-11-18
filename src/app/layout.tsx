@@ -21,6 +21,8 @@ export const metadata: Metadata = {
   title: { default: `${siteConfig.name} — ${siteConfig.tagline}`, template: `%s · ${siteConfig.name}` },
   description: siteConfig.description,
   applicationName: siteConfig.name,
+  // "Add to Home Screen" opens full-screen like an installed app.
+  appleWebApp: { capable: true, title: siteConfig.name, statusBarStyle: "default" },
   keywords: ["home services", "plumber", "electrician", "home cleaning", "AC service", "carpenter", "painter", "pest control", "Ahmedabad"],
   openGraph: {
     type: "website",
@@ -36,6 +38,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: "#282B4A",
+  // Lets the app shell draw edge-to-edge on notched phones; bars pad with env(safe-area-inset-*).
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

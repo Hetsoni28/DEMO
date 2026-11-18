@@ -196,7 +196,7 @@ export function SiteHeader() {
 
   return (
     <>
-      <header ref={headerRef} className="fixed inset-x-0 top-0 z-50">
+      <header ref={headerRef} className="fixed inset-x-0 top-0 z-50 pt-[env(safe-area-inset-top)]">
         <Announcement />
         <div
           className={cn(

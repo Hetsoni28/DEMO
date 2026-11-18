@@ -161,6 +161,7 @@ function AdminDashboard() {
             <div
               role="radiogroup"
               aria-label="Period"
+              data-tour="period"
               className="flex rounded-full border border-ink/10 bg-paper p-1"
             >
               {PERIODS.map((p) => (
@@ -214,7 +215,7 @@ function AdminDashboard() {
       </div>
 
       {/* KPIs */}
-      <div className="grid grid-cols-2 gap-5 xl:grid-cols-4">
+      <div data-tour="kpis" className="grid grid-cols-2 gap-5 xl:grid-cols-4">
         <Kpi
           label={`GMV · ${period}D`}
           value={cur.revenue}
@@ -280,7 +281,7 @@ function AdminDashboard() {
           />
         </Panel>
 
-        <div id="queue" className="min-w-0 scroll-mt-24">
+        <div id="queue" data-tour="queue" className="min-w-0 scroll-mt-24">
           <Panel
             tone="ink"
             eyebrow="Ops queue"
