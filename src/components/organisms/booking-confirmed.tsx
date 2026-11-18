@@ -166,7 +166,7 @@ export function BookingConfirmed({ bookings }: { bookings: Booking[] }) {
                 />
                 <motion.span
                   aria-hidden
-                  className="absolute inset-x-1 h-[2px] bg-ink shadow-[0_0_14px_3px_rgba(40,43,74,0.45)]"
+                  className="absolute inset-x-1 h-0.5 bg-ink shadow-[0_0_14px_3px_rgba(40,43,74,0.45)]"
                   initial={{ top: "0%", opacity: 0 }}
                   animate={{ top: ["0%", "100%"], opacity: [0, 1, 1, 0] }}
                   transition={{ delay: d(3.2), duration: reduce ? 0 : 1.1, ease: [0.65, 0, 0.35, 1] }}
@@ -183,14 +183,14 @@ export function BookingConfirmed({ bookings }: { bookings: Booking[] }) {
             {/* PAID stamp */}
             <motion.div
               aria-hidden
-              className="pointer-events-none absolute right-5 top-[46%] flex h-[88px] w-[88px] flex-col items-center justify-center rounded-full border-[3px] border-ink/80 text-ink/80 mix-blend-multiply"
+              className="pointer-events-none absolute right-5 top-[46%] flex h-22 w-22 flex-col items-center justify-center rounded-full border-[3px] border-ink/80 text-ink/80 mix-blend-multiply"
               style={{ boxShadow: "inset 0 0 0 4px rgba(238,235,218,1), inset 0 0 0 6px rgba(40,43,74,0.7)" }}
               initial={{ scale: 2.2, opacity: 0, rotate: -28 }}
               animate={{ scale: 1, opacity: 1, rotate: -14 }}
               transition={{ delay: d(2.75), type: "spring", stiffness: 420, damping: 16, mass: 0.8 }}
             >
               <span className="text-[19px] font-black uppercase leading-none tracking-[-0.02em]">Paid</span>
-              <span className="mt-0.5 font-mono text-[9px] tracking-[0.1em]">{formatINR(total)}</span>
+              <span className="mt-0.5 font-mono text-[9px] tracking-widest">{formatINR(total)}</span>
               <span className="font-mono text-[7.5px] tracking-[0.14em] opacity-70">VERIFIED</span>
             </motion.div>
           </div>
@@ -198,16 +198,16 @@ export function BookingConfirmed({ bookings }: { bookings: Booking[] }) {
 
         {/* actions */}
         <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: d(3.6), duration: 0.6, ease: EASE }} className="mt-10 flex w-[min(380px,86vw)] flex-col gap-3">
-          <Link href={href} className="group flex h-[52px] items-center justify-center gap-2 rounded-full bg-cream text-[15px] font-semibold text-ink">
+          <Link href={href} className="group flex h-13 items-center justify-center gap-2 rounded-full bg-cream text-[15px] font-semibold text-ink">
             {multi ? "View my bookings & QRs" : "View booking & QR"} <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
           </Link>
-          <Link href="/" className="flex h-[52px] items-center justify-center rounded-full border border-cream/25 text-[14.5px] font-medium text-cream/85 transition-colors hover:border-cream hover:text-cream">
+          <Link href="/" className="flex h-13 items-center justify-center rounded-full border border-cream/25 text-[14.5px] font-medium text-cream/85 transition-colors hover:border-cream hover:text-cream">
             Back to home
           </Link>
 
           {!stay && (
             <div className="mt-2">
-              <div className="h-[3px] overflow-hidden rounded-full bg-cream/10">
+              <div className="h-0.75 overflow-hidden rounded-full bg-cream/10">
                 <motion.div
                   className="h-full bg-cream/70"
                   initial={{ width: "0%" }}

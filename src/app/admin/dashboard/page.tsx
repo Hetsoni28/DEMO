@@ -81,7 +81,7 @@ function HBar({
         {icon}
         <span className="truncate">{label}</span>
       </span>
-      <span className="h-2.5 overflow-hidden rounded-full bg-ink/[0.07]">
+      <span className="h-2.5 overflow-hidden rounded-full bg-ink/7">
         <motion.span
           className="block h-full rounded-full bg-ink"
           initial={{ width: 0 }}
@@ -155,7 +155,7 @@ function AdminDashboard() {
       <DashHeader
         eyebrow={`${todayLabel(now)} · Ahmedabad operations`}
         title="Operations."
-        sub="Revenue, demand and every live booking, professional and payment — in one place."
+        sub="Revenue, demand, live bookings, professionals and payments for Ahmedabad."
         actions={
           <>
             <div
@@ -296,13 +296,13 @@ function AdminDashboard() {
                 Nothing waiting. New bookings and applications will appear here.
               </p>
             )}
-            <ul className="stagger-fast max-h-[330px] space-y-2.5 overflow-y-auto pr-1">
+            <ul className="stagger-fast max-h-82.5 space-y-2.5 overflow-y-auto pr-1">
               {unassigned.map((b) => {
                 const eligible = activePros.filter((p) =>
                   p.skills.includes(b.serviceSlug),
                 );
                 return (
-                  <li key={b.id} className="rounded-[18px] bg-cream/[0.06] p-4">
+                  <li key={b.id} className="rounded-[18px] bg-cream/6 p-4">
                     <div className="flex items-center gap-3">
                       <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-cream text-ink">
                         <CalendarCheck className="h-4 w-4" />
@@ -339,7 +339,7 @@ function AdminDashboard() {
                 );
               })}
               {pendingPros.map((p) => (
-                <li key={p.id} className="rounded-[18px] bg-cream/[0.06] p-4">
+                <li key={p.id} className="rounded-[18px] bg-cream/6 p-4">
                   <div className="flex items-center gap-3">
                     <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-cream text-ink">
                       <UserCheck className="h-4 w-4" />
@@ -385,7 +385,7 @@ function AdminDashboard() {
               {refunds.map((b) => (
                 <li
                   key={b.id}
-                  className="flex items-center gap-3 rounded-[18px] bg-cream/[0.06] p-4"
+                  className="flex items-center gap-3 rounded-[18px] bg-cream/6 p-4"
                 >
                   <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-cream text-ink">
                     <ReceiptText className="h-4 w-4" />
@@ -416,7 +416,7 @@ function AdminDashboard() {
                 <li
                   key={z.zone}
                   className={cn(
-                    "flex min-h-[78px] min-w-0 flex-col justify-between rounded-[16px] p-3 transition-colors",
+                    "flex min-h-19.5 min-w-0 flex-col justify-between rounded-2xl p-3 transition-colors",
                     dark ? "text-cream" : "text-ink",
                   )}
                   style={{
@@ -447,7 +447,7 @@ function AdminDashboard() {
               );
             })}
           </ul>
-          <div className="mt-3 flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.1em] text-ink/45">
+          <div className="mt-3 flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-ink/45">
             Low
             <span className="h-1.5 flex-1 rounded-full bg-[linear-gradient(90deg,rgba(40,43,74,0.08),rgba(40,43,74,0.93))]" />
             High
@@ -504,7 +504,7 @@ function AdminDashboard() {
           bodyClassName="px-0 pb-2"
         >
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[640px] text-[13px]">
+            <table className="w-full min-w-160 text-[13px]">
               <thead>
                 <tr className="border-b border-ink/10 text-left font-mono text-[10px] uppercase tracking-[0.12em] text-ink/45">
                   <th className="px-6 py-2.5 font-normal">Booking</th>
@@ -518,7 +518,7 @@ function AdminDashboard() {
                 {latest.map((b) => (
                   <tr
                     key={b.id}
-                    className="border-b border-ink/[0.06] transition-colors last:border-0 hover:bg-ink/[0.03]"
+                    className="border-b border-ink/6 transition-colors last:border-0 hover:bg-ink/3"
                   >
                     <td className="px-6 py-3">
                       <div className="font-semibold">
@@ -571,7 +571,7 @@ function AdminDashboard() {
                   return (
                     <li
                       key={p.id}
-                      className="flex items-center gap-3 rounded-2xl px-3 py-2.5 transition-colors hover:bg-ink/[0.04]"
+                      className="flex items-center gap-3 rounded-2xl px-3 py-2.5 transition-colors hover:bg-ink/4"
                     >
                       <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-cream text-[11.5px] font-bold">
                         {p.name
@@ -594,7 +594,7 @@ function AdminDashboard() {
                           {p.trade} · ★ {p.rating}
                         </div>
                       </div>
-                      <span className="shrink-0 rounded-full bg-ink/[0.06] px-2 py-0.5 font-mono text-[11px] tabular-nums">
+                      <span className="shrink-0 rounded-full bg-ink/6 px-2 py-0.5 font-mono text-[11px] tabular-nums">
                         {load} upcoming
                       </span>
                     </li>

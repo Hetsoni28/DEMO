@@ -39,7 +39,7 @@ function AdminBookings() {
         ))}
       </div>
       <Card className="overflow-x-auto">
-        <table className="w-full min-w-[900px] text-sm">
+        <table className="w-full min-w-225 text-sm">
           <thead>
             <tr className="border-b border-slate-200 text-left text-slate-500">
               <th className="px-4 py-3 font-medium">Booking</th>

@@ -38,7 +38,7 @@ export function AuthAside() {
             initial={{ opacity: 0, y: 40, rotate: 0 }}
             animate={{ opacity: 1, y: 0, rotate: -4 }}
             transition={{ duration: 1.2, ease: EASE, delay: 0.5 }}
-            className="w-[250px] shrink-0 rounded-[26px] bg-cream p-4 text-ink shadow-[0_40px_80px_-30px_rgba(0,0,0,0.55)]"
+            className="w-62.5 shrink-0 rounded-[26px] bg-cream p-4 text-ink shadow-[0_40px_80px_-30px_rgba(0,0,0,0.55)]"
           >
             <motion.div animate={{ y: [0, -5, 0] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}>
               <div className="flex justify-between font-mono text-[10px] uppercase tracking-[0.16em] text-ink/50">

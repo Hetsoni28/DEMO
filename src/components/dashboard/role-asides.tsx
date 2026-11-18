@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 
 export function CustomerAside() {
   return (
-    <Link href="/services" className="group block rounded-2xl bg-cream/[0.07] p-4 transition-colors hover:bg-cream/[0.11]">
+    <Link href="/services" className="group block rounded-2xl bg-cream/7 p-4 transition-colors hover:bg-cream/11">
       <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-cream/45">Something broken?</div>
       <div className="mt-1.5 flex items-center justify-between text-[14px] font-semibold">
         Book a service
@@ -24,7 +24,7 @@ export function CustomerAside() {
 export function ProfessionalAside() {
   const [on, setOn] = useState(true);
   return (
-    <div className="rounded-2xl bg-cream/[0.07] p-4">
+    <div className="rounded-2xl bg-cream/7 p-4">
       <div className="flex items-center justify-between">
         <div>
           <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-cream/45">Status</div>
@@ -54,7 +54,7 @@ export function AdminAside() {
   const refunds = bookings.filter((b) => b.payment.status === "REFUND_PENDING").length;
   const total = unassigned + pending + refunds;
   return (
-    <Link href="/admin/dashboard#queue" className="group block rounded-2xl bg-cream/[0.07] p-4 transition-colors hover:bg-cream/[0.11]">
+    <Link href="/admin/dashboard#queue" className="group block rounded-2xl bg-cream/7 p-4 transition-colors hover:bg-cream/11">
       <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-cream/45">Ops queue</div>
       <div className="mt-1.5 flex items-center justify-between">
         <span className="text-[26px] font-black leading-none tracking-[-0.04em]">{total}</span>

@@ -5,8 +5,8 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Button, Card, Label } from "@/components/atoms/ui";
 import { PageTitle } from "@/components/organisms/dashboard-shell";
-import { DEMO_PROFESSIONAL_ID, SERVICE_AREA, TRAVEL_BUFFER_MIN } from "@/lib/mock-data";
-import { useApp, usePro } from "@/lib/store";
+import { SERVICE_AREA, TRAVEL_BUFFER_MIN } from "@/lib/mock-data";
+import { useApp, usePro, useMyProId } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -26,7 +26,8 @@ function HourSelect({ value, onChange }: { value: number; onChange: (v: number) 
 }
 
 function AvailabilityPage() {
-  const pro = usePro(DEMO_PROFESSIONAL_ID)!;
+  const myProId = useMyProId();
+  const pro = usePro(myProId)!;
   const update = useApp((s) => s.updateHours);
   const [h, setH] = useState(pro.hours);
   const [off, setOff] = useState(pro.offDays);

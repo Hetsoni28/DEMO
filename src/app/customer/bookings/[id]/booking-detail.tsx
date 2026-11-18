@@ -105,7 +105,7 @@ export function CustomerBookingDetail({ id }: { id: string }) {
               </p>
               <div className="mt-4 grid grid-cols-4 gap-2">
                 {Array.from({ length: b.report.photos }, (_, i) => (
-                  <div key={i} className="flex aspect-square flex-col items-center justify-center rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 text-slate-400">
+                  <div key={i} className="flex aspect-square flex-col items-center justify-center rounded-xl bg-linear-to-br from-slate-100 to-slate-200 text-slate-400">
                     <Camera className="h-5 w-5" />
                     <span className="mt-1 text-[10px]">{i % 2 === 0 ? "Before" : "After"}</span>
                   </div>

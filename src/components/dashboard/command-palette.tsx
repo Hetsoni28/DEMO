@@ -50,7 +50,7 @@ export function CommandPalette({ open, onOpenChange, nav, role }: { open: boolea
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -8, scale: 0.98 }}
             transition={{ duration: 0.25, ease: EASE }}
-            className="relative w-full max-w-[560px] overflow-hidden rounded-[24px] border border-ink/10 bg-paper shadow-[0_40px_100px_-30px_rgba(40,43,74,0.6)]"
+            className="relative w-full max-w-140 overflow-hidden rounded-3xl border border-ink/10 bg-paper shadow-[0_40px_100px_-30px_rgba(40,43,74,0.6)]"
           >
             <Command label="Command palette" loop>
               <div className="flex items-center gap-3 border-b border-ink/10 px-5">
@@ -77,7 +77,7 @@ export function CommandPalette({ open, onOpenChange, nav, role }: { open: boolea
                       <Command.Item key={s.slug} value={`book ${s.title} ${s.categorySlug}`} onSelect={() => run(() => router.push(`/book/${s.slug}`))} className={itemCls}>
                         <span className="h-1.5 w-1.5 rotate-45 bg-current opacity-50" />
                         {s.title}
-                        <span className="ml-auto font-mono text-[10.5px] uppercase tracking-[0.1em] opacity-50">{s.categorySlug.replace("-", " ")}</span>
+                        <span className="ml-auto font-mono text-[10.5px] uppercase tracking-widest opacity-50">{s.categorySlug.replace("-", " ")}</span>
                       </Command.Item>
                     ))}
                   </Command.Group>

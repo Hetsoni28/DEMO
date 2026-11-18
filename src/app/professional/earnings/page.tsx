@@ -6,13 +6,14 @@ import { Card } from "@/components/atoms/ui";
 import { StatCard } from "@/components/molecules/stat-card";
 import { PageTitle } from "@/components/organisms/dashboard-shell";
 import { fmtDate, formatINR } from "@/lib/format";
-import { DEMO_PROFESSIONAL_ID, getService } from "@/lib/mock-data";
+import { getService } from "@/lib/mock-data";
 import { payout, PAYOUT_SHARE } from "@/lib/pro-helpers";
-import { useApp } from "@/lib/store";
+import { useApp, useMyProId } from "@/lib/store";
 
 function EarningsPage() {
+  const myProId = useMyProId();
   const done = useApp((s) => s.bookings)
-    .filter((b) => b.professionalId === DEMO_PROFESSIONAL_ID && b.status === "COMPLETED")
+    .filter((b) => b.professionalId === myProId && b.status === "COMPLETED")
     .sort((a, b) => b.start.localeCompare(a.start));
   const total = done.reduce((n, b) => n + payout(b), 0);
   return (
@@ -24,7 +25,7 @@ function EarningsPage() {
         <StatCard label="Avg per job" value={formatINR(done.length ? total / done.length : 0)} icon={TrendingUp} />
       </div>
       <Card className="mt-6 overflow-x-auto">
-        <table className="w-full min-w-[520px] text-sm">
+        <table className="w-full min-w-130 text-sm">
           <thead>
             <tr className="border-b border-slate-200 text-left text-slate-500">
               <th className="px-5 py-3 font-medium">Date</th>

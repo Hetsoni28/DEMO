@@ -37,7 +37,8 @@ const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 export function RegisterForm() {
   const params = useSearchParams();
   const router = useRouter();
-  const setRole = useApp((s) => s.setRole);
+  const registerCustomer = useApp((s) => s.registerCustomer);
+  const applyAsPro = useApp((s) => s.applyAsPro);
 
   const [type, setType] = useState<AccountType | null>(params.get("role") === "professional" ? "professional" : null);
   const [step, setStep] = useState<Step>(params.get("role") === "professional" ? "details" : "type");
@@ -87,7 +88,7 @@ export function RegisterForm() {
     await wait(700);
     setLoading(false);
     if (type === "customer") {
-      setRole("customer");
+      registerCustomer({ name: form.name.trim(), email: form.email.trim(), phone: form.phone });
       go("done");
     } else go("documents");
   };
@@ -98,6 +99,8 @@ export function RegisterForm() {
     setLoading(true);
     await wait(900);
     setLoading(false);
+    // Saved as an application: the professional app opens only after an admin approves it.
+    applyAsPro({ name: form.name.trim(), email: form.email.trim(), phone: form.phone, categorySlugs: form.skills, zone: form.zone, experience: form.years });
     go("done");
   };
 
@@ -134,7 +137,7 @@ export function RegisterForm() {
         {step === "type" && (
           <motion.div key="type" {...slide}>
             <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/50">Create account</span>
-            <h1 className="mt-3 text-[clamp(2.5rem,6vw,3.5rem)] font-black leading-[0.9] tracking-[-0.05em]">
+            <h1 className="mt-3 text-[clamp(2.5rem,6vw,3.5rem)] font-black leading-[0.9] tracking-tighter">
               <LineReveal lines={["Let’s get", "you set up."]} />
             </h1>
             <p className="mt-3 text-[15px] text-ink/60">How will you use HomeCrew?</p>
@@ -193,7 +196,7 @@ export function RegisterForm() {
               submitDetails();
             }}
           >
-            <h1 className="text-[clamp(2.25rem,5vw,3rem)] font-black leading-[0.92] tracking-[-0.05em]">{type === "professional" ? "About your work." : "About you."}</h1>
+            <h1 className="text-[clamp(2.25rem,5vw,3rem)] font-black leading-[0.92] tracking-tighter">{type === "professional" ? "About your work." : "About you."}</h1>
             <p className="mt-3 text-[15px] text-ink/60">{type === "professional" ? "Customers see your name, skills and service area." : "We’ll use this to confirm bookings."}</p>
             <div className="mt-8 space-y-5">
               <Field label="Full name" htmlFor="name" error={errors.name}>
@@ -217,7 +220,7 @@ export function RegisterForm() {
                     id="zone"
                     value={form.zone}
                     onChange={(e) => setForm({ ...form, zone: e.target.value })}
-                    className="h-[52px] w-full rounded-2xl border border-ink/15 bg-paper px-4 text-[15px] outline-none focus:border-ink focus:shadow-[0_0_0_4px_rgba(40,43,74,0.08)]"
+                    className="h-13 w-full rounded-2xl border border-ink/15 bg-paper px-4 text-[15px] outline-none focus:border-ink focus:shadow-[0_0_0_4px_rgba(40,43,74,0.08)]"
                   >
                     {SERVICE_AREA.zones.map((z) => (
                       <option key={z}>{z}</option>
@@ -230,7 +233,7 @@ export function RegisterForm() {
                       id="years"
                       value={form.years}
                       onChange={(e) => setForm({ ...form, years: e.target.value })}
-                      className="h-[52px] w-full rounded-2xl border border-ink/15 bg-paper px-4 text-[15px] outline-none focus:border-ink focus:shadow-[0_0_0_4px_rgba(40,43,74,0.08)]"
+                      className="h-13 w-full rounded-2xl border border-ink/15 bg-paper px-4 text-[15px] outline-none focus:border-ink focus:shadow-[0_0_0_4px_rgba(40,43,74,0.08)]"
                     >
                       {["Under 2 years", "3–5 years", "6–10 years", "10+ years"].map((y) => (
                         <option key={y}>{y}</option>
@@ -281,7 +284,7 @@ export function RegisterForm() {
               submitOtp();
             }}
           >
-            <h1 className="text-[clamp(2.25rem,5vw,3rem)] font-black leading-[0.92] tracking-[-0.05em]">Check your phone.</h1>
+            <h1 className="text-[clamp(2.25rem,5vw,3rem)] font-black leading-[0.92] tracking-tighter">Check your phone.</h1>
             <p className="mt-3 text-[15px] text-ink/60">
               We sent a 6-digit code to <span className="font-semibold text-ink">+91 {form.phone.slice(0, 5)} {form.phone.slice(5)}</span>.
             </p>
@@ -327,7 +330,7 @@ export function RegisterForm() {
               submitDocs();
             }}
           >
-            <h1 className="text-[clamp(2.25rem,5vw,3rem)] font-black leading-[0.92] tracking-[-0.05em]">Verification.</h1>
+            <h1 className="text-[clamp(2.25rem,5vw,3rem)] font-black leading-[0.92] tracking-tighter">Verification.</h1>
             <p className="mt-3 text-[15px] text-ink/60">Our team reviews these before your profile goes live. Files are private to you and our admins.</p>
             <ul className="mt-8 space-y-3">
               {DOCS.map((d) => {
@@ -418,21 +421,21 @@ export function RegisterForm() {
                 transition={{ duration: 0.5, ease: EASE, delay: 0.6 }}
               />
             </svg>
-            <h1 className="mt-8 text-[clamp(2.25rem,5vw,3rem)] font-black leading-[0.92] tracking-[-0.05em]">
+            <h1 className="mt-8 text-[clamp(2.25rem,5vw,3rem)] font-black leading-[0.92] tracking-tighter">
               <LineReveal lines={type === "professional" ? ["Application", "received."] : [`Welcome${first ? `, ${first}` : ""}.`]} delay={0.4} />
             </h1>
             <p className="mx-auto mt-4 max-w-sm text-[15px] leading-relaxed text-ink/60">
               {type === "professional"
-                ? "Our team will review your documents. You’ll get a message as soon as your profile is verified and active."
+                ? "The HomeCrew team reviews every application. Your professional app unlocks the moment you’re approved, and we’ll tell you right here."
                 : "Your account is ready. Book a verified professional whenever you need one."}
             </p>
             <div className="mt-8 grid gap-3">
               {type === "professional" ? (
                 <>
                   <SubmitButton type="button" onClick={() => router.push("/professional/dashboard")}>
-                    Preview the professional app <ArrowUpRight className="h-4 w-4" />
+                    Track my application <ArrowUpRight className="h-4 w-4" />
                   </SubmitButton>
-                  <Link href="/" className="flex h-[52px] items-center justify-center rounded-full border border-ink/15 text-[14.5px] font-medium hover:border-ink">
+                  <Link href="/" className="flex h-13 items-center justify-center rounded-full border border-ink/15 text-[14.5px] font-medium hover:border-ink">
                     Back to home
                   </Link>
                 </>
@@ -441,7 +444,7 @@ export function RegisterForm() {
                   <SubmitButton type="button" onClick={() => router.push("/services")}>
                     Book a service <ArrowRight className="h-4 w-4" />
                   </SubmitButton>
-                  <Link href="/customer/dashboard" className="flex h-[52px] items-center justify-center rounded-full border border-ink/15 text-[14.5px] font-medium hover:border-ink">
+                  <Link href="/customer/dashboard" className="flex h-13 items-center justify-center rounded-full border border-ink/15 text-[14.5px] font-medium hover:border-ink">
                     Go to my dashboard
                   </Link>
                 </>

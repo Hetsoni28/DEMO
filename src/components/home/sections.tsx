@@ -7,7 +7,7 @@ import { ArrowLeft, ArrowRight, ArrowUpRight, BadgeCheck, CalendarDays, CreditCa
 import { ServiceQr } from "@/components/atoms/service-qr";
 import { CountUp, EASE, LineReveal, Magnetic, Reveal, useSectionProgress } from "@/components/motion/motion";
 import { formatINR } from "@/lib/format";
-import { categories, services, testimonials } from "@/lib/mock-data";
+import { categories, HOLD_MINUTES, SERVICE_AREA, services, testimonials } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 
 /* ─────────────── The split — homage to the cream/indigo poster ─────────────── */
@@ -89,7 +89,7 @@ export function ServiceIndex() {
           <LineReveal onView lines={["What needs", "fixing today?"]} />
         </h2>
         <Reveal className="max-w-sm text-ink/70">
-          Seven trades, one standard — every professional is a verified specialist in the work they take on, not a jack of all trades.
+          Seven trades, one standard. Every professional is verified for the specific work they take on.
         </Reveal>
       </div>
 
@@ -100,10 +100,10 @@ export function ServiceIndex() {
           return (
             <Reveal as="li" key={c.slug} delay={i * 0.04} y={20}>
               <Link href={`/services?category=${c.slug}`} className="group relative block overflow-hidden border-b border-ink/20">
-                <span className="absolute inset-0 origin-bottom scale-y-0 bg-ink transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-y-100" />
+                <span className="absolute inset-0 origin-bottom scale-y-0 bg-ink transition-transform duration-700 ease-out-expo group-hover:scale-y-100" />
                 <div className="relative grid grid-cols-[auto_1fr_auto] items-center gap-4 py-6 transition-colors duration-500 group-hover:text-cream sm:gap-8 sm:py-8 md:grid-cols-[60px_1.2fr_1fr_140px_56px]">
                   <span className="font-mono text-xs text-ink/50 transition-colors group-hover:text-cream/50">({String(i + 1).padStart(2, "0")})</span>
-                  <span className="text-[clamp(1.5rem,3.6vw,3rem)] font-bold leading-none tracking-[-0.04em] transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:translate-x-3">
+                  <span className="text-[clamp(1.5rem,3.6vw,3rem)] font-bold leading-none tracking-[-0.04em] transition-transform duration-700 ease-out-expo group-hover:translate-x-3">
                     {c.name}
                   </span>
                   <span className="hidden text-sm text-ink/60 group-hover:text-cream/70 md:block">{c.blurb}</span>
@@ -126,9 +126,9 @@ export function ServiceIndex() {
 /* ───────────────────────── How it works (sticky) ───────────────────────── */
 const steps = [
   { icon: CalendarDays, title: "Pick a real slot", text: "Availability is calculated from each professional's hours, breaks, existing jobs and travel time. If you can see it, you can book it.", k: "SLOT", v: "Thu · 11:00 AM" },
-  { icon: CreditCard, title: "Pay — then we confirm", text: "Your slot is held for 10 minutes while you pay via Razorpay. The booking confirms only after our server verifies the payment.", k: "PAYMENT", v: "Verified · ₹412" },
-  { icon: QrCode, title: "Scan at the door", text: "You get a one-time service QR. Only the assigned professional can scan it to start the job — no strangers, no swaps.", k: "QR", v: "ppq_8HX2…  ✓" },
-  { icon: FileText, title: "Report, invoice, warranty", text: "Before/after photos, materials and an invoice land in your Home Passport — your home's permanent service history.", k: "WARRANTY", v: "30 days left" },
+  { icon: CreditCard, title: "Pay, then we confirm", text: "Your slot is held for 10 minutes while you pay via Razorpay. The booking confirms only after our server verifies the payment.", k: "PAYMENT", v: "Verified · ₹412" },
+  { icon: QrCode, title: "Scan at the door", text: "You get a one-time service QR. Only the assigned professional can scan it to start the job, so nobody else can turn up in their place.", k: "QR", v: "ppq_8HX2…  ✓" },
+  { icon: FileText, title: "Report, invoice, warranty", text: "Before/after photos, materials and an invoice land in your Home Passport, the permanent service record for your home.", k: "WARRANTY", v: "30 days left" },
 ];
 
 export function HowItWorks() {
@@ -166,7 +166,7 @@ export function HowItWorks() {
                   </motion.div>
                 </AnimatePresence>
               </div>
-              <div className="mt-8 h-[2px] w-full bg-cream/10">
+              <div className="mt-8 h-0.5 w-full bg-cream/10">
                 <motion.div style={{ scaleX: bar }} className="h-full origin-left bg-cream" />
               </div>
               <div className="mt-3 flex justify-between font-mono text-[11px] text-cream/50">
@@ -218,11 +218,12 @@ export function HowItWorks() {
 
 /* ───────────────────────── Numbers ───────────────────────── */
 export function Numbers() {
-  const stats = [
-    { to: 10, suffix: "K+", label: "Jobs completed" },
-    { to: 4.8, decimals: 1, suffix: "★", label: "Average rating" },
-    { to: 120, suffix: "+", label: "Verified professionals" },
-    { to: 0, prefix: "₹", label: "Surprise charges" },
+  // Facts about how the service works — taken from the same data the booking flow uses.
+  const stats: { to: number; suffix?: string; prefix?: string; decimals?: number; label: string }[] = [
+    { to: categories.length, label: "Trades under one roof" },
+    { to: services.length, label: "Services, each priced before you book" },
+    { to: SERVICE_AREA.zones.length, label: `Areas covered in ${SERVICE_AREA.city}` },
+    { to: HOLD_MINUTES, suffix: " min", label: "Your slot is held while you pay" },
   ];
   return (
     <section className="grain mx-auto max-w-7xl px-5 py-24 sm:px-8">
@@ -236,7 +237,6 @@ export function Numbers() {
           </Reveal>
         ))}
       </div>
-      <p className="mt-3 text-right font-mono text-[11px] text-ink/40">Demo figures</p>
     </section>
   );
 }
@@ -249,7 +249,7 @@ export function Trust() {
     return () => clearInterval(t);
   }, []);
   const pillars = [
-    { icon: BadgeCheck, title: "Verified professionals", text: "ID, trade certificate and police check — reviewed by our team before activation." },
+    { icon: BadgeCheck, title: "Verified professionals", text: "ID, trade certificate and police check, reviewed by our team before activation." },
     { icon: Wallet, title: "No surprise charges", text: "Extra work needs your approval in the app before anything is done or billed." },
     { icon: ShieldCheck, title: "Warranty, tracked", text: "Up to 60 days, attached to every booking in your Home Passport." },
   ];
@@ -283,7 +283,7 @@ export function Trust() {
               {["left-2 top-2 border-l-[3px] border-t-[3px]", "right-2 top-2 border-r-[3px] border-t-[3px]", "bottom-2 left-2 border-b-[3px] border-l-[3px]", "bottom-2 right-2 border-b-[3px] border-r-[3px]"].map((c) => (
                 <span key={c} className={`absolute h-8 w-8 rounded-sm border-ink ${c}`} />
               ))}
-              {!verified && <span className="absolute left-6 right-6 h-[2px] animate-scan bg-ink shadow-[0_0_18px_3px_rgba(40,43,74,0.45)]" />}
+              {!verified && <span className="absolute left-6 right-6 h-0.5 animate-scan bg-ink shadow-[0_0_18px_3px_rgba(40,43,74,0.45)]" />}
             </div>
             <AnimatePresence mode="wait">
               <motion.div
@@ -360,7 +360,7 @@ export function Voices() {
         </div>
         <div className="mt-10 flex gap-2">
           {testimonials.map((_, k) => (
-            <span key={k} className="h-[2px] flex-1 overflow-hidden bg-ink/15">
+            <span key={k} className="h-0.5 flex-1 overflow-hidden bg-ink/15">
               {k === i && <motion.span key={i} className="block h-full origin-left bg-ink" initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 7, ease: "linear" }} />}
               {k < i && <span className="block h-full bg-ink" />}
             </span>
@@ -383,7 +383,7 @@ export function ProCta() {
           </h2>
         </div>
         <Reveal className="space-y-6">
-          <p className="text-lg leading-relaxed text-ink/70">Set your own hours, skills and service zones. Every job is paid before you leave home — no chasing customers for money.</p>
+          <p className="text-lg leading-relaxed text-ink/70">Set your own hours, skills and service zones. Every job is paid before you leave home, so you never chase anyone for money.</p>
           <Magnetic strength={0.2}>
             <Link href="/professionals" className="group inline-flex h-14 items-center gap-3 rounded-full bg-ink pl-7 pr-2 font-medium text-cream">
               Join HomeCrew

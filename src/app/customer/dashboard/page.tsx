@@ -50,7 +50,7 @@ function CustomerDashboard() {
       <DashHeader
         eyebrow={`${todayLabel(now)} · ${greeting(now)}`}
         title={<>Hi, {first}.</>}
-        sub="Everything happening at home — visits, payments, warranties — in one place."
+        sub="Your visits, payments and warranties, all in one place."
         actions={
           <>
             <InkButton href="/customer/home-passport" variant="outline">
@@ -100,7 +100,7 @@ function CustomerDashboard() {
 
                 <div className="mt-7 flex flex-wrap items-center gap-3">
                   {pro ? (
-                    <div className="flex items-center gap-3 rounded-full bg-cream/[0.08] py-1.5 pl-1.5 pr-4">
+                    <div className="flex items-center gap-3 rounded-full bg-cream/8 py-1.5 pl-1.5 pr-4">
                       <span className="flex h-9 w-9 items-center justify-center rounded-full bg-cream text-[12px] font-bold text-ink">
                         {pro.name
                           .split(" ")
@@ -115,7 +115,7 @@ function CustomerDashboard() {
                       </span>
                     </div>
                   ) : (
-                    <span className="rounded-full bg-cream/[0.08] px-4 py-2 text-[13px] text-cream/70">Professional being assigned</span>
+                    <span className="rounded-full bg-cream/8 px-4 py-2 text-[13px] text-cream/70">Professional being assigned</span>
                   )}
                   {pro && (
                     <button
@@ -132,7 +132,7 @@ function CustomerDashboard() {
 
               <Link
                 href={`/customer/bookings/${next.id}`}
-                className="group flex shrink-0 flex-col items-center justify-between rounded-[22px] bg-cream p-4 text-ink sm:w-[190px]"
+                className="group flex shrink-0 flex-col items-center justify-between rounded-[22px] bg-cream p-4 text-ink sm:w-47.5"
                 aria-label="Open service QR"
                 data-tour="qr"
               >
@@ -177,9 +177,9 @@ function CustomerDashboard() {
             const Icon = categoryIcons[c.icon];
             const from = Math.min(...services.filter((s) => s.categorySlug === c.slug).map((s) => s.pricePaise));
             return (
-              <li key={c.slug} className="w-[150px] shrink-0 lg:w-auto">
+              <li key={c.slug} className="w-37.5 shrink-0 lg:w-auto">
                 <Link href={`/services?category=${c.slug}`} className="group relative block h-full overflow-hidden rounded-[22px] border border-ink/10 bg-paper p-4">
-                  <span className="absolute inset-0 origin-bottom scale-y-0 bg-ink transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-y-100" />
+                  <span className="absolute inset-0 origin-bottom scale-y-0 bg-ink transition-transform duration-500 ease-out-expo group-hover:scale-y-100" />
                   <Icon className="relative h-5 w-5 transition-colors group-hover:text-cream" />
                   <div className="relative mt-6 text-[14px] font-bold leading-tight tracking-[-0.02em] transition-colors group-hover:text-cream">{c.name}</div>
                   <div className="relative mt-1 font-mono text-[10.5px] text-ink/50 transition-colors group-hover:text-cream/60">from {formatINR(from)}</div>
@@ -208,7 +208,7 @@ function CustomerDashboard() {
           <ol className="stagger-fast relative space-y-5 border-l border-ink/15 pl-5">
             {activity.map((a, i) => (
               <li key={`${a.b.id}-${a.at}-${a.status}`} className="relative">
-                <span className={cn("absolute -left-[26px] top-1 h-3 w-3 rounded-full border-2 border-paper", i === 0 ? "bg-ink" : "bg-ink/25")} />
+                <span className={cn("absolute -left-6.5 top-1 h-3 w-3 rounded-full border-2 border-paper", i === 0 ? "bg-ink" : "bg-ink/25")} />
                 <div className="flex items-baseline justify-between gap-3">
                   <span className="truncate text-[13.5px] font-semibold">
                     {getService(a.b.serviceSlug)?.title} · {statusLabel(a.status)}
@@ -230,7 +230,7 @@ function CustomerDashboard() {
               <li key={b.id} className="rounded-[20px] border border-ink/10 p-4">
                 <div className="flex items-center justify-between gap-3">
                   <span className="truncate text-[14px] font-semibold">{svc.title}</span>
-                  <span className={cn("shrink-0 rounded-full px-2 py-0.5 text-[10.5px] font-semibold", daysLeft > 0 ? "bg-[#E8F3EC] text-[#1E7A4A]" : "bg-ink/[0.06] text-ink/50")}>
+                  <span className={cn("shrink-0 rounded-full px-2 py-0.5 text-[10.5px] font-semibold", daysLeft > 0 ? "bg-[#E8F3EC] text-[#1E7A4A]" : "bg-ink/6 text-ink/50")}>
                     {daysLeft > 0 ? `${daysLeft} days left` : "Ended"}
                   </span>
                 </div>

@@ -53,7 +53,7 @@ function RotatingWord({ play }: { play: boolean }) {
     return () => clearInterval(t);
   }, [play]);
   return (
-    <motion.span layout transition={{ duration: 0.4, ease: EASE }} className="relative inline-block h-[1.5em] overflow-hidden align-top leading-[1.5]">
+    <motion.span layout transition={{ duration: 0.4, ease: EASE }} className="relative inline-block h-[1.5em] overflow-hidden align-top leading-normal">
       <AnimatePresence mode="popLayout" initial={false}>
         <motion.span
           key={fixing[i]}
@@ -135,8 +135,8 @@ export function Hero() {
         {/* indigo washes keep cream text legible on bright frames */}
         <div aria-hidden className="absolute inset-0 bg-ink/45" />
         <div aria-hidden className="absolute inset-0 bg-[linear-gradient(90deg,rgba(29,31,55,0.78)_0%,rgba(29,31,55,0.35)_55%,rgba(29,31,55,0.15)_100%)]" />
-        <div aria-hidden className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-ink-deep/85 to-transparent" />
-        <div aria-hidden className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-ink-deep/60 to-transparent" />
+        <div aria-hidden className="absolute inset-x-0 bottom-0 h-2/5 bg-linear-to-t from-ink-deep/85 to-transparent" />
+        <div aria-hidden className="absolute inset-x-0 top-0 h-32 bg-linear-to-b from-ink-deep/60 to-transparent" />
       </motion.div>
 
       {/* ── Content ── */}
@@ -157,7 +157,7 @@ export function Hero() {
             initial={{ opacity: 0 }}
             animate={play ? { opacity: 1 } : undefined}
             transition={{ duration: 1, delay: 0.9 }}
-            className="mt-5 flex flex-wrap items-start gap-x-2 font-mono text-[13px] uppercase leading-[1.5] tracking-[0.08em] text-cream/75 sm:text-sm"
+            className="mt-5 flex flex-wrap items-start gap-x-2 font-mono text-[13px] uppercase leading-normal tracking-[0.08em] text-cream/75 sm:text-sm"
           >
             <span className="inline-flex items-start gap-[1ch]">
               <span>Booking :</span>
@@ -173,7 +173,7 @@ export function Hero() {
         <div className="grid grid-cols-1 items-end gap-8 lg:grid-cols-[1fr_auto]">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={play ? { opacity: 1, y: 0 } : undefined} transition={{ duration: 1, ease: EASE, delay: 0.7 }} className="max-w-xl">
             <p className="text-lg leading-relaxed text-cream/85 sm:text-xl">
-              Plumbers, electricians, cleaners, AC technicians and more — background-checked and bookable in under a minute. Real time slots, fixed prices, and a one-time QR so you know exactly who&apos;s at your door.
+              Plumbers, electricians, cleaners, AC technicians and more, all background-checked and bookable in under a minute. Real time slots, fixed prices, and a one-time QR so you know exactly who&apos;s at your door.
             </p>
             <form
               onSubmit={(e) => {

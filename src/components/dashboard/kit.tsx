@@ -68,7 +68,7 @@ export function DashHeader({ eyebrow, title, sub, actions }: { eyebrow: ReactNod
     <div className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
       <div>
         <div className="font-mono text-[11px] uppercase tracking-[0.16em] text-ink/50">{eyebrow}</div>
-        <h1 className="mt-3 text-[clamp(2.25rem,4.5vw,3.5rem)] font-black leading-[0.92] tracking-[-0.05em] text-ink">{title}</h1>
+        <h1 className="mt-3 text-[clamp(2.25rem,4.5vw,3.5rem)] font-black leading-[0.92] tracking-tighter text-ink">{title}</h1>
         {sub && <p className="mt-3 max-w-xl text-[15px] text-ink/60">{sub}</p>}
       </div>
       {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
@@ -143,12 +143,12 @@ export function Kpi({
   className?: string;
 }) {
   return (
-    <div className={cn("flex min-w-0 flex-col rounded-[24px] border p-5", emphasis ? "border-ink bg-ink text-cream" : "border-ink/10 bg-paper", className)}>
+    <div className={cn("flex min-w-0 flex-col rounded-3xl border p-5", emphasis ? "border-ink bg-ink text-cream" : "border-ink/10 bg-paper", className)}>
       <div className="flex items-center justify-between gap-3">
         <span className={cn("font-mono text-[10.5px] uppercase tracking-[0.14em]", emphasis ? "text-cream/55" : "text-ink/50")}>{label}</span>
         {Icon && <Icon className={cn("h-4 w-4", emphasis ? "text-cream/60" : "text-ink/40")} />}
       </div>
-      <div className="mt-4 truncate text-[clamp(1.9rem,3vw,2.6rem)] font-black leading-none tracking-[-0.05em]">
+      <div className="mt-4 truncate text-[clamp(1.9rem,3vw,2.6rem)] font-black leading-none tracking-tighter">
         {format ? <FormattedCount to={value} format={format} /> : <CountUp to={value} />}
       </div>
       {hint && <div className={cn("mt-2 text-[12.5px]", emphasis ? "text-cream/60" : "text-ink/55")}>{hint}</div>}
@@ -255,7 +255,7 @@ export function BarChart({
             >
               <motion.span
                 className={cn(
-                  "block w-full max-w-[22px] rounded-t-[4px] transition-opacity",
+                  "block w-full max-w-5.5 rounded-t-sm transition-opacity",
                   isCream ? "bg-cream" : "bg-ink",
                   hover !== null && hover !== i && "opacity-35",
                   d.value === 0 && (isCream ? "bg-cream/25" : "bg-ink/20"),
@@ -282,7 +282,7 @@ export function BarChart({
           </div>
         )}
       </div>
-      <figcaption className={cn("mt-2 flex justify-between font-mono text-[10px] uppercase tracking-[0.1em]", isCream ? "text-cream/45" : "text-ink/40")}>
+      <figcaption className={cn("mt-2 flex justify-between font-mono text-[10px] uppercase tracking-widest", isCream ? "text-cream/45" : "text-ink/40")}>
         <span>{data[0]?.label}</span>
         <span>{data.at(-1)?.label}</span>
       </figcaption>
@@ -384,7 +384,7 @@ export function AreaChart({
           </>
         )}
       </div>
-      <figcaption className="mt-2 flex justify-between font-mono text-[10px] uppercase tracking-[0.1em] text-ink/40">
+      <figcaption className="mt-2 flex justify-between font-mono text-[10px] uppercase tracking-widest text-ink/40">
         <span>{data[0]?.label}</span>
         <span>{data[Math.floor(data.length / 2)]?.label}</span>
         <span>{data.at(-1)?.label}</span>
@@ -400,7 +400,7 @@ export function Delta({ value, inverse }: { value: number; inverse?: boolean }) 
     <span
       className={cn(
         "inline-flex items-center gap-0.5 rounded-full px-2 py-0.5 font-mono text-[10.5px] font-semibold tabular-nums",
-        value === 0 ? "bg-ink/[0.06] text-ink/55" : good ? "bg-[#E8F3EC] text-[#1E7A4A]" : "bg-[#FBEAEA] text-[#B42318]",
+        value === 0 ? "bg-ink/6 text-ink/55" : good ? "bg-[#E8F3EC] text-[#1E7A4A]" : "bg-[#FBEAEA] text-[#B42318]",
       )}
       aria-label={`${up ? "Up" : "Down"} ${Math.abs(value)} percent versus previous period`}
     >

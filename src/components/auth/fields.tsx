@@ -7,7 +7,7 @@ import { EASE } from "@/components/motion/motion";
 import { cn } from "@/lib/utils";
 
 const inputBase =
-  "h-[52px] w-full rounded-2xl border bg-paper px-4 text-[15px] text-ink outline-none transition-[border-color,box-shadow] duration-200 placeholder:text-ink/35 focus:border-ink focus:shadow-[0_0_0_4px_rgba(40,43,74,0.08)] disabled:opacity-60";
+  "h-13 w-full rounded-2xl border bg-paper px-4 text-[15px] text-ink outline-none transition-[border-color,box-shadow] duration-200 placeholder:text-ink/35 focus:border-ink focus:shadow-[0_0_0_4px_rgba(40,43,74,0.08)] disabled:opacity-60";
 
 export function Field({ label, error, hint, htmlFor, aside, children }: { label: string; error?: string; hint?: ReactNode; htmlFor?: string; aside?: ReactNode; children: ReactNode }) {
   return (
@@ -49,7 +49,7 @@ export const PhoneInput = forwardRef<HTMLInputElement, ComponentProps<"input"> &
   return (
     <div
       className={cn(
-        "flex h-[52px] items-center overflow-hidden rounded-2xl border bg-paper transition-[border-color,box-shadow] duration-200 focus-within:border-ink focus-within:shadow-[0_0_0_4px_rgba(40,43,74,0.08)]",
+        "flex h-13 items-center overflow-hidden rounded-2xl border bg-paper transition-[border-color,box-shadow] duration-200 focus-within:border-ink focus-within:shadow-[0_0_0_4px_rgba(40,43,74,0.08)]",
         invalid ? "border-[#B42318]/60" : "border-ink/15",
       )}
     >
@@ -168,7 +168,7 @@ export function Segmented<T extends string>({
   label: string;
 }) {
   return (
-    <div role="radiogroup" aria-label={label} className="grid rounded-2xl border border-ink/10 bg-ink/[0.04] p-1" style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }}>
+    <div role="radiogroup" aria-label={label} className="grid rounded-2xl border border-ink/10 bg-ink/4 p-1" style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }}>
       {options.map((o) => {
         const on = o.value === value;
         return (
@@ -198,7 +198,7 @@ export function SubmitButton({ loading, children, className, ...props }: Compone
       type="submit"
       disabled={loading || props.disabled}
       className={cn(
-        "group relative flex h-[52px] w-full items-center justify-center gap-2 overflow-hidden rounded-full bg-ink text-[15px] font-semibold text-cream transition-[transform,opacity] duration-200 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60",
+        "group relative flex h-13 w-full items-center justify-center gap-2 overflow-hidden rounded-full bg-ink text-[15px] font-semibold text-cream transition-[transform,opacity] duration-200 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60",
         className,
       )}
       {...props}

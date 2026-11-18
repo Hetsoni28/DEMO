@@ -1,11 +1,21 @@
 "use client";
 
 import { useEffect } from "react";
-import { useApp } from "@/lib/store";
+import { hydrateStore, useApp } from "@/lib/store";
 
+/**
+ * Loads the demo data once, and keeps tabs in sync: when an admin approves an
+ * application in one tab, the applicant's tab picks it up straight away.
+ */
 export function StoreHydrator() {
   useEffect(() => {
-    Promise.resolve(useApp.persist.rehydrate()).then(() => useApp.getState().init());
+    void hydrateStore();
+    const key = useApp.persist.getOptions().name;
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === key) void useApp.persist.rehydrate();
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
   }, []);
   return null;
 }

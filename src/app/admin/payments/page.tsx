@@ -27,7 +27,7 @@ function AdminPayments() {
       <div className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-2">
         <Card className="overflow-x-auto">
           <h2 className="px-5 pt-5 font-semibold text-slate-900">Payment records</h2>
-          <table className="mt-3 w-full min-w-[520px] text-sm">
+          <table className="mt-3 w-full min-w-130 text-sm">
             <thead>
               <tr className="border-b border-slate-200 text-left text-slate-500">
                 <th className="px-5 py-2 font-medium">Booking</th>

@@ -5,8 +5,7 @@ import { useState } from "react";
 import { Card } from "@/components/atoms/ui";
 import { BookingRow } from "@/components/molecules/booking-row";
 import { PageTitle } from "@/components/organisms/dashboard-shell";
-import { DEMO_PROFESSIONAL_ID } from "@/lib/mock-data";
-import { useApp } from "@/lib/store";
+import { useApp, useMyProId } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
 const tabs = [
@@ -16,11 +15,12 @@ const tabs = [
 ];
 
 function ProJobs() {
+  const myProId = useMyProId();
   const [tab, setTab] = useState("active");
   const bookings = useApp((s) => s.bookings);
   const t = tabs.find((x) => x.id === tab)!;
   const list = bookings
-    .filter((b) => b.professionalId === DEMO_PROFESSIONAL_ID && t.match.includes(b.status))
+    .filter((b) => b.professionalId === myProId && t.match.includes(b.status))
     .sort((a, b) => (tab === "active" ? a.start.localeCompare(b.start) : b.start.localeCompare(a.start)));
   return (
     <>

@@ -52,7 +52,7 @@ export function SiteFooter() {
             <Magnetic>
               <Link
                 href="/services"
-                className="group flex h-36 w-36 flex-col items-center justify-center gap-1 rounded-full bg-cream text-center text-sm font-semibold text-ink transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] hover:scale-105"
+                className="group flex h-36 w-36 flex-col items-center justify-center gap-1 rounded-full bg-cream text-center text-sm font-semibold text-ink transition-transform duration-700 ease-out-expo hover:scale-105"
               >
                 <ArrowUpRight className="h-6 w-6 transition-transform duration-500 group-hover:rotate-45" />
                 Book now
@@ -66,7 +66,7 @@ export function SiteFooter() {
           {assurances.map((a, i) => (
             <Reveal as="li" key={a.title} delay={i * 0.06} y={14} className="flex items-start gap-3 py-7 pr-4">
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-cream/15">
-                <a.icon className="h-[18px] w-[18px]" />
+                <a.icon className="h-4.5 w-4.5" />
               </span>
               <span>
                 <span className="block text-[14px] font-semibold">{a.title}</span>
@@ -151,7 +151,7 @@ export function SiteFooter() {
       </div>
 
       {/* Wordmark */}
-      <div aria-hidden className="pointer-events-none select-none px-3 text-center text-[clamp(3rem,16.5vw,16.5rem)] font-black leading-[0.78] tracking-[-0.06em] text-cream/[0.07]">
+      <div aria-hidden className="pointer-events-none select-none px-3 text-center text-[clamp(3rem,16.5vw,16.5rem)] font-black leading-[0.78] tracking-[-0.06em] text-cream/7">
         HOMECREW
       </div>
 

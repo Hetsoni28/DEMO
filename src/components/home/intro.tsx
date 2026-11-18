@@ -386,7 +386,7 @@ export function IntroProvider({ children }: { children: ReactNode }) {
                     onPointerUp={onPointerUp}
                     onPointerCancel={onPointerUp}
                     onKeyDown={onKeyDown}
-                    className="absolute right-[6%] top-[60%] h-[72px] w-[72px] -translate-y-1/2 translate-x-[18%] cursor-grab touch-none select-none rounded-full outline-none active:cursor-grabbing focus-visible:ring-2 focus-visible:ring-cream/60"
+                    className="absolute right-[6%] top-[60%] h-18 w-18 -translate-y-1/2 translate-x-[18%] cursor-grab touch-none select-none rounded-full outline-none active:cursor-grabbing focus-visible:ring-2 focus-visible:ring-cream/60"
                   >
                     {/* progress ring */}
                     <svg
@@ -426,7 +426,7 @@ export function IntroProvider({ children }: { children: ReactNode }) {
                     {/* key — pivots on the keyhole */}
                     <motion.div
                       style={{ rotate: rot, originX: 0.5, originY: 1 }}
-                      className="pointer-events-none absolute bottom-1/2 left-1/2 h-[88px] w-[34px] -translate-x-1/2 text-cream drop-shadow-[0_10px_18px_rgba(0,0,0,0.4)]"
+                      className="pointer-events-none absolute bottom-1/2 left-1/2 h-22 w-8.5 -translate-x-1/2 text-cream drop-shadow-[0_10px_18px_rgba(0,0,0,0.4)]"
                     >
                       <Key />
                     </motion.div>

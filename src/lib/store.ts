@@ -6,14 +6,17 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import {
   DEMO_CUSTOMER,
+  DEMO_PROFESSIONAL_ID,
   HOLD_MINUTES,
   TRAVEL_BUFFER_MIN,
   getService,
+  services,
   professionals as seedPros,
   type Professional,
   type VerificationStatus,
 } from "./mock-data";
 import { priceBreakdown } from "./format";
+import { seedAccounts, yearsFromBand, type Account, type AccountStatus, type Role } from "./rbac";
 import { computeCartSlots, computeSlots, dayKey, istDate } from "./scheduling";
 
 export type BookingStatus =
@@ -64,7 +67,7 @@ export type PaymentEvent = {
   signatureVerified: boolean;
 };
 
-export type Role = "customer" | "professional" | "admin";
+export type { Account, AccountStatus, Role } from "./rbac";
 
 type Result = { ok: true; id?: string } | { ok: false; error: string };
 
@@ -78,12 +81,29 @@ type State = {
   seq: number;
   /** Basket of service slugs waiting to be booked together. */
   cart: string[];
+  /** Everyone who can sign in (RBAC). */
+  accounts: Account[];
+  /** The signed-in account, if any. */
+  accountId: string | null;
 };
+
+export type ProApplication = { name: string; email: string; phone: string; categorySlugs: string[]; zone: string; experience: string };
 
 type Actions = {
   init: () => void;
   reset: () => void;
   setRole: (r: Role | null) => void;
+  /** Sign in as an existing account. Fails for unknown or paused accounts. */
+  signIn: (accountId: string) => Result;
+  signOut: () => void;
+  /** New professional application: creates a pending profile + account and signs the applicant in. */
+  applyAsPro: (input: ProApplication) => string;
+  registerCustomer: (input: { name: string; email: string; phone: string }) => string;
+  /** Admin decision on a professional application; keeps profile and account in sync. */
+  reviewApplication: (proId: string, approve: boolean, note?: string) => void;
+  setAccountRole: (accountId: string, role: Role) => Result;
+  setAccountStatus: (accountId: string, status: Extract<AccountStatus, "ACTIVE" | "SUSPENDED">) => Result;
+  markApprovalSeen: (accountId: string) => void;
   addAddress: (a: Omit<Address, "id">) => string;
   removeAddress: (id: string) => void;
   createHold: (serviceSlug: string, address: Address, startISO: string) => Result;
@@ -222,7 +242,7 @@ function seed(): Pick<State, "bookings" | "addresses" | "events" | "seq" | "pros
   };
 }
 
-const initial: State = { ready: false, role: null, bookings: [], pros: [], addresses: [], events: [], seq: 1, cart: [] };
+const initial: State = { ready: false, role: null, bookings: [], pros: [], addresses: [], events: [], seq: 1, cart: [], accounts: [], accountId: null };
 
 const push = (b: Booking, status: string, note?: string): Booking => ({
   ...b,
@@ -235,12 +255,25 @@ export const useApp = create<State & Actions>()(
       const patch = (id: string, fn: (b: Booking) => Booking) =>
         set((s) => ({ bookings: s.bookings.map((b) => (b.id === id ? fn(b) : b)) }));
       const find = (id: string) => get().bookings.find((b) => b.id === id);
+      /** Bookings are made by the signed-in customer (falls back to the demo customer). */
+      const customer = () => {
+        const a = get().accounts.find((x) => x.id === get().accountId);
+        return a && a.role === "customer" ? { id: a.id, name: a.name } : { id: DEMO_CUSTOMER.id, name: DEMO_CUSTOMER.name };
+      };
+      const activeAdmins = (accounts: Account[]) => accounts.filter((a) => a.role === "admin" && a.status === "ACTIVE");
 
       return {
         ...initial,
 
         init: () => {
           if (get().bookings.length === 0) set({ ...seed() });
+          if (get().accounts.length === 0) set({ accounts: seedAccounts(get().pros, new Date().toISOString()) });
+          // Older demo sessions stored only a role: map it to that role's demo account.
+          const { role, accountId, accounts } = get();
+          if (role && !accountId) {
+            const fallback = { customer: DEMO_CUSTOMER.id, professional: "a_p1", admin: "a_admin" }[role];
+            if (accounts.some((a) => a.id === fallback)) set({ accountId: fallback });
+          }
           // Lazily expire stale holds (a real system would reconcile with Razorpay first).
           const now = Date.now();
           set((s) => ({
@@ -253,8 +286,118 @@ export const useApp = create<State & Actions>()(
           }));
         },
 
-        reset: () => set({ ...seed(), cart: [], ready: true }),
+        reset: () => {
+          const fresh = seed();
+          const accounts = seedAccounts(fresh.pros, new Date().toISOString());
+          const keep = accounts.find((a) => a.id === get().accountId);
+          set({ ...fresh, cart: [], ready: true, accounts, accountId: keep?.id ?? null, role: keep?.role ?? null });
+        },
         setRole: (role) => set({ role }),
+
+        signIn: (accountId) => {
+          const a = get().accounts.find((x) => x.id === accountId);
+          if (!a) return { ok: false, error: "No account found with those details." };
+          if (a.status === "SUSPENDED") return { ok: false, error: "This account's access is paused. Contact support." };
+          set({ accountId: a.id, role: a.role });
+          return { ok: true, id: a.id };
+        },
+        signOut: () => set({ accountId: null, role: null }),
+
+        applyAsPro: (input) => {
+          const n = get().pros.length + 1;
+          const proId = `p${Date.now().toString(36)}${n}`;
+          const cats = input.categorySlugs;
+          const tradeName: Record<string, string> = {
+            plumbing: "Plumber",
+            electrical: "Electrician",
+            cleaning: "Cleaner",
+            appliances: "AC & appliance technician",
+            carpentry: "Carpenter",
+            painting: "Painter",
+            "pest-control": "Pest control specialist",
+          };
+          const pro: Professional = {
+            id: proId,
+            name: input.name,
+            trade: tradeName[cats[0]] ?? "Professional",
+            phone: `+91 ${input.phone.slice(0, 2)}XXX ${input.phone.slice(5)}`,
+            years: yearsFromBand(input.experience),
+            rating: 0,
+            jobsDone: 0,
+            skills: services.filter((sv) => cats.includes(sv.categorySlug)).map((sv) => sv.slug),
+            area: input.zone,
+            verification: "PENDING",
+            active: false,
+            documents: [
+              { name: "Aadhaar (ID)", status: "PENDING" },
+              { name: "Trade certificate", status: "PENDING" },
+              { name: "Police verification", status: "PENDING" },
+            ],
+            hours: { start: 9, end: 19, breakStart: 13, breakEnd: 14 },
+            offDays: [0],
+          };
+          const account: Account = {
+            id: `a_${proId}`,
+            name: input.name,
+            email: input.email,
+            phone: input.phone,
+            role: "professional",
+            status: "PENDING",
+            proId,
+            createdAt: new Date().toISOString(),
+          };
+          set((s) => ({ pros: [...s.pros, pro], accounts: [...s.accounts.filter((a) => !input.email || a.email !== input.email), account], accountId: account.id, role: "professional" }));
+          return account.id;
+        },
+
+        registerCustomer: (input) => {
+          const account: Account = { id: `c${Date.now().toString(36)}`, ...input, role: "customer", status: "ACTIVE", createdAt: new Date().toISOString() };
+          set((s) => ({ accounts: [...s.accounts.filter((a) => !input.email || a.email !== input.email), account], accountId: account.id, role: "customer" }));
+          return account.id;
+        },
+
+        reviewApplication: (proId, approve, note) => {
+          const status: VerificationStatus = approve ? "VERIFIED" : "REJECTED";
+          const at = new Date().toISOString();
+          set((s) => ({
+            pros: s.pros.map((p) => (p.id === proId ? { ...p, verification: status, active: approve, documents: p.documents.map((d) => ({ ...d, status })) } : p)),
+            accounts: s.accounts.map((a) =>
+              a.proId === proId
+                ? { ...a, status: approve ? "ACTIVE" : "REJECTED", reviewedAt: at, reviewNote: note?.trim() || undefined, approvalSeen: approve ? false : a.approvalSeen }
+                : a,
+            ),
+          }));
+        },
+
+        setAccountRole: (accountId, role) => {
+          const { accounts } = get();
+          const a = accounts.find((x) => x.id === accountId);
+          if (!a) return { ok: false, error: "Account not found." };
+          if (a.role === role) return { ok: true };
+          if (a.role === "admin" && activeAdmins(accounts).length <= 1) return { ok: false, error: "Keep at least one active admin." };
+          if (role === "professional" && !a.proId) return { ok: false, error: "They need to apply as a professional first, so their trade and documents can be checked." };
+          set((s) => ({
+            accounts: s.accounts.map((x) => (x.id === accountId ? { ...x, role } : x)),
+            role: s.accountId === accountId ? role : s.role,
+          }));
+          return { ok: true };
+        },
+
+        setAccountStatus: (accountId, status) => {
+          const { accounts, accountId: me } = get();
+          const a = accounts.find((x) => x.id === accountId);
+          if (!a) return { ok: false, error: "Account not found." };
+          if (status === "SUSPENDED" && accountId === me) return { ok: false, error: "You can't pause your own access." };
+          if (status === "SUSPENDED" && a.role === "admin" && activeAdmins(accounts).length <= 1) return { ok: false, error: "Keep at least one active admin." };
+          if (status === "ACTIVE" && a.role === "professional") {
+            const pro = get().pros.find((p) => p.id === a.proId);
+            if (pro && pro.verification !== "VERIFIED") return { ok: false, error: "Approve their application first." };
+          }
+          set((s) => ({ accounts: s.accounts.map((x) => (x.id === accountId ? { ...x, status } : x)) }));
+          return { ok: true };
+        },
+
+        markApprovalSeen: (accountId) => set((s) => ({ accounts: s.accounts.map((a) => (a.id === accountId ? { ...a, approvalSeen: true } : a)) })),
 
         addAddress: (a) => {
           const id = rid("addr_", 6);
@@ -278,8 +421,8 @@ export const useApp = create<State & Actions>()(
             id: `b${n}`,
             code: `HC-${1040 + n}`,
             serviceSlug,
-            customerId: DEMO_CUSTOMER.id,
-            customerName: DEMO_CUSTOMER.name,
+            customerId: customer().id,
+            customerName: customer().name,
             address: address.line,
             zone: address.zone,
             professionalId: slot.freePros[0],
@@ -333,8 +476,8 @@ export const useApp = create<State & Actions>()(
                 id: `b${n}`,
                 code: `HC-${1040 + n}`,
                 serviceSlug: item.slug,
-                customerId: DEMO_CUSTOMER.id,
-                customerName: DEMO_CUSTOMER.name,
+                customerId: customer().id,
+                customerName: customer().name,
                 address: address.line,
                 zone: address.zone,
                 professionalId: a.proId,
@@ -515,12 +658,10 @@ export const useApp = create<State & Actions>()(
 
         review: (id, rating, comment) => patch(id, (b) => ({ ...b, review: { rating, comment } })),
 
-        setVerification: (proId, status) =>
-          set((s) => ({
-            pros: s.pros.map((p) =>
-              p.id === proId ? { ...p, verification: status, active: status === "VERIFIED", documents: p.documents.map((d) => ({ ...d, status })) } : p,
-            ),
-          })),
+        setVerification: (proId, status) => {
+          if (status === "PENDING") return;
+          get().reviewApplication(proId, status === "VERIFIED");
+        },
         toggleActive: (proId) => set((s) => ({ pros: s.pros.map((p) => (p.id === proId ? { ...p, active: !p.active } : p)) })),
         updateHours: (proId, hours, offDays) => set((s) => ({ pros: s.pros.map((p) => (p.id === proId ? { ...p, hours, offDays } : p)) })),
       };
@@ -528,10 +669,52 @@ export const useApp = create<State & Actions>()(
     {
       name: "homecrew-demo-v1",
       skipHydration: true,
-      partialize: ({ role, bookings, pros, addresses, events, seq, cart }) => ({ role, bookings, pros, addresses, events, seq, cart }),
+      partialize: ({ role, bookings, pros, addresses, events, seq, cart, accounts, accountId }) => ({ role, bookings, pros, addresses, events, seq, cart, accounts, accountId }),
     },
   ),
 );
 
+let hydrating: Promise<void> | null = null;
+
+/**
+ * Load the demo data from browser storage and mark the app ready. Safe to call
+ * any number of times. Self-healing: if the saved data can't be read (corrupt,
+ * blocked storage) it is cleared and fresh demo data is seeded, so pages never
+ * wait forever. Also re-runs cleanly after a dev-server hot reload, which
+ * recreates this store empty.
+ */
+export function hydrateStore(): Promise<void> {
+  if (useApp.getState().ready) return Promise.resolve();
+  if (!hydrating) {
+    hydrating = (async () => {
+      try {
+        await useApp.persist.rehydrate();
+        useApp.getState().init();
+      } catch (err) {
+        console.warn("[HomeCrew] Saved demo data could not be loaded, starting fresh.", err);
+        try {
+          localStorage.removeItem(useApp.persist.getOptions().name ?? "homecrew-demo-v1");
+        } catch {}
+        useApp.setState({ ...initial });
+        useApp.getState().init();
+      }
+    })().finally(() => {
+      hydrating = null;
+    });
+  }
+  return hydrating;
+}
+
 export const useBooking = (id: string) => useApp((s) => s.bookings.find((b) => b.id === id));
 export const usePro = (id: string | null | undefined) => useApp((s) => s.pros.find((p) => p.id === id));
+
+/** The signed-in account (undefined when signed out or not loaded yet). */
+export const useAccount = () => useApp((s) => s.accounts.find((a) => a.id === s.accountId));
+/** Professional profile of the signed-in pro (demo pro as a fallback for previews). */
+export const useMyProId = () => useApp((s) => s.accounts.find((a) => a.id === s.accountId)?.proId ?? DEMO_PROFESSIONAL_ID);
+/** Customer id of the signed-in customer (demo customer as a fallback). */
+export const useMyCustomerId = () =>
+  useApp((s) => {
+    const a = s.accounts.find((x) => x.id === s.accountId);
+    return a?.role === "customer" ? a.id : DEMO_CUSTOMER.id;
+  });

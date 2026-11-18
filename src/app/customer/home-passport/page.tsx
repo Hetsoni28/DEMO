@@ -8,16 +8,17 @@ import { categoryIcons } from "@/components/atoms/icons";
 import { Badge, Card } from "@/components/atoms/ui";
 import { PageTitle } from "@/components/organisms/dashboard-shell";
 import { fmtDate } from "@/lib/format";
-import { DEMO_CUSTOMER, getCategory, getService } from "@/lib/mock-data";
-import { useApp } from "@/lib/store";
+import { getCategory, getService } from "@/lib/mock-data";
+import { useApp, useMyCustomerId } from "@/lib/store";
 
 function HomePassport() {
+  const myCustomerId = useMyCustomerId();
   const bookings = useApp((s) => s.bookings);
   const pros = useApp((s) => s.pros);
   // Rendered only on the client (inside ReadyGate), so reading the clock here is safe.
   const [now] = useState(() => Date.now());
   const done = bookings
-    .filter((b) => b.customerId === DEMO_CUSTOMER.id && b.status === "COMPLETED")
+    .filter((b) => b.customerId === myCustomerId && b.status === "COMPLETED")
     .sort((a, b) => b.start.localeCompare(a.start));
 
   return (

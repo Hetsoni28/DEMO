@@ -9,10 +9,10 @@ import { ReadyGate } from "@/components/molecules/ready-gate";
 import { statusLabel } from "@/components/molecules/status-badge";
 import { EASE } from "@/components/motion/motion";
 import { fmtDate, fmtTime, formatINR } from "@/lib/format";
-import { DEMO_PROFESSIONAL_ID, getService } from "@/lib/mock-data";
+import { getService } from "@/lib/mock-data";
 import { payout } from "@/lib/pro-helpers";
 import { dayKey, upcomingDays } from "@/lib/scheduling";
-import { useApp, usePro, type Booking } from "@/lib/store";
+import { useApp, usePro, type Booking, useMyProId } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
 const DAY_START = 8 * 60;
@@ -63,7 +63,7 @@ function Schedule({ jobs, hours, now }: { jobs: Booking[]; hours: { start: numbe
             role="tab"
             aria-selected={i === idx}
             onClick={() => setSel(i)}
-            className={cn("relative flex min-w-[76px] flex-col items-start rounded-2xl px-3 py-2 text-left transition-colors", i === idx ? "text-cream" : "text-ink/70 hover:bg-ink/[0.04]")}
+            className={cn("relative flex min-w-19 flex-col items-start rounded-2xl px-3 py-2 text-left transition-colors", i === idx ? "text-cream" : "text-ink/70 hover:bg-ink/4")}
           >
             {i === idx && <motion.span layoutId="sched-day" className="absolute inset-0 rounded-2xl bg-ink" transition={{ duration: 0.4, ease: EASE }} />}
             <span className="relative font-mono text-[10px] uppercase tracking-[0.12em] opacity-60">{i === 0 ? "Today" : fmtDate(d.date.toISOString()).split(",")[0]}</span>
@@ -76,7 +76,7 @@ function Schedule({ jobs, hours, now }: { jobs: Booking[]; hours: { start: numbe
       </div>
 
       {/* timeline — scrolls inside the panel */}
-      <div ref={scrollRef} className="relative mt-5 max-h-[520px] overflow-y-auto overscroll-contain rounded-[20px] border border-ink/10 bg-cream/60" tabIndex={0} aria-label={`Schedule for ${fmtDate(day.date.toISOString())}`}>
+      <div ref={scrollRef} className="relative mt-5 max-h-130 overflow-y-auto overscroll-contain rounded-[20px] border border-ink/10 bg-cream/60" tabIndex={0} aria-label={`Schedule for ${fmtDate(day.date.toISOString())}`}>
         <div className="relative" style={{ height: GRID_H + PAD * 2 }}>
           <div className="absolute inset-x-0" style={{ top: PAD, height: GRID_H }}>
             {/* outside working hours */}
@@ -84,7 +84,7 @@ function Schedule({ jobs, hours, now }: { jobs: Booking[]; hours: { start: numbe
             <div className={cn("absolute inset-x-0", hatch)} style={{ top: yOf(hours.end * 60), bottom: -PAD }} />
             {/* break */}
             <div
-              className="absolute inset-x-0 flex items-center justify-end border-y border-dashed border-ink/15 bg-ink/[0.04] pr-3 font-mono text-[10px] uppercase tracking-[0.14em] text-ink/40"
+              className="absolute inset-x-0 flex items-center justify-end border-y border-dashed border-ink/15 bg-ink/4 pr-3 font-mono text-[10px] uppercase tracking-[0.14em] text-ink/40"
               style={{ top: yOf(hours.breakStart * 60), height: yOf(hours.breakEnd * 60) - yOf(hours.breakStart * 60) }}
             >
               Break
@@ -95,7 +95,7 @@ function Schedule({ jobs, hours, now }: { jobs: Booking[]; hours: { start: numbe
               return (
                 <div key={h} className="absolute inset-x-0 flex items-center" style={{ top: yOf(h * 60) }}>
                   <span className="w-12 -translate-y-1/2 pl-3 font-mono text-[10px] leading-none text-ink/45">{hourLabel(h)}</span>
-                  <span className="h-px flex-1 bg-ink/[0.07]" />
+                  <span className="h-px flex-1 bg-ink/7" />
                 </div>
               );
             })}
@@ -149,7 +149,7 @@ function Schedule({ jobs, hours, now }: { jobs: Booking[]; hours: { start: numbe
             {isToday && nowMin >= DAY_START && nowMin <= DAY_END && (
               <div className="pointer-events-none absolute inset-x-0 z-10 flex items-center" style={{ top: yOf(nowMin) }}>
                 <span className="ml-10 h-2.5 w-2.5 -translate-y-px rounded-full bg-ink ring-4 ring-ink/15" />
-                <span className="h-[2px] flex-1 bg-ink" />
+                <span className="h-0.5 flex-1 bg-ink" />
                 <span className="mr-3 rounded-full bg-ink px-2 py-0.5 font-mono text-[10px] text-cream">Now</span>
               </div>
             )}
@@ -166,10 +166,11 @@ function Schedule({ jobs, hours, now }: { jobs: Booking[]; hours: { start: numbe
 }
 
 function ProDashboard() {
+  const myProId = useMyProId();
   const now = useNow(30_000);
-  const pro = usePro(DEMO_PROFESSIONAL_ID)!;
+  const pro = usePro(myProId)!;
   const all = useApp((s) => s.bookings);
-  const mine = useMemo(() => all.filter((b) => b.professionalId === DEMO_PROFESSIONAL_ID), [all]);
+  const mine = useMemo(() => all.filter((b) => b.professionalId === myProId), [all, myProId]);
   const active = mine.filter((b) => ACTIVE.includes(b.status)).sort((a, b) => a.start.localeCompare(b.start));
   const completed = mine.filter((b) => b.status === "COMPLETED").sort((a, b) => b.end.localeCompare(a.end));
   const next = active[0];

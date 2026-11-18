@@ -1,6 +1,6 @@
 "use client";
 
-import { CalendarCheck, CreditCard, LayoutDashboard, UserCheck, Wrench } from "lucide-react";
+import { CalendarCheck, CreditCard, LayoutDashboard, ShieldCheck, UserCheck, Wrench } from "lucide-react";
 import { DashboardShell, type NavItem } from "@/components/organisms/dashboard-shell";
 import { AdminAside } from "@/components/dashboard/role-asides";
 
@@ -10,6 +10,7 @@ const nav: NavItem[] = [
   { href: "/admin/professionals", label: "Professionals", short: "Pros", icon: UserCheck },
   { href: "/admin/payments", label: "Payments", icon: CreditCard },
   { href: "/admin/services", label: "Services", icon: Wrench },
+  { href: "/admin/team", label: "Team & access", icon: ShieldCheck, tab: false },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

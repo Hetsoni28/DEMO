@@ -118,7 +118,7 @@ export function ContactExperience() {
           {channels.map((c, i) => (
             <Reveal as="li" key={c.topic} delay={i * 0.06} className="border-b border-r border-ink/20">
               <button type="button" onClick={() => pickChannel(c.topic)} className="group relative flex h-full w-full flex-col overflow-hidden p-7 text-left">
-                <span className="absolute inset-0 origin-bottom scale-y-0 bg-ink transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-y-100" />
+                <span className="absolute inset-0 origin-bottom scale-y-0 bg-ink transition-transform duration-700 ease-out-expo group-hover:scale-y-100" />
                 <span className="relative flex items-center justify-between">
                   <span className="font-mono text-xs text-ink/45 transition-colors group-hover:text-cream/50">({String(i + 1).padStart(2, "0")})</span>
                   <span className="flex h-10 w-10 items-center justify-center rounded-full border border-ink/20 transition-all duration-500 group-hover:rotate-45 group-hover:border-cream group-hover:bg-cream group-hover:text-ink">
@@ -152,7 +152,7 @@ export function ContactExperience() {
                     <motion.circle cx="48" cy="48" r="44" fill="none" stroke="#282B4A" strokeWidth="3" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.8, ease: EASE }} />
                     <motion.path d="M30 49 L43 62 L67 36" fill="none" stroke="#282B4A" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.5, ease: EASE, delay: 0.6 }} />
                   </svg>
-                  <h2 className="mt-8 text-[clamp(2.5rem,5vw,4rem)] font-black leading-[0.9] tracking-[-0.05em]">
+                  <h2 className="mt-8 text-[clamp(2.5rem,5vw,4rem)] font-black leading-[0.9] tracking-tighter">
                     <LineReveal lines={["Message received.", <span key="b" className="text-ink/40">We’re on it.</span>]} delay={0.3} />
                   </h2>
                   <div className="mt-8 inline-flex items-center gap-3 rounded-full border border-ink/15 bg-paper px-5 py-2.5 font-mono text-[13px]">
@@ -161,17 +161,17 @@ export function ContactExperience() {
                   <ol className="stagger-fast mt-10 max-w-md space-y-5 border-l border-ink/20 pl-6">
                     {[
                       ["Received", "Your message is in our queue with the ticket above."],
-                      ["Reviewed", "The right team picks it up — usually within a couple of hours."],
+                      ["Reviewed", "The right team picks it up, usually within a couple of hours."],
                       ["Reply", form.replyVia === "whatsapp" ? "We’ll message you on WhatsApp." : "We’ll reply to your email."],
                     ].map(([t, d], i) => (
                       <li key={t} className="relative">
-                        <span className={cn("absolute -left-[31px] top-1 h-3.5 w-3.5 rounded-full border-2 border-cream", i === 0 ? "bg-ink" : "bg-ink/25")} />
+                        <span className={cn("absolute -left-7.75 top-1 h-3.5 w-3.5 rounded-full border-2 border-cream", i === 0 ? "bg-ink" : "bg-ink/25")} />
                         <div className="text-[15px] font-semibold">{t}</div>
                         <div className="text-[14px] text-ink/60">{d}</div>
                       </li>
                     ))}
                   </ol>
-                  <p className="mt-8 text-[12.5px] text-ink/45">Demo build — no message was actually sent.</p>
+                  <p className="mt-8 text-[12.5px] text-ink/45">Demo build: no message was actually sent.</p>
                   <button type="button" onClick={reset} className="link-underline mt-4 pb-0.5 text-[14px] font-semibold">
                     Send another message
                   </button>
@@ -190,7 +190,7 @@ export function ContactExperience() {
                   }}
                   className="mt-10 space-y-6"
                 >
-                  <h2 className="text-[clamp(2.25rem,4.5vw,3.5rem)] font-black leading-[0.92] tracking-[-0.05em]">
+                  <h2 className="text-[clamp(2.25rem,4.5vw,3.5rem)] font-black leading-[0.92] tracking-tighter">
                     <LineReveal onView lines={["Tell us what’s", <span key="b" className="text-ink/40">going on.</span>]} />
                   </h2>
 
@@ -310,7 +310,7 @@ export function ContactExperience() {
                   <SubmitButton loading={loading}>
                     Send message <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
                   </SubmitButton>
-                  <p className="text-center text-[12px] text-ink/45">Demo build — messages aren’t sent anywhere yet.</p>
+                  <p className="text-center text-[12px] text-ink/45">Demo build: messages aren’t sent anywhere yet.</p>
                 </motion.form>
               )}
             </AnimatePresence>
@@ -322,8 +322,8 @@ export function ContactExperience() {
               <div className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.16em] text-cream/55">
                 <Zap className="h-3.5 w-3.5" /> Urgent problem?
               </div>
-              <p className="mt-4 text-[26px] font-bold leading-[1.05] tracking-[-0.03em]">Don’t wait for a reply — book the earliest slot.</p>
-              <p className="mt-3 text-[14px] leading-relaxed text-cream/65">Leak, sparking socket or AC down? Make it safe first — turn off the water main or the MCB — then book. Most areas have same-day slots.</p>
+              <p className="mt-4 text-[26px] font-bold leading-[1.05] tracking-[-0.03em]">Don’t wait for a reply. Book the earliest slot.</p>
+              <p className="mt-3 text-[14px] leading-relaxed text-cream/65">Leak, sparking socket or AC down? Make it safe first (turn off the water main or the MCB), then book. Most areas have same-day slots.</p>
               <Link href="/services" className="group mt-6 inline-flex h-11 items-center gap-2 rounded-full bg-cream pl-5 pr-1.5 text-[14px] font-semibold text-ink">
                 Book now
                 <span className="flex h-8 w-8 items-center justify-center rounded-full bg-ink text-cream transition-transform duration-500 group-hover:rotate-45">
@@ -374,9 +374,9 @@ export function ContactExperience() {
           ].map((l, i) => (
             <Reveal as="li" key={l.href} delay={i * 0.05} y={14}>
               <Link href={l.href} className="group relative block overflow-hidden border-b border-ink/20">
-                <span className="absolute inset-0 origin-bottom scale-y-0 bg-ink transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-y-100" />
+                <span className="absolute inset-0 origin-bottom scale-y-0 bg-ink transition-transform duration-700 ease-out-expo group-hover:scale-y-100" />
                 <span className="relative grid grid-cols-[1fr_auto] items-center gap-6 py-7 transition-colors duration-500 group-hover:text-cream md:grid-cols-[1.1fr_1fr_auto]">
-                  <span className="text-[clamp(1.4rem,3vw,2.25rem)] font-bold tracking-[-0.035em] transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:translate-x-3">{l.label}</span>
+                  <span className="text-[clamp(1.4rem,3vw,2.25rem)] font-bold tracking-[-0.035em] transition-transform duration-700 ease-out-expo group-hover:translate-x-3">{l.label}</span>
                   <span className="hidden text-[14px] text-ink/60 group-hover:text-cream/70 md:block">{l.note}</span>
                   <span className="flex h-11 w-11 items-center justify-center rounded-full border border-ink/20 transition-all duration-500 group-hover:rotate-45 group-hover:border-cream group-hover:bg-cream group-hover:text-ink">
                     <ArrowUpRight className="h-4 w-4" />

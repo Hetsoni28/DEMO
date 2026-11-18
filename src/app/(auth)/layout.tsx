@@ -18,7 +18,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           </header>
 
           <main className="flex flex-1 items-center justify-center py-12">
-            <div className="w-full max-w-[440px]">{children}</div>
+            <div className="w-full max-w-110">{children}</div>
           </main>
 
           <footer className="flex flex-col gap-2 text-[12px] text-ink/45 sm:flex-row sm:items-center sm:justify-between">

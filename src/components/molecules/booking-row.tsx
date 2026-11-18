@@ -12,7 +12,7 @@ export function BookingRow({ booking, href, sub }: { booking: Booking; href: str
   const svc = getService(booking.serviceSlug)!;
   const Icon = categoryIcons[getCategory(svc.categorySlug)!.icon];
   return (
-    <Link href={href} className="group flex items-center gap-4 rounded-2xl px-3 py-3 transition-colors hover:bg-ink/[0.04]">
+    <Link href={href} className="group flex items-center gap-4 rounded-2xl px-3 py-3 transition-colors hover:bg-ink/4">
       <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-cream text-ink transition-transform duration-500 group-hover:-rotate-6">
         <Icon className="h-5 w-5" />
       </span>

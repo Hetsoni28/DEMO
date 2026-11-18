@@ -62,6 +62,9 @@ export function BookingFlow({ slugs, backHref, backLabel }: { slugs: string[]; b
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8">
+      <h1 className="sr-only">
+        Book {slugs.map((s) => getService(s)?.title ?? s).join(", ")}
+      </h1>
       <Link href={backHref} className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-slate-900">
         <ArrowLeft className="h-4 w-4" /> {backLabel}
       </Link>
@@ -336,7 +339,7 @@ function AddressStep({
           {form.zone === "__other" && (
             <p className="flex items-center gap-2 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-700">
               <CircleAlert className="h-4 w-4" /> We don&apos;t serve this area
-              yet — we&apos;re live in {SERVICE_AREA.city} only.
+              yet. We&apos;re live in {SERVICE_AREA.city} only.
             </p>
           )}
         </div>
@@ -397,7 +400,7 @@ function SlotStep({ slugs, selected, onBack, onNext }: { slugs: string[]; select
       <p className="mt-1 text-sm text-slate-500">
         {visits.length > 1
           ? `${slugs.length} services · ${visits.length} professionals arrive together. Only times when every one of them is free are shown.`
-          : `Live availability from verified professionals — includes their hours, breaks, existing jobs and a ${TRAVEL_BUFFER_MIN}-min travel buffer.`}
+          : `Live availability from verified professionals, built from their hours, breaks, existing jobs and a ${TRAVEL_BUFFER_MIN}-min travel buffer.`}
       </p>
       <div className="-mx-6 mt-5 flex gap-2 overflow-x-auto px-6 pb-2">
         {days.map((d, i) => (
@@ -644,13 +647,13 @@ function PaymentStep({ group, onRestart }: { group: string; onRestart: () => voi
             )}
             <h2 className="text-lg font-semibold">{doneAll ? "Payment verified" : "Verifying your payment…"}</h2>
           </div>
-          <p className="mt-1 text-sm text-slate-500">The browser callback isn&apos;t proof of payment — we wait for the signed webhook.</p>
+          <p className="mt-1 text-sm text-slate-500">The browser callback isn&apos;t proof of payment. We wait for the signed webhook.</p>
           <ol className="relative mt-6 space-y-4 pl-9">
             {/* progress rail */}
-            <span aria-hidden className="absolute bottom-3 left-[11px] top-3 w-0.5 rounded-full bg-ink/10" />
+            <span aria-hidden className="absolute bottom-3 left-2.75 top-3 w-0.5 rounded-full bg-ink/10" />
             <motion.span
               aria-hidden
-              className="absolute left-[11px] top-3 w-0.5 origin-top rounded-full bg-ink"
+              className="absolute left-2.75 top-3 w-0.5 origin-top rounded-full bg-ink"
               style={{ bottom: 12 }}
               initial={{ scaleY: 0 }}
               animate={{ scaleY: Math.min(1, Math.max(0, verifying) / (VERIFY_STEPS.length - 1)) }}
@@ -787,7 +790,7 @@ function PaymentStep({ group, onRestart }: { group: string; onRestart: () => voi
           Simulate a failed payment
         </button>
         <p className="mt-5 flex items-center justify-center gap-1.5 text-xs text-slate-400">
-          <ShieldCheck className="h-3.5 w-3.5" /> Demo checkout — no real money
+          <ShieldCheck className="h-3.5 w-3.5" /> Demo checkout · no real money
           moves
         </p>
       </div>

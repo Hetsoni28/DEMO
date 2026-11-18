@@ -62,7 +62,7 @@ export function InvoiceButton({ booking }: { booking: Booking }) {
                 <div>
                   <div className="text-slate-500">Billed to</div>
                   <div className="font-medium">{booking.customerName}</div>
-                  <div className="max-w-[220px] text-slate-500 [overflow-wrap:anywhere]">
+                  <div className="max-w-55 text-slate-500 [overflow-wrap:anywhere]">
                     {booking.address}
                   </div>
                 </div>

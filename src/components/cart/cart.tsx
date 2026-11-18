@@ -69,7 +69,7 @@ export function AddToCartButton({ slug, variant = "icon", className }: { slug: s
       aria-pressed={inCart}
       aria-label={inCart ? `Remove ${title} from your booking` : `Add ${title} to your booking`}
       className={cn(
-        "flex h-12 w-12 items-center justify-center rounded-full border transition-all duration-500 ease-[cubic-bezier(.16,1,.3,1)] disabled:opacity-50",
+        "flex h-12 w-12 items-center justify-center rounded-full border transition-all duration-500 ease-out-expo disabled:opacity-50",
         inCart ? "border-ink bg-ink text-cream group-hover:border-cream group-hover:bg-cream group-hover:text-ink" : "border-ink/15 text-ink group-hover:border-cream group-hover:text-cream hover:!bg-cream hover:!text-ink",
         className,
       )}
@@ -96,7 +96,7 @@ export function CartButton() {
       aria-label={`Your booking basket${ready && count ? `, ${count} service${count > 1 ? "s" : ""}` : ""}`}
       className="relative flex h-11 w-11 items-center justify-center rounded-full border border-ink/15 text-ink transition-colors hover:border-ink"
     >
-      <ShoppingBag className="h-[18px] w-[18px]" />
+      <ShoppingBag className="h-4.5 w-4.5" />
       <AnimatePresence>
         {ready && count > 0 && (
           <motion.span
@@ -245,7 +245,7 @@ export function CartDrawer() {
                   <Link
                     href="/checkout"
                     onClick={() => setOpen(false)}
-                    className="group mt-4 flex h-[52px] items-center justify-center gap-2 rounded-full bg-ink text-[15px] font-semibold text-cream"
+                    className="group mt-4 flex h-13 items-center justify-center gap-2 rounded-full bg-ink text-[15px] font-semibold text-cream"
                   >
                     Checkout · pay once <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
                   </Link>

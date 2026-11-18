@@ -110,7 +110,7 @@ export const services: Service[] = [
     categorySlug: "plumbing",
     title: "Drain Unclogging",
     short: "Clear blocked sinks, basins and floor traps.",
-    description: "Mechanical clearing of a blocked drain using spring cables and plungers — no harsh chemicals.",
+    description: "Mechanical clearing of a blocked drain using spring cables and plungers. No harsh chemicals.",
     inclusions: ["1 blocked outlet", "Mechanical clearing", "Flow test"],
     exclusions: ["Main sewer line blockage", "Pipe replacement"],
     pricePaise: 29900,
@@ -662,7 +662,7 @@ export const DEMO_PROFESSIONAL_ID = "p1";
 export const testimonials = [
   { name: "Neha S.", area: "Satellite", text: "Booked an AC service at 9 pm, the technician arrived next morning on the dot. Scanned the QR, cleaned the unit, sent photos. Super clean.", rating: 5 },
   { name: "Karan D.", area: "Bodakdev", text: "The plumber found a corroded valve and the extra cost needed my approval in the app before he went ahead. No surprises on the bill.", rating: 5 },
-  { name: "Fatima K.", area: "Navrangpura", text: "Deep cleaning, pest control and a fan installation — all booked in one place, all saved in my home passport.", rating: 4 },
+  { name: "Fatima K.", area: "Navrangpura", text: "Deep cleaning, pest control and a fan installation, all booked here. Everything is in my home passport now, which helps when the landlord asks.", rating: 4 },
 ];
 
 export function getService(slug: string) {

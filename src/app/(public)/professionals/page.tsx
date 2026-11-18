@@ -12,7 +12,7 @@ export const metadata: Metadata = pageMetadata({
 });
 
 const steps = [
-  { title: "Register & upload documents", text: "ID, trade certificate and police verification — stored in a private bucket." },
+  { title: "Register & upload documents", text: "ID, trade certificate and police verification, stored privately." },
   { title: "Get verified", text: "Our team reviews your documents and activates your profile." },
   { title: "Set skills, zones & hours", text: "Only jobs that match your skills, areas and schedule reach you." },
   { title: "Scan, fix, report", text: "Scan the customer's QR to start, upload photos and complete the job." },

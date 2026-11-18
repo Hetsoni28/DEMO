@@ -13,10 +13,10 @@ export function ServiceCard({ service, index }: { service: Service; index?: numb
   const cat = getCategory(service.categorySlug)!;
   const Icon = categoryIcons[cat.icon];
   return (
-    <div className="group relative h-full min-h-[300px] transition-[transform,box-shadow] duration-700 ease-[cubic-bezier(.16,1,.3,1)] hover:-translate-y-1.5 hover:shadow-[0_30px_60px_-30px_rgba(40,43,74,0.45)] rounded-[28px]">
-      <Link href={`/services/${service.slug}`} className="relative flex h-full min-h-[300px] flex-col overflow-hidden rounded-[28px] border border-ink/12 bg-paper p-6">
+    <div className="group relative h-full min-h-75 transition-[transform,box-shadow] duration-700 ease-out-expo hover:-translate-y-1.5 hover:shadow-[0_30px_60px_-30px_rgba(40,43,74,0.45)] rounded-[28px]">
+      <Link href={`/services/${service.slug}`} className="relative flex h-full min-h-75 flex-col overflow-hidden rounded-[28px] border border-ink/12 bg-paper p-6">
         {/* ink flood on hover */}
-        <span className="absolute inset-0 origin-bottom scale-y-0 rounded-[28px] bg-ink transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-y-100" />
+        <span className="absolute inset-0 origin-bottom scale-y-0 rounded-[28px] bg-ink transition-transform duration-700 ease-out-expo group-hover:scale-y-100" />
         <div className="relative flex items-start justify-between">
           <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-ink/50 transition-colors duration-500 group-hover:text-cream/50">
             {index !== undefined ? `(${String(index + 1).padStart(2, "0")}) ` : ""}

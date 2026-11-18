@@ -38,7 +38,7 @@ const STEPS: Record<Role, Step[]> = {
     {
       target: "next-visit",
       title: "Your next visit, live",
-      body: "Countdown, who is coming and where the job stands — updated as it happens.",
+      body: "Countdown, who is coming and where the job stands, updated as it happens.",
     },
     {
       target: "qr",
@@ -70,7 +70,7 @@ const STEPS: Record<Role, Step[]> = {
     {
       target: "tabs",
       title: "Jobs, hours and earnings",
-      body: "Set working hours and days off — customers only see slots you can take.",
+      body: "Set working hours and days off. Customers only see slots you can take.",
     },
     {
       target: "account",
@@ -82,7 +82,7 @@ const STEPS: Record<Role, Step[]> = {
     {
       target: "period",
       title: "Pick the period",
-      body: "7, 14 or 30 days — every number and chart below updates.",
+      body: "7, 14 or 30 days. Every number and chart below updates.",
     },
     {
       target: "kpis",
@@ -92,7 +92,7 @@ const STEPS: Record<Role, Step[]> = {
     {
       target: "queue",
       title: "What needs you now",
-      body: "Assign professionals, approve verifications and handle refunds — straight from the queue.",
+      body: "Assign professionals, approve verifications and handle refunds straight from the queue.",
     },
     {
       target: "search",
@@ -163,9 +163,12 @@ export function Tour({ role }: { role: Role }) {
     } catch {}
   }, [role]);
 
+  // A newly approved pro sees the welcome first; its "Show me around" starts the tour.
+  const welcomePending = useApp((s) => s.accounts.find((x) => x.id === s.accountId)?.approvalSeen === false);
+
   // First visit: wait for demo data so the real cards exist, then start.
   useEffect(() => {
-    if (!ready) return;
+    if (!ready || welcomePending) return;
     let seen = false;
     try {
       seen = localStorage.getItem(seenKey(role)) === "1";
@@ -173,7 +176,7 @@ export function Tour({ role }: { role: Role }) {
     if (seen) return;
     const t = setTimeout(start, 900);
     return () => clearTimeout(t);
-  }, [ready, role, start]);
+  }, [ready, role, start, welcomePending]);
 
   // Replay on request.
   useEffect(() => {
@@ -312,7 +315,7 @@ export function Tour({ role }: { role: Role }) {
               else if (info.offset.x > 50) back();
             }}
             style={{ top: cardTop, left: cardLeft, width: W }}
-            className="absolute rounded-[24px] bg-cream p-5 text-ink shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)]"
+            className="absolute rounded-3xl bg-cream p-5 text-ink shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)]"
           >
             <div className="flex items-start justify-between gap-3">
               <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-ink/45">

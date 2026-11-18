@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import type { LucideIcon } from "lucide-react";
 import {
@@ -16,11 +16,12 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { Logo } from "@/components/atoms/logo";
+import { AccessGate, ApprovalWelcome } from "@/components/auth/access-gate";
 import { CommandPalette } from "@/components/dashboard/command-palette";
 import { Notifications } from "@/components/dashboard/notifications";
 import { Tour, replayTour } from "@/components/dashboard/tour";
 import { EASE } from "@/components/motion/motion";
-import { useApp, type Role } from "@/lib/store";
+import { useAccount, useApp, type Role } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
 export type NavItem = {
@@ -31,6 +32,8 @@ export type NavItem = {
   short?: string;
   /** The role's main action — raised in the centre of the mobile tab bar. */
   cta?: boolean;
+  /** false = not in the mobile tab bar; reachable from the account sheet instead. */
+  tab?: boolean;
 };
 
 const roleLabel: Record<Role, string> = {
@@ -77,13 +80,14 @@ function LiveClock() {
 
 export function DashboardShell({
   role,
-  user,
+  user: fallbackUser,
   subtitle,
   nav,
   aside,
   children,
 }: {
   role: Role;
+  /** Fallback name before the signed-in account has loaded. */
   user: string;
   subtitle: string;
   nav: NavItem[];
@@ -95,16 +99,14 @@ export function DashboardShell({
   const router = useRouter();
   const [sheet, setSheet] = useState(false);
   const [palette, setPalette] = useState(false);
-  const setRole = useApp((s) => s.setRole);
+  const signOut = useApp((s) => s.signOut);
   const reset = useApp((s) => s.reset);
-  const current = useApp((s) => s.role);
   const ready = useApp((s) => s.ready);
-
-  // Demo "auth": visiting a portal signs you in as that role — except while logging out.
-  const leaving = useRef(false);
-  useEffect(() => {
-    if (ready && current !== role && !leaving.current) setRole(role);
-  }, [ready, current, role, setRole]);
+  const account = useAccount();
+  const pro = useApp((s) => s.pros.find((p) => p.id === account?.proId));
+  const user = account?.name ?? fallbackUser;
+  // RBAC: only an active account with this portal's role may use it.
+  const allowed = !!account && account.role === role && account.status === "ACTIVE";
 
   // Close the account sheet on navigation.
   const [lastPath, setLastPath] = useState(pathname);
@@ -136,24 +138,27 @@ export function DashboardShell({
 
   /** Sign out of the demo portal and return to the login screen. */
   const logout = () => {
-    leaving.current = true;
     setSheet(false);
-    setRole(null);
+    signOut();
     toast.success("Logged out");
     router.push("/login");
   };
 
+  if (ready && !allowed) return <AccessGate role={role} account={account} />;
+
   const sidebar = (
     <div className="flex h-full flex-col bg-ink text-cream">
-      <div className="flex items-center justify-between px-6 pb-6 pt-6">
+      {/* Logo on its own line; the role sits underneath so long role names never crowd it */}
+      <div className="px-6 pb-6 pt-6">
         <Logo light />
-        <span className="rounded-full border border-cream/20 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-cream/70">
-          {roleLabel[role]}
-        </span>
+        <div className="mt-3 flex items-center gap-2 pl-0.5 font-mono text-[10px] uppercase tracking-[0.16em] text-cream/55">
+          <span className="h-1.5 w-1.5 rounded-full bg-cream/60" aria-hidden />
+          {roleLabel[role]} workspace
+        </div>
       </div>
 
       <div className="px-6 pb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-cream/40">
-        Workspace
+        Menu
       </div>
       <nav
         data-tour="tabs"
@@ -181,7 +186,7 @@ export function DashboardShell({
                 />
               )}
               {!active && (
-                <span className="absolute inset-0 rounded-2xl bg-cream/0 transition-colors group-hover:bg-cream/[0.06]" />
+                <span className="absolute inset-0 rounded-2xl bg-cream/0 transition-colors group-hover:bg-cream/6" />
               )}
               <span
                 className={cn(
@@ -219,7 +224,7 @@ export function DashboardShell({
               key={a.label}
               type="button"
               onClick={a.onClick}
-              className="flex flex-col items-center gap-1 rounded-xl py-2 text-[10.5px] text-cream/55 transition-colors hover:bg-cream/[0.06] hover:text-cream"
+              className="flex flex-col items-center gap-1 rounded-xl py-2 text-[10.5px] text-cream/55 transition-colors hover:bg-cream/6 hover:text-cream"
             >
               <a.icon className="h-3.5 w-3.5" />
               {a.label === "How it works" ? "Guide" : a.label.split(" ")[0]}
@@ -229,7 +234,7 @@ export function DashboardShell({
         <button
           type="button"
           onClick={logout}
-          className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl border border-cream/15 py-2.5 text-[13px] font-semibold text-cream/85 transition-colors hover:border-cream/40 hover:bg-cream/[0.06] hover:text-cream"
+          className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl border border-cream/15 py-2.5 text-[13px] font-semibold text-cream/85 transition-colors hover:border-cream/40 hover:bg-cream/6 hover:text-cream"
         >
           <LogOut className="h-4 w-4" />
           Log out
@@ -240,7 +245,7 @@ export function DashboardShell({
 
   return (
     <div className="flex min-h-screen w-full bg-cream">
-      <aside className="sticky top-0 hidden h-screen w-[272px] shrink-0 lg:block">
+      <aside className="sticky top-0 hidden h-screen w-68 shrink-0 lg:block">
         {sidebar}
       </aside>
 
@@ -295,7 +300,7 @@ export function DashboardShell({
               onClick={() => setPalette(true)}
               aria-label="Search or jump to"
               data-tour="search"
-              className="ml-auto flex h-10 w-10 shrink-0 items-center justify-center gap-2.5 rounded-full border border-ink/10 bg-paper text-[13px] text-ink/50 transition-colors hover:border-ink/30 active:scale-95 lg:w-[300px] lg:justify-start lg:px-4"
+              className="ml-auto flex h-10 w-10 shrink-0 items-center justify-center gap-2.5 rounded-full border border-ink/10 bg-paper text-[13px] text-ink/50 transition-colors hover:border-ink/30 active:scale-95 lg:w-75 lg:justify-start lg:px-4"
             >
               <Search className="h-4 w-4 shrink-0" />
               <span className="hidden truncate lg:inline">
@@ -340,6 +345,7 @@ export function DashboardShell({
         aside={aside}
         actions={actions}
         onLogout={logout}
+        more={nav.filter((n) => n.tab === false)}
       />
       <CommandPalette
         open={palette}
@@ -348,6 +354,7 @@ export function DashboardShell({
         role={role}
       />
       <Tour role={role} />
+      {role === "professional" && account?.approvalSeen === false && <ApprovalWelcome account={account} pro={pro} onTour={replayTour} />}
     </div>
   );
 }
@@ -363,9 +370,10 @@ function MobileTabBar({
   hidden: boolean;
 }) {
   // The role's main action sits raised in the centre; the rest keep their order around it.
-  const cta = nav.find((n) => n.cta);
-  const rest = nav.filter((n) => n !== cta);
-  const tabs = cta ? [...rest.slice(0, 2), cta, ...rest.slice(2)] : nav;
+  const inBar = nav.filter((n) => n.tab !== false);
+  const cta = inBar.find((n) => n.cta);
+  const rest = inBar.filter((n) => n !== cta);
+  const tabs = cta ? [...rest.slice(0, 2), cta, ...rest.slice(2)] : inBar;
 
   return (
     <motion.nav
@@ -377,7 +385,7 @@ function MobileTabBar({
     >
       <ul
         data-tour="tabs"
-        className="mx-auto flex h-[68px] max-w-md items-stretch rounded-[26px] bg-ink/95 px-1.5 text-cream shadow-[0_20px_50px_-15px_rgba(40,43,74,0.6)] ring-1 ring-cream/10 backdrop-blur-xl"
+        className="mx-auto flex h-17 max-w-md items-stretch rounded-[26px] bg-ink/95 px-1.5 text-cream shadow-[0_20px_50px_-15px_rgba(40,43,74,0.6)] ring-1 ring-cream/10 backdrop-blur-xl"
       >
         {tabs.map((item) => {
           const active = isActive(item.href);
@@ -417,7 +425,7 @@ function MobileTabBar({
                 {active && (
                   <motion.span
                     layoutId="tab-pill"
-                    className="absolute inset-x-1 inset-y-1.5 rounded-[18px] bg-cream/[0.12]"
+                    className="absolute inset-x-1 inset-y-1.5 rounded-[18px] bg-cream/12"
                     transition={{ type: "spring", stiffness: 420, damping: 34 }}
                   />
                 )}
@@ -462,6 +470,7 @@ function AccountSheet({
   aside,
   actions,
   onLogout,
+  more,
 }: {
   open: boolean;
   onClose: () => void;
@@ -471,6 +480,7 @@ function AccountSheet({
   aside?: ReactNode;
   actions: { icon: LucideIcon; label: string; onClick: () => void }[];
   onLogout: () => void;
+  more: NavItem[];
 }) {
   const reduce = useReducedMotion();
 
@@ -544,7 +554,23 @@ function AccountSheet({
 
             {aside && <div className="mt-5">{aside}</div>}
 
-            <ul className="mt-4 overflow-hidden rounded-2xl bg-cream/[0.06]">
+            {more.length > 0 && (
+              <ul className="mt-4 overflow-hidden rounded-2xl bg-cream/6">
+                {more.map((item, i) => (
+                  <li key={item.href} className={cn(i > 0 && "border-t border-cream/10")}>
+                    <Link href={item.href} onClick={tap} className="flex w-full items-center gap-3 px-4 py-3.5 text-[15px] font-medium transition-colors active:bg-cream/8">
+                      <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-cream text-ink">
+                        <item.icon className="h-4 w-4" />
+                      </span>
+                      <span className="flex-1">{item.label}</span>
+                      <ChevronRight className="h-4 w-4 text-cream/35" />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            <ul className="mt-4 overflow-hidden rounded-2xl bg-cream/6">
               {actions.map((a, i) => (
                 <li
                   key={a.label}
@@ -557,9 +583,9 @@ function AccountSheet({
                       onClose();
                       a.onClick();
                     }}
-                    className="flex w-full items-center gap-3 px-4 py-3.5 text-left text-[15px] font-medium transition-colors active:bg-cream/[0.08]"
+                    className="flex w-full items-center gap-3 px-4 py-3.5 text-left text-[15px] font-medium transition-colors active:bg-cream/8"
                   >
-                    <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-cream/[0.08]">
+                    <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-cream/8">
                       <a.icon className="h-4 w-4" />
                     </span>
                     <span className="flex-1">{a.label}</span>
@@ -605,7 +631,7 @@ export function PageTitle({
   return (
     <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <h1 className="text-[clamp(2rem,4vw,3rem)] font-black leading-[0.95] tracking-[-0.05em] text-ink">
+        <h1 className="text-[clamp(2rem,4vw,3rem)] font-black leading-[0.95] tracking-tighter text-ink">
           {title}
         </h1>
         {description && (

@@ -5,8 +5,7 @@ import { useState } from "react";
 import { Card } from "@/components/atoms/ui";
 import { BookingRow } from "@/components/molecules/booking-row";
 import { PageTitle } from "@/components/organisms/dashboard-shell";
-import { DEMO_CUSTOMER } from "@/lib/mock-data";
-import { useApp } from "@/lib/store";
+import { useApp, useMyCustomerId } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
 const tabs = [
@@ -16,12 +15,13 @@ const tabs = [
 ];
 
 function CustomerBookings() {
+  const myCustomerId = useMyCustomerId();
   const [tab, setTab] = useState("upcoming");
   const pros = useApp((s) => s.pros);
   const all = useApp((s) => s.bookings);
   const t = tabs.find((x) => x.id === tab)!;
   const list = all
-    .filter((b) => b.customerId === DEMO_CUSTOMER.id && t.match.includes(b.status))
+    .filter((b) => b.customerId === myCustomerId && t.match.includes(b.status))
     .sort((a, b) => (tab === "upcoming" ? a.start.localeCompare(b.start) : b.start.localeCompare(a.start)));
 
   return (

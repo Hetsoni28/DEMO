@@ -58,7 +58,7 @@ function ServicesPanel({ onNavigate }: { onNavigate: () => void }) {
               <motion.li key={s.slug} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, ease: EASE, delay: 0.03 * i }}>
                 <Link href={s.href} onClick={onNavigate} className="group flex gap-3 rounded-2xl p-3 transition-colors hover:bg-cream focus-visible:bg-cream">
                   <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-ink/10 bg-paper text-ink transition-all duration-500 group-hover:-rotate-6 group-hover:bg-ink group-hover:text-cream">
-                    <Icon className="h-[18px] w-[18px]" />
+                    <Icon className="h-4.5 w-4.5" />
                   </span>
                   <span className="min-w-0">
                     <span className="flex items-center gap-1.5 text-[14px] font-semibold text-ink">
@@ -81,7 +81,7 @@ function ServicesPanel({ onNavigate }: { onNavigate: () => void }) {
         initial={{ opacity: 0, x: 12 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5, ease: EASE, delay: 0.1 }}
-        className="relative flex flex-col overflow-hidden rounded-[24px] bg-ink p-6 text-cream"
+        className="relative flex flex-col overflow-hidden rounded-3xl bg-ink p-6 text-cream"
       >
         <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-cream/50">Book in 60 sec</span>
         <p className="mt-3 text-[26px] font-bold leading-[1.02] tracking-[-0.04em]">Real slots. Fixed price. QR at the door.</p>
@@ -205,7 +205,7 @@ export function SiteHeader() {
             mobileOpen && "border-transparent bg-transparent shadow-none backdrop-blur-none",
           )}
         >
-          <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-5 sm:px-8">
+          <div className="mx-auto flex h-18 max-w-7xl items-center justify-between px-5 sm:px-8">
             <div className={cn("relative z-10 transition-opacity", mobileOpen && "opacity-0")}>
               <Logo />
             </div>
@@ -251,7 +251,7 @@ export function SiteHeader() {
               <Magnetic strength={0.2} className="hidden sm:inline-block">
                 <Link href={cta.href} className="group ml-3 inline-flex h-11 items-center gap-2 rounded-full bg-ink pl-5 pr-1.5 text-[14px] font-medium text-cream">
                   {cta.label}
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-cream text-ink transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:rotate-45">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-cream text-ink transition-transform duration-500 ease-out-expo group-hover:rotate-45">
                     <ArrowUpRight className="h-4 w-4" />
                   </span>
                 </Link>
@@ -276,7 +276,7 @@ export function SiteHeader() {
           <motion.span
             aria-hidden
             style={{ scaleX: scrollYProgress }}
-            className={cn("absolute inset-x-0 bottom-[-1px] h-[2px] origin-left bg-ink transition-opacity duration-300", scrolled && !mobileOpen ? "opacity-100" : "opacity-0")}
+            className={cn("absolute inset-x-0 -bottom-px h-0.5 origin-left bg-ink transition-opacity duration-300", scrolled && !mobileOpen ? "opacity-100" : "opacity-0")}
           />
 
           {/* Desktop dropdown panels */}

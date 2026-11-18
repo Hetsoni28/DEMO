@@ -8,11 +8,12 @@ import { Badge, Button, Card, Input, Label, LinkButton, Textarea } from "@/compo
 import { StatusBadge } from "@/components/molecules/status-badge";
 import { Timeline } from "@/components/molecules/timeline";
 import { fmtDate, fmtTime, formatINR } from "@/lib/format";
-import { DEMO_PROFESSIONAL_ID, getService } from "@/lib/mock-data";
+import { getService } from "@/lib/mock-data";
 import { payout } from "@/lib/pro-helpers";
-import { useApp, useBooking } from "@/lib/store";
+import { useApp, useBooking, useMyProId } from "@/lib/store";
 
 export function ProJobDetail({ id }: { id: string }) {
+  const myProId = useMyProId();
   const b = useBooking(id);
   const requestExtra = useApp((s) => s.requestExtra);
   const complete = useApp((s) => s.complete);
@@ -21,7 +22,7 @@ export function ProJobDetail({ id }: { id: string }) {
   const [materials, setMaterials] = useState("");
   const [extra, setExtra] = useState({ description: "", amount: "" });
 
-  if (!b || b.professionalId !== DEMO_PROFESSIONAL_ID)
+  if (!b || b.professionalId !== myProId)
     return (
       <Card className="p-10 text-center">
         <Lock className="mx-auto h-8 w-8 text-slate-400" />
@@ -119,7 +120,7 @@ export function ProJobDetail({ id }: { id: string }) {
                     <Label>Before / after photos</Label>
                     <div className="grid grid-cols-4 gap-2">
                       {photos.map((p, i) => (
-                        <div key={i} className="relative flex aspect-square flex-col items-center justify-center rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 text-xs text-slate-500">
+                        <div key={i} className="relative flex aspect-square flex-col items-center justify-center rounded-xl bg-linear-to-br from-slate-100 to-slate-200 text-xs text-slate-500">
                           <Camera className="h-5 w-5" />
                           {p}
                           <button onClick={() => setPhotos(photos.filter((_, j) => j !== i))} className="absolute right-1 top-1 rounded-full bg-white p-0.5 shadow" aria-label="Remove">

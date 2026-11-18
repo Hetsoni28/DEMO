@@ -79,21 +79,21 @@ export function PriceApproval() {
       <SectionLabel index="06" title="Price approval" note="Interactive demo" />
       <div className="mt-14 grid grid-cols-1 items-center gap-14 lg:grid-cols-[1fr_1.05fr] lg:gap-20">
         <div>
-          <h2 className="text-[clamp(2.75rem,6.5vw,5.5rem)] font-bold leading-[0.92] tracking-[-0.05em]">
+          <h2 className="text-[clamp(2.75rem,6.5vw,5.5rem)] font-bold leading-[0.92] tracking-tighter">
             <LineReveal
               onView
               lines={[
-                "No surprises.",
+                "Extra work?",
                 <span key="b" className="text-ink/35">
-                  Ever.
+                  You decide.
                 </span>,
               ]}
             />
           </h2>
           <Reveal className="mt-8 max-w-md text-lg leading-relaxed text-ink/70">
-            Found something extra — a corroded valve, a worn AC part? Your
-            professional sends a quote to your phone. Nothing is done — or
-            charged — until you tap approve.
+            Found something extra, like a corroded valve or a worn AC part? Your
+            professional sends a quote to your phone. Nothing is done or
+            charged until you tap approve.
           </Reveal>
           <Reveal
             delay={0.1}
@@ -113,8 +113,8 @@ export function PriceApproval() {
         </div>
 
         <Reveal delay={0.1} y={40}>
-          <div className="relative rounded-[32px] bg-ink p-3 shadow-[0_50px_100px_-50px_rgba(40,43,74,0.7)]">
-            <div className="rounded-[24px] bg-paper p-6 sm:p-8">
+          <div className="relative rounded-4xl bg-ink p-3 shadow-[0_50px_100px_-50px_rgba(40,43,74,0.7)]">
+            <div className="rounded-3xl bg-paper p-6 sm:p-8">
               <div className="flex items-start justify-between">
                 <div>
                   <div className="font-mono text-[11px] uppercase tracking-[0.14em] text-ink/50">
@@ -209,7 +209,7 @@ export function PriceApproval() {
                       </span>
                       <button
                         onClick={() => setState("pending")}
-                        className="link-underline pb-0.5 font-mono text-[11px] uppercase tracking-[0.1em] opacity-70 hover:opacity-100"
+                        className="link-underline pb-0.5 font-mono text-[11px] uppercase tracking-widest opacity-70 hover:opacity-100"
                       >
                         Reset
                       </button>
@@ -229,7 +229,7 @@ export function PriceApproval() {
                   <dt className="font-mono text-[11px] uppercase tracking-[0.14em] text-ink/50">
                     Final invoice
                   </dt>
-                  <dd className="text-[40px] font-black leading-none tracking-[-0.05em]">
+                  <dd className="text-[40px] font-black leading-none tracking-tighter">
                     <AnimatedAmount value={total} />
                   </dd>
                 </div>
@@ -406,7 +406,7 @@ function RecordCard({
       transition={{ type: "spring", stiffness: 170, damping: 22, mass: 0.9 }}
       style={{ zIndex: active ? 30 : 20 - Math.abs(spread) }}
       className={cn(
-        "absolute left-1/2 top-1/2 w-[310px] -translate-x-1/2 -translate-y-1/2 outline-offset-4 focus-visible:outline-2 focus-visible:outline-ink",
+        "absolute left-1/2 top-1/2 w-77.5 -translate-x-1/2 -translate-y-1/2 outline-offset-4 focus-visible:outline-2 focus-visible:outline-ink",
         cardSkin(r),
         !active && "cursor-pointer",
       )}
@@ -521,7 +521,7 @@ export function Passport() {
         <SectionLabel index="07" title="Home passport" note="Sample records" />
         <div className="mt-14 grid grid-cols-1 items-center gap-10 lg:grid-cols-2">
           <div>
-            <h2 className="text-[clamp(2.75rem,6.5vw,5.5rem)] font-bold leading-[0.92] tracking-[-0.05em]">
+            <h2 className="text-[clamp(2.75rem,6.5vw,5.5rem)] font-bold leading-[0.92] tracking-tighter">
               <LineReveal
                 onView
                 lines={[
@@ -534,7 +534,7 @@ export function Passport() {
               />
             </h2>
             <Reveal className="mt-8 max-w-md text-lg leading-relaxed text-ink/70">
-              Every repair, installation, invoice and warranty — saved
+              Every repair, installation, invoice and warranty, saved
               automatically against your address. Next time, you&apos;ll know
               exactly what was done and what&apos;s still covered.
             </Reveal>
@@ -563,7 +563,7 @@ export function Passport() {
             <RecordCarousel active={active} setActive={setActive} />
           </div>
           <div className="hidden sm:block">
-            <div ref={ref} className="relative h-[500px]">
+            <div ref={ref} className="relative h-125">
               {records.map((r, i) => (
                 <RecordCard
                   key={r.title}
@@ -612,11 +612,11 @@ export function Passport() {
 const faqs = [
   {
     q: "How do I know the professional is genuine?",
-    a: "Every professional's ID and trade documents are reviewed before activation. On arrival they scan your one-time service QR — the job can only start if it matches your booking and their assignment.",
+    a: "Every professional's ID and trade documents are reviewed before activation. On arrival they scan your one-time service QR. The job only starts if it matches your booking and their assignment.",
   },
   {
     q: "When is my booking actually confirmed?",
-    a: "Your slot is held while you pay. The booking confirms only after the payment is verified on our server — a browser 'success' screen alone never confirms anything.",
+    a: "Your slot is held while you pay. The booking confirms only after the payment is verified on our server. A 'success' screen in your browser is never enough on its own.",
   },
   {
     q: "What if more work is needed?",
@@ -624,7 +624,7 @@ const faqs = [
   },
   {
     q: "Can I cancel or reschedule?",
-    a: "Yes — cancel free of charge up to 2 hours before the visit and the payment is refunded to its original source. Full policies are published before launch.",
+    a: "Yes. Cancel free of charge up to 2 hours before the visit and the payment is refunded to its original source. Full policies are published before launch.",
   },
   {
     q: "Is there a warranty?",
@@ -632,7 +632,7 @@ const faqs = [
   },
   {
     q: "Where do you operate?",
-    a: "We're starting in Ahmedabad and expanding area by area once the service is reliable — every trade, done properly.",
+    a: "We're starting in Ahmedabad and expanding area by area once the service is reliable there.",
   },
 ];
 
@@ -646,7 +646,7 @@ export function Faq() {
         note={`${faqs.length} answers`}
       />
       <div className="mt-14 grid grid-cols-1 gap-12 lg:grid-cols-[0.8fr_1.2fr]">
-        <h2 className="text-[clamp(2.75rem,6vw,5rem)] font-bold leading-[0.92] tracking-[-0.05em] lg:sticky lg:top-36 lg:self-start">
+        <h2 className="text-[clamp(2.75rem,6vw,5rem)] font-bold leading-[0.92] tracking-tighter lg:sticky lg:top-36 lg:self-start">
           <LineReveal
             onView
             lines={[
@@ -684,7 +684,7 @@ export function Faq() {
                   </span>
                   <span
                     className={cn(
-                      "flex h-10 w-10 shrink-0 items-center justify-center rounded-full border transition-all duration-500 ease-[cubic-bezier(.16,1,.3,1)]",
+                      "flex h-10 w-10 shrink-0 items-center justify-center rounded-full border transition-all duration-500 ease-out-expo",
                       isOpen
                         ? "rotate-45 border-ink bg-ink text-cream"
                         : "border-ink/20 group-hover:border-ink",

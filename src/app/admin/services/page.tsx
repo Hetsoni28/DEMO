@@ -15,7 +15,7 @@ function AdminServices() {
     <>
       <PageTitle title="Service catalogue" description="Prices here are the trusted source used to create Razorpay orders — the browser never sets the amount." />
       <Card className="overflow-x-auto">
-        <table className="w-full min-w-[820px] text-sm">
+        <table className="w-full min-w-205 text-sm">
           <thead>
             <tr className="border-b border-slate-200 text-left text-slate-500">
               <th className="px-4 py-3 font-medium">Service</th>

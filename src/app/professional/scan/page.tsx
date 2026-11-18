@@ -8,10 +8,11 @@ import { CircleAlert, LoaderCircle, QrCode, ScanLine } from "lucide-react";
 import { Button, Card, Input } from "@/components/atoms/ui";
 import { PageTitle } from "@/components/organisms/dashboard-shell";
 import { fmtDateTime } from "@/lib/format";
-import { DEMO_PROFESSIONAL_ID, getService } from "@/lib/mock-data";
-import { useApp } from "@/lib/store";
+import { getService } from "@/lib/mock-data";
+import { useApp, useMyProId } from "@/lib/store";
 
 function ScanPage() {
+  const myProId = useMyProId();
   const router = useRouter();
   const scanQr = useApp((s) => s.scanQr);
   const bookings = useApp((s) => s.bookings);
@@ -19,14 +20,14 @@ function ScanPage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const mine = bookings.filter((b) => b.professionalId === DEMO_PROFESSIONAL_ID && ["CONFIRMED", "ASSIGNED"].includes(b.status) && b.qr && !b.qr.consumedAt);
-  const others = bookings.filter((b) => b.professionalId !== DEMO_PROFESSIONAL_ID && ["CONFIRMED", "ASSIGNED"].includes(b.status) && b.qr).slice(0, 1);
+  const mine = bookings.filter((b) => b.professionalId === myProId && ["CONFIRMED", "ASSIGNED"].includes(b.status) && b.qr && !b.qr.consumedAt);
+  const others = bookings.filter((b) => b.professionalId !== myProId && ["CONFIRMED", "ASSIGNED"].includes(b.status) && b.qr).slice(0, 1);
 
   const submit = (t: string) => {
     setBusy(true);
     setError(null);
     setTimeout(() => {
-      const r = scanQr(t, DEMO_PROFESSIONAL_ID);
+      const r = scanQr(t, myProId);
       setBusy(false);
       if (r.ok && r.id) {
         toast.success("QR verified — job started");

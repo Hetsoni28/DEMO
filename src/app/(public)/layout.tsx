@@ -7,7 +7,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
   return (
     <SmoothScroll>
       <SiteHeader />
-      <main className="flex-1 pt-[108px]">{children}</main>
+      <main className="flex-1 pt-27">{children}</main>
       <SiteFooter />
       <CartDrawer />
     </SmoothScroll>
