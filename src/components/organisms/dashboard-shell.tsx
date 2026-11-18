@@ -266,24 +266,6 @@ export function DashboardShell({
             <LogOut className="h-4 w-4" />
           </button>
         </div>
-        <div className="mt-2 flex items-center justify-center gap-1 text-[11.5px] text-cream/45">
-          {actions.map((a, i) => (
-            <span key={a.label} className="flex items-center gap-1">
-              {i > 0 && (
-                <span aria-hidden className="text-cream/20">
-                  ·
-                </span>
-              )}
-              <button
-                type="button"
-                onClick={a.onClick}
-                className="rounded-md px-1.5 py-1 transition-colors hover:text-cream"
-              >
-                {a.label === "How it works" ? "Guide" : a.label}
-              </button>
-            </span>
-          ))}
-        </div>
       </div>
     </div>
   );
