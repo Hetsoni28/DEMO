@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import type { LucideIcon } from "lucide-react";
 import {
+  ChevronDown,
   ChevronRight,
   CircleHelp,
   Globe,
@@ -99,9 +100,10 @@ export function DashboardShell({
   const current = useApp((s) => s.role);
   const ready = useApp((s) => s.ready);
 
-  // Demo "auth": visiting a portal signs you in as that role.
+  // Demo "auth": visiting a portal signs you in as that role — except while logging out.
+  const leaving = useRef(false);
   useEffect(() => {
-    if (ready && current !== role) setRole(role);
+    if (ready && current !== role && !leaving.current) setRole(role);
   }, [ready, current, role, setRole]);
 
   // Close the account sheet on navigation.
@@ -130,15 +132,16 @@ export function DashboardShell({
         toast.success("Demo data reset");
       },
     },
-    {
-      icon: LogOut,
-      label: "Switch role",
-      onClick: () => {
-        setRole(null);
-        router.push("/login");
-      },
-    },
   ];
+
+  /** Sign out of the demo portal and return to the login screen. */
+  const logout = () => {
+    leaving.current = true;
+    setSheet(false);
+    setRole(null);
+    toast.success("Logged out");
+    router.push("/login");
+  };
 
   const sidebar = (
     <div className="flex h-full flex-col bg-ink text-cream">
@@ -210,7 +213,7 @@ export function DashboardShell({
             <div className="truncate text-[12px] text-cream/50">{subtitle}</div>
           </div>
         </div>
-        <div className="mt-1 grid grid-cols-4 gap-1">
+        <div className="mt-1 grid grid-cols-3 gap-1">
           {actions.map((a) => (
             <button
               key={a.label}
@@ -223,6 +226,14 @@ export function DashboardShell({
             </button>
           ))}
         </div>
+        <button
+          type="button"
+          onClick={logout}
+          className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl border border-cream/15 py-2.5 text-[13px] font-semibold text-cream/85 transition-colors hover:border-cream/40 hover:bg-cream/[0.06] hover:text-cream"
+        >
+          <LogOut className="h-4 w-4" />
+          Log out
+        </button>
       </div>
     </div>
   );
@@ -245,9 +256,15 @@ export function DashboardShell({
               }}
               aria-label="Open account"
               data-tour="account"
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-ink text-[12px] font-bold text-cream transition-transform active:scale-90 lg:hidden"
+              className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-ink text-[12px] font-bold text-cream transition-transform active:scale-90 lg:hidden"
             >
               {initials(user)}
+              <span
+                aria-hidden
+                className="absolute -bottom-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-cream ring-2 ring-cream"
+              >
+                <ChevronDown className="h-3 w-3 text-ink" strokeWidth={2.6} />
+              </span>
             </button>
             <div className="min-w-0 lg:hidden">
               <div className="font-mono text-[9.5px] uppercase leading-none tracking-[0.16em] text-ink/45">
@@ -293,6 +310,14 @@ export function DashboardShell({
               <LiveClock /> IST
             </span>
             <Notifications role={role} />
+            <button
+              type="button"
+              onClick={logout}
+              aria-label="Log out"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-ink/10 bg-paper text-ink/70 transition-colors hover:border-ink/30 hover:text-ink active:scale-95 lg:hidden"
+            >
+              <LogOut className="h-4 w-4" />
+            </button>
             <span className="hidden rounded-full border border-dashed border-ink/25 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-ink/55 md:inline">
               Demo
             </span>
@@ -314,6 +339,7 @@ export function DashboardShell({
         subtitle={subtitle}
         aside={aside}
         actions={actions}
+        onLogout={logout}
       />
       <CommandPalette
         open={palette}
@@ -435,6 +461,7 @@ function AccountSheet({
   subtitle,
   aside,
   actions,
+  onLogout,
 }: {
   open: boolean;
   onClose: () => void;
@@ -443,6 +470,7 @@ function AccountSheet({
   subtitle: string;
   aside?: ReactNode;
   actions: { icon: LucideIcon; label: string; onClick: () => void }[];
+  onLogout: () => void;
 }) {
   const reduce = useReducedMotion();
 
@@ -540,6 +568,18 @@ function AccountSheet({
                 </li>
               ))}
             </ul>
+
+            <button
+              type="button"
+              onClick={() => {
+                tap();
+                onLogout();
+              }}
+              className="mt-3 flex w-full items-center justify-center gap-2 rounded-2xl bg-cream py-3.5 text-[15px] font-semibold text-ink transition-transform active:scale-[0.98]"
+            >
+              <LogOut className="h-4 w-4" />
+              Log out
+            </button>
 
             <div className="mt-5 flex items-center justify-between px-1 font-mono text-[10px] uppercase tracking-[0.14em] text-cream/35">
               <span>HomeCrew · demo build</span>
