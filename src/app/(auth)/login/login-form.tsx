@@ -280,8 +280,8 @@ export function LoginForm() {
 
         {/* Demo accounts */}
         <section aria-labelledby="demo-accounts" className="overflow-hidden rounded-3xl border border-ink/15 bg-paper">
-          <div className="flex items-center justify-between border-b border-ink/10 px-5 py-3.5">
-            <h2 id="demo-accounts" className="font-mono text-[11px] uppercase tracking-[0.16em] text-ink">
+          <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-b border-ink/10 px-5 py-3.5">
+            <h2 id="demo-accounts" className="whitespace-nowrap font-mono text-[11px] uppercase tracking-[0.16em] text-ink">
               Demo accounts
             </h2>
             <span className="font-mono text-[10.5px] uppercase tracking-[0.12em] text-ink/45">
@@ -293,10 +293,10 @@ export function LoginForm() {
               <li key={a.id} className="flex items-center gap-3 px-5 py-3.5">
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-ink text-[12px] font-semibold text-cream">{initialsOf(a.name)}</span>
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2 text-[14px] font-semibold text-ink">
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[14px] font-semibold text-ink">
                     {a.name}
-                    <span className="rounded-full border border-ink/15 px-2 py-px text-[10.5px] font-medium text-ink/60">{ROLE_LABEL[a.role]}</span>
-                    {a.status !== "ACTIVE" && <span className="rounded-full bg-amber-50 px-2 py-px text-[10.5px] font-medium text-amber-800 ring-1 ring-amber-200">{STATUS_LABEL[a.status]}</span>}
+                    <span className="whitespace-nowrap rounded-full border border-ink/15 px-2 py-px text-[10.5px] font-medium text-ink/60">{ROLE_LABEL[a.role]}</span>
+                    {a.status !== "ACTIVE" && <span className="whitespace-nowrap rounded-full bg-amber-50 px-2 py-px text-[10.5px] font-medium text-amber-800 ring-1 ring-amber-200">{a.status === "PENDING" ? "Pending review" : STATUS_LABEL[a.status]}</span>}
                   </div>
                   <div className="truncate font-mono text-[11.5px] text-ink/55">
                     {a.email} · +91 {a.phone.slice(0, 5)} {a.phone.slice(5)}
