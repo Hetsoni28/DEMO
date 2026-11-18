@@ -3,8 +3,22 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
-import { ArrowRight, ArrowUpRight, BadgeCheck, ChevronDown, Plus, QrCode, ShieldCheck } from "lucide-react";
+import {
+  AnimatePresence,
+  motion,
+  useMotionValueEvent,
+  useScroll,
+} from "framer-motion";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  BadgeCheck,
+  ChevronDown,
+  Plus,
+  QrCode,
+  ShieldCheck,
+  Smartphone,
+} from "lucide-react";
 import { categoryIcons } from "@/components/atoms/icons";
 import { Logo } from "@/components/atoms/logo";
 import { CartButton } from "@/components/cart/cart";
@@ -14,7 +28,11 @@ import { companyMenu, primaryNav, serviceMenu } from "@/lib/navigation";
 import { useApp } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
-const dashFor = { customer: "/customer/dashboard", professional: "/professional/dashboard", admin: "/admin/dashboard" } as const;
+const dashFor = {
+  customer: "/customer/dashboard",
+  professional: "/professional/dashboard",
+  admin: "/admin/dashboard",
+} as const;
 type MenuKey = "services" | "company";
 
 /* ───────────── Announcement bar ───────────── */
@@ -28,10 +46,16 @@ function Announcement() {
             <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-cream" />
           </span>
           <span className="truncate">
-            Now booking in Ahmedabad <span className="hidden text-cream/55 sm:inline">· Verified pros, prices fixed before you pay</span>
+            Now booking in Ahmedabad{" "}
+            <span className="hidden text-cream/55 sm:inline">
+              · Verified pros, prices fixed before you pay
+            </span>
           </span>
         </span>
-        <Link href="/#how-it-works" className="group hidden shrink-0 items-center gap-1 font-medium text-cream/80 hover:text-cream sm:inline-flex">
+        <Link
+          href="/#how-it-works"
+          className="group hidden shrink-0 items-center gap-1 font-medium text-cream/80 hover:text-cream sm:inline-flex"
+        >
           How booking works
           <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
         </Link>
@@ -46,8 +70,14 @@ function ServicesPanel({ onNavigate }: { onNavigate: () => void }) {
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_320px]">
       <div>
         <div className="flex items-baseline justify-between border-b border-ink/10 pb-3">
-          <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-ink/50">Home services</span>
-          <Link href="/services" onClick={onNavigate} className="link-underline pb-0.5 text-[13px] font-medium text-ink">
+          <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-ink/50">
+            Home services
+          </span>
+          <Link
+            href="/services"
+            onClick={onNavigate}
+            className="link-underline pb-0.5 text-[13px] font-medium text-ink"
+          >
             View all {serviceMenu.reduce((n, s) => n + s.count, 0)} services
           </Link>
         </div>
@@ -55,8 +85,17 @@ function ServicesPanel({ onNavigate }: { onNavigate: () => void }) {
           {serviceMenu.map((s, i) => {
             const Icon = categoryIcons[s.icon];
             return (
-              <motion.li key={s.slug} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, ease: EASE, delay: 0.03 * i }}>
-                <Link href={s.href} onClick={onNavigate} className="group flex gap-3 rounded-2xl p-3 transition-colors hover:bg-cream focus-visible:bg-cream">
+              <motion.li
+                key={s.slug}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, ease: EASE, delay: 0.03 * i }}
+              >
+                <Link
+                  href={s.href}
+                  onClick={onNavigate}
+                  className="group flex gap-3 rounded-2xl p-3 transition-colors hover:bg-cream focus-visible:bg-cream"
+                >
                   <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-ink/10 bg-paper text-ink transition-all duration-500 group-hover:-rotate-6 group-hover:bg-ink group-hover:text-cream">
                     <Icon className="h-4.5 w-4.5" />
                   </span>
@@ -65,7 +104,9 @@ function ServicesPanel({ onNavigate }: { onNavigate: () => void }) {
                       {s.label}
                       <ArrowUpRight className="h-3.5 w-3.5 -translate-x-1 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100" />
                     </span>
-                    <span className="mt-0.5 block text-[12.5px] leading-snug text-ink/55">{s.description}</span>
+                    <span className="mt-0.5 block text-[12.5px] leading-snug text-ink/55">
+                      {s.description}
+                    </span>
                     <span className="mt-1.5 block font-mono text-[10.5px] uppercase tracking-[0.08em] text-ink/40">
                       {s.count} svc · from {formatINR(s.fromPaise)}
                     </span>
@@ -83,14 +124,19 @@ function ServicesPanel({ onNavigate }: { onNavigate: () => void }) {
         transition={{ duration: 0.5, ease: EASE, delay: 0.1 }}
         className="relative flex flex-col overflow-hidden rounded-3xl bg-ink p-6 text-cream"
       >
-        <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-cream/50">Book in 60 sec</span>
-        <p className="mt-3 text-[26px] font-bold leading-[1.02] tracking-[-0.04em]">Real slots. Fixed price. QR at the door.</p>
+        <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-cream/50">
+          Book in 60 sec
+        </span>
+        <p className="mt-3 text-[26px] font-bold leading-[1.02] tracking-[-0.04em]">
+          Real slots. Fixed price. QR at the door.
+        </p>
         <ul className="mt-5 space-y-2 text-[13px] text-cream/75">
           <li className="flex items-center gap-2">
             <BadgeCheck className="h-4 w-4" /> Background-verified professionals
           </li>
           <li className="flex items-center gap-2">
-            <ShieldCheck className="h-4 w-4" /> Pay only after server-verified booking
+            <ShieldCheck className="h-4 w-4" /> Pay only after server-verified
+            booking
           </li>
           <li className="flex items-center gap-2">
             <QrCode className="h-4 w-4" /> One-time service QR
@@ -115,11 +161,24 @@ function CompanyPanel({ onNavigate }: { onNavigate: () => void }) {
   return (
     <ul className="grid gap-1">
       {companyMenu.map((l, i) => (
-        <motion.li key={l.href} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: EASE, delay: 0.04 * i }}>
-          <Link href={l.href} onClick={onNavigate} className="group flex items-start justify-between gap-4 rounded-2xl p-3.5 transition-colors hover:bg-cream focus-visible:bg-cream">
+        <motion.li
+          key={l.href}
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, ease: EASE, delay: 0.04 * i }}
+        >
+          <Link
+            href={l.href}
+            onClick={onNavigate}
+            className="group flex items-start justify-between gap-4 rounded-2xl p-3.5 transition-colors hover:bg-cream focus-visible:bg-cream"
+          >
             <span>
-              <span className="block text-[14px] font-semibold text-ink">{l.label}</span>
-              <span className="mt-0.5 block text-[12.5px] text-ink/55">{l.description}</span>
+              <span className="block text-[14px] font-semibold text-ink">
+                {l.label}
+              </span>
+              <span className="mt-0.5 block text-[12.5px] text-ink/55">
+                {l.description}
+              </span>
             </span>
             <ArrowUpRight className="mt-0.5 h-4 w-4 shrink-0 text-ink/40 transition-all duration-300 group-hover:rotate-45 group-hover:text-ink" />
           </Link>
@@ -169,7 +228,12 @@ export function SiteHeader() {
       }
     };
     const onDown = (e: PointerEvent) => {
-      if (menu && headerRef.current && !headerRef.current.contains(e.target as Node)) setMenu(null);
+      if (
+        menu &&
+        headerRef.current &&
+        !headerRef.current.contains(e.target as Node)
+      )
+        setMenu(null);
     };
     window.addEventListener("keydown", onKey);
     window.addEventListener("pointerdown", onDown);
@@ -188,38 +252,73 @@ export function SiteHeader() {
     closeTimer.current = setTimeout(() => setMenu(null), 140);
   };
 
-  const cta = role ? { href: dashFor[role], label: "My dashboard" } : { href: "/services", label: "Book a service" };
+  const cta = role
+    ? { href: dashFor[role], label: "My dashboard" }
+    : { href: "/services", label: "Book a service" };
   const linkCls = (active: boolean) =>
-    cn("link-underline pb-0.5 text-[14px] font-medium transition-colors", active ? "text-ink [background-size:100%_1px]" : "text-ink/70 hover:text-ink");
+    cn(
+      "link-underline pb-0.5 text-[14px] font-medium transition-colors",
+      active
+        ? "text-ink [background-size:100%_1px]"
+        : "text-ink/70 hover:text-ink",
+    );
 
   const triggerProps = { menu, setMenu, openWithHover, scheduleClose };
 
   return (
     <>
-      <header ref={headerRef} className="fixed inset-x-0 top-0 z-50 pt-[env(safe-area-inset-top)]">
+      <header
+        ref={headerRef}
+        className="fixed inset-x-0 top-0 z-50 pt-[env(safe-area-inset-top)]"
+      >
         <Announcement />
         <div
           className={cn(
             "relative border-b transition-[background-color,border-color,box-shadow] duration-500",
-            scrolled || menu ? "border-ink/10 bg-cream/90 shadow-[0_12px_32px_-24px_rgba(40,43,74,0.45)] backdrop-blur-xl" : "border-transparent bg-cream",
-            mobileOpen && "border-transparent bg-transparent shadow-none backdrop-blur-none",
+            scrolled || menu
+              ? "border-ink/10 bg-cream/90 shadow-[0_12px_32px_-24px_rgba(40,43,74,0.45)] backdrop-blur-xl"
+              : "border-transparent bg-cream",
+            mobileOpen &&
+              "border-transparent bg-transparent shadow-none backdrop-blur-none",
           )}
         >
           <div className="mx-auto flex h-18 max-w-7xl items-center justify-between px-5 sm:px-8">
-            <div className={cn("relative z-10 transition-opacity", mobileOpen && "opacity-0")}>
+            <div
+              className={cn(
+                "relative z-10 transition-opacity",
+                mobileOpen && "opacity-0",
+              )}
+            >
               <Logo />
             </div>
 
-            <nav className="hidden items-center gap-7 lg:flex" aria-label="Primary">
-              <MenuTrigger k="services" label={primaryNav.services.label} {...triggerProps} />
-              <Link href={primaryNav.howItWorks.href} className={linkCls(false)}>
+            <nav
+              className="hidden items-center gap-7 lg:flex"
+              aria-label="Primary"
+            >
+              <MenuTrigger
+                k="services"
+                label={primaryNav.services.label}
+                {...triggerProps}
+              />
+              <Link
+                href={primaryNav.howItWorks.href}
+                className={linkCls(false)}
+              >
                 {primaryNav.howItWorks.label}
               </Link>
-              <Link href={primaryNav.pros.href} className={linkCls(pathname === primaryNav.pros.href)}>
+              <Link
+                href={primaryNav.pros.href}
+                className={linkCls(pathname === primaryNav.pros.href)}
+              >
                 {primaryNav.pros.label}
               </Link>
               <div className="relative">
-                <MenuTrigger k="company" label={primaryNav.company.label} {...triggerProps} />
+                <MenuTrigger
+                  k="company"
+                  label={primaryNav.company.label}
+                  {...triggerProps}
+                />
                 <AnimatePresence>
                   {menu === "company" && (
                     <motion.div
@@ -228,8 +327,12 @@ export function SiteHeader() {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -6 }}
                       transition={{ duration: 0.3, ease: EASE }}
-                      onPointerEnter={(e) => e.pointerType === "mouse" && openWithHover("company")}
-                      onPointerLeave={(e) => e.pointerType === "mouse" && scheduleClose()}
+                      onPointerEnter={(e) =>
+                        e.pointerType === "mouse" && openWithHover("company")
+                      }
+                      onPointerLeave={(e) =>
+                        e.pointerType === "mouse" && scheduleClose()
+                      }
                       className="absolute left-1/2 top-full w-90 -translate-x-1/2 pt-5"
                     >
                       <div className="rounded-3xl border border-ink/10 bg-paper p-3 shadow-[0_40px_80px_-40px_rgba(40,43,74,0.55)]">
@@ -243,13 +346,25 @@ export function SiteHeader() {
 
             <div className="flex items-center gap-2">
               {!role && (
-                <Link href="/login" className="link-underline hidden pb-0.5 text-[14px] font-medium text-ink/70 hover:text-ink lg:inline">
+                <Link
+                  href="/login"
+                  className="link-underline hidden pb-0.5 text-[14px] font-medium text-ink/70 hover:text-ink lg:inline"
+                >
                   Log in
                 </Link>
               )}
+              <Link
+                href="/#get-the-app"
+                className="hidden h-10 items-center gap-1.5 rounded-full border border-ink/15 px-3.5 text-[13.5px] font-medium text-ink transition-colors hover:border-ink lg:inline-flex"
+              >
+                <Smartphone className="h-4 w-4" /> Get the app
+              </Link>
               <CartButton />
               <Magnetic strength={0.2} className="hidden sm:inline-block">
-                <Link href={cta.href} className="group ml-3 inline-flex h-11 items-center gap-2 rounded-full bg-ink pl-5 pr-1.5 text-[14px] font-medium text-cream">
+                <Link
+                  href={cta.href}
+                  className="group ml-3 inline-flex h-11 items-center gap-2 rounded-full bg-ink pl-5 pr-1.5 text-[14px] font-medium text-cream"
+                >
                   {cta.label}
                   <span className="flex h-8 w-8 items-center justify-center rounded-full bg-cream text-ink transition-transform duration-500 ease-out-expo group-hover:rotate-45">
                     <ArrowUpRight className="h-4 w-4" />
@@ -262,11 +377,24 @@ export function SiteHeader() {
                 aria-label={mobileOpen ? "Close menu" : "Open menu"}
                 aria-expanded={mobileOpen}
                 aria-controls="mobile-menu"
-                className={cn("relative z-10 flex h-11 w-11 items-center justify-center rounded-full transition-colors lg:hidden", mobileOpen ? "bg-cream text-ink" : "bg-ink text-cream")}
+                className={cn(
+                  "relative z-10 flex h-11 w-11 items-center justify-center rounded-full transition-colors lg:hidden",
+                  mobileOpen ? "bg-cream text-ink" : "bg-ink text-cream",
+                )}
               >
                 <span className="relative block h-3 w-5">
-                  <span className={cn("absolute left-0 h-[1.5px] w-5 bg-current transition-all duration-500", mobileOpen ? "top-1.5 rotate-45" : "top-0")} />
-                  <span className={cn("absolute left-0 h-[1.5px] w-5 bg-current transition-all duration-500", mobileOpen ? "top-1.5 -rotate-45" : "top-3")} />
+                  <span
+                    className={cn(
+                      "absolute left-0 h-[1.5px] w-5 bg-current transition-all duration-500",
+                      mobileOpen ? "top-1.5 rotate-45" : "top-0",
+                    )}
+                  />
+                  <span
+                    className={cn(
+                      "absolute left-0 h-[1.5px] w-5 bg-current transition-all duration-500",
+                      mobileOpen ? "top-1.5 -rotate-45" : "top-3",
+                    )}
+                  />
                 </span>
               </button>
             </div>
@@ -276,7 +404,10 @@ export function SiteHeader() {
           <motion.span
             aria-hidden
             style={{ scaleX: scrollYProgress }}
-            className={cn("absolute inset-x-0 -bottom-px h-0.5 origin-left bg-ink transition-opacity duration-300", scrolled && !mobileOpen ? "opacity-100" : "opacity-0")}
+            className={cn(
+              "absolute inset-x-0 -bottom-px h-0.5 origin-left bg-ink transition-opacity duration-300",
+              scrolled && !mobileOpen ? "opacity-100" : "opacity-0",
+            )}
           />
 
           {/* Desktop dropdown panels */}
@@ -288,8 +419,12 @@ export function SiteHeader() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.35, ease: EASE }}
-                onPointerEnter={(e) => e.pointerType === "mouse" && openWithHover("services")}
-                onPointerLeave={(e) => e.pointerType === "mouse" && scheduleClose()}
+                onPointerEnter={(e) =>
+                  e.pointerType === "mouse" && openWithHover("services")
+                }
+                onPointerLeave={(e) =>
+                  e.pointerType === "mouse" && scheduleClose()
+                }
                 className="absolute inset-x-0 top-full hidden lg:block"
               >
                 <div className="mx-auto max-w-7xl px-5 pt-2 sm:px-8">
@@ -318,18 +453,34 @@ export function SiteHeader() {
             className="fixed inset-0 z-40 flex flex-col overflow-y-auto bg-ink px-6 pb-8 pt-32 text-cream lg:hidden"
           >
             <nav className="flex flex-1 flex-col" aria-label="Mobile">
-              <MobileItem i={0} href="/" label="Home" onClick={() => setMobileOpen(false)} />
+              <MobileItem
+                i={0}
+                href="/"
+                label="Home"
+                onClick={() => setMobileOpen(false)}
+              />
               <div className="overflow-hidden">
-                <motion.div initial={{ y: "100%" }} animate={{ y: "0%" }} transition={{ duration: 0.8, ease: EASE, delay: 0.2 }}>
+                <motion.div
+                  initial={{ y: "100%" }}
+                  animate={{ y: "0%" }}
+                  transition={{ duration: 0.8, ease: EASE, delay: 0.2 }}
+                >
                   <button
                     type="button"
                     aria-expanded={servicesExpanded}
                     onClick={() => setServicesExpanded((v) => !v)}
                     className="flex w-full items-baseline gap-4 py-1.5 text-left text-[38px] font-bold leading-tight tracking-[-0.04em]"
                   >
-                    <span className="text-xs font-medium tracking-normal text-cream/40">02</span>
+                    <span className="text-xs font-medium tracking-normal text-cream/40">
+                      02
+                    </span>
                     Services
-                    <Plus className={cn("ml-auto h-6 w-6 self-center transition-transform duration-300", servicesExpanded && "rotate-45")} />
+                    <Plus
+                      className={cn(
+                        "ml-auto h-6 w-6 self-center transition-transform duration-300",
+                        servicesExpanded && "rotate-45",
+                      )}
+                    />
                   </button>
                 </motion.div>
               </div>
@@ -344,9 +495,15 @@ export function SiteHeader() {
                   >
                     {serviceMenu.map((s) => (
                       <li key={s.slug}>
-                        <Link href={s.href} onClick={() => setMobileOpen(false)} className="flex items-center justify-between border-b border-cream/10 py-3 text-[16px] text-cream/80">
+                        <Link
+                          href={s.href}
+                          onClick={() => setMobileOpen(false)}
+                          className="flex items-center justify-between border-b border-cream/10 py-3 text-[16px] text-cream/80"
+                        >
                           {s.label}
-                          <span className="font-mono text-[10px] text-cream/40">from {formatINR(s.fromPaise)}</span>
+                          <span className="font-mono text-[10px] text-cream/40">
+                            from {formatINR(s.fromPaise)}
+                          </span>
                         </Link>
                       </li>
                     ))}
@@ -354,19 +511,53 @@ export function SiteHeader() {
                 )}
               </AnimatePresence>
               {[
-                { href: primaryNav.howItWorks.href, label: primaryNav.howItWorks.label },
+                {
+                  href: primaryNav.howItWorks.href,
+                  label: primaryNav.howItWorks.label,
+                },
                 { href: primaryNav.pros.href, label: primaryNav.pros.label },
-                ...companyMenu.filter((c) => c.href !== "/professionals").map((c) => ({ href: c.href, label: c.label.replace(" HomeCrew", "") })),
+                ...companyMenu
+                  .filter((c) => c.href !== "/professionals")
+                  .map((c) => ({
+                    href: c.href,
+                    label: c.label.replace(" HomeCrew", ""),
+                  })),
               ].map((n, idx) => (
-                <MobileItem key={n.href} i={idx + 2} href={n.href} label={n.label} onClick={() => setMobileOpen(false)} />
+                <MobileItem
+                  key={n.href}
+                  i={idx + 2}
+                  href={n.href}
+                  label={n.label}
+                  onClick={() => setMobileOpen(false)}
+                />
               ))}
             </nav>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }} className="mt-8 grid grid-cols-2 gap-3">
-              <Link href={role ? dashFor[role] : "/login"} onClick={() => setMobileOpen(false)} className="flex h-12 items-center justify-center rounded-full border border-cream/25 text-sm font-medium">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6 }}
+              className="mt-8 grid grid-cols-2 gap-3"
+            >
+              <Link
+                href={role ? dashFor[role] : "/login"}
+                onClick={() => setMobileOpen(false)}
+                className="flex h-12 items-center justify-center rounded-full border border-cream/25 text-sm font-medium"
+              >
                 {role ? "Dashboard" : "Log in"}
               </Link>
-              <Link href="/services" onClick={() => setMobileOpen(false)} className="flex h-12 items-center justify-center rounded-full bg-cream text-sm font-medium text-ink">
+              <Link
+                href="/services"
+                onClick={() => setMobileOpen(false)}
+                className="flex h-12 items-center justify-center rounded-full bg-cream text-sm font-medium text-ink"
+              >
                 Book now
+              </Link>
+              <Link
+                href="/#get-the-app"
+                onClick={() => setMobileOpen(false)}
+                className="col-span-2 flex h-12 items-center justify-center gap-2 rounded-full border border-cream/25 text-sm font-medium"
+              >
+                <Smartphone className="h-4 w-4" /> Get the app
               </Link>
             </motion.div>
           </motion.div>
@@ -399,20 +590,48 @@ function MenuTrigger({
       onClick={() => setMenu(menu === k ? null : k)}
       onPointerEnter={(e) => e.pointerType === "mouse" && openWithHover(k)}
       onPointerLeave={(e) => e.pointerType === "mouse" && scheduleClose()}
-      className={cn("flex items-center gap-1 py-2 text-[14px] font-medium transition-colors", menu === k ? "text-ink" : "text-ink/70 hover:text-ink")}
+      className={cn(
+        "flex items-center gap-1 py-2 text-[14px] font-medium transition-colors",
+        menu === k ? "text-ink" : "text-ink/70 hover:text-ink",
+      )}
     >
       {label}
-      <ChevronDown className={cn("h-3.5 w-3.5 transition-transform duration-300", menu === k && "rotate-180")} />
+      <ChevronDown
+        className={cn(
+          "h-3.5 w-3.5 transition-transform duration-300",
+          menu === k && "rotate-180",
+        )}
+      />
     </button>
   );
 }
 
-function MobileItem({ i, href, label, onClick }: { i: number; href: string; label: string; onClick: () => void }) {
+function MobileItem({
+  i,
+  href,
+  label,
+  onClick,
+}: {
+  i: number;
+  href: string;
+  label: string;
+  onClick: () => void;
+}) {
   return (
     <div className="overflow-hidden">
-      <motion.div initial={{ y: "100%" }} animate={{ y: "0%" }} transition={{ duration: 0.8, ease: EASE, delay: 0.15 + i * 0.05 }}>
-        <Link href={href} onClick={onClick} className="flex items-baseline gap-4 py-1.5 text-[38px] font-bold leading-tight tracking-[-0.04em]">
-          <span className="text-xs font-medium tracking-normal text-cream/40">{String(i + 1).padStart(2, "0")}</span>
+      <motion.div
+        initial={{ y: "100%" }}
+        animate={{ y: "0%" }}
+        transition={{ duration: 0.8, ease: EASE, delay: 0.15 + i * 0.05 }}
+      >
+        <Link
+          href={href}
+          onClick={onClick}
+          className="flex items-baseline gap-4 py-1.5 text-[38px] font-bold leading-tight tracking-[-0.04em]"
+        >
+          <span className="text-xs font-medium tracking-normal text-cream/40">
+            {String(i + 1).padStart(2, "0")}
+          </span>
           {label}
         </Link>
       </motion.div>

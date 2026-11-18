@@ -3,6 +3,7 @@ import type { IconType } from "react-icons";
 import { FaFacebookF, FaInstagram, FaLinkedinIn, FaXTwitter, FaYoutube } from "react-icons/fa6";
 import { ArrowUpRight, BadgeCheck, MapPin, QrCode, ShieldCheck, Wallet } from "lucide-react";
 import { Logo } from "@/components/atoms/logo";
+import { AppDownloads } from "@/components/organisms/get-app";
 import { BackToTop } from "@/components/molecules/back-to-top";
 import { LineReveal, Magnetic, Reveal } from "@/components/motion/motion";
 import { legalPages } from "@/lib/legal";
@@ -59,6 +60,11 @@ export function SiteFooter() {
               </Link>
             </Magnetic>
           </div>
+        </div>
+
+        {/* Download the apps */}
+        <div className="border-b border-cream/15 py-12">
+          <AppDownloads />
         </div>
 
         {/* Assurances */}

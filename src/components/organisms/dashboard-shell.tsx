@@ -22,7 +22,7 @@ import {
 import { toast } from "sonner";
 import { Logo } from "@/components/atoms/logo";
 import { AccessGate, ApprovalWelcome } from "@/components/auth/access-gate";
-import { GetAppButton } from "@/components/organisms/app-frame";
+import { GetAppButton, InstallBanner } from "@/components/organisms/get-app";
 import { AppDensityContext } from "@/components/dashboard/kit";
 import { formatINR } from "@/lib/format";
 import { getService, GST_RATE } from "@/lib/mock-data";
@@ -190,6 +190,9 @@ export function DashboardShell({
             onSearch={() => setPalette(true)}
           />
           <main className="mx-auto w-full max-w-6xl px-4 pb-[calc(10rem+env(safe-area-inset-bottom))] pt-4 lg:px-6 lg:pb-24 lg:pt-6">
+            <InstallBanner
+              app={role === "customer" ? "customer" : "professional"}
+            />
             {children}
           </main>
           {role === "customer" && <BasketBar />}
@@ -623,6 +626,12 @@ function AppHeader({
         />
 
         <div className="ml-auto flex shrink-0 items-center gap-2 lg:ml-0">
+          <div className="hidden lg:block xl:hidden">
+            <GetAppButton
+              app={role === "customer" ? "customer" : "professional"}
+              compact
+            />
+          </div>
           <div className="hidden xl:block">
             <GetAppButton
               app={role === "customer" ? "customer" : "professional"}
@@ -1406,7 +1415,12 @@ export function PageTitle({
 }) {
   const compact = useContext(AppDensityContext);
   return (
-    <div className={cn("flex flex-col sm:flex-row sm:items-end sm:justify-between", compact ? "mb-5 gap-3" : "mb-8 gap-4")}>
+    <div
+      className={cn(
+        "flex flex-col sm:flex-row sm:items-end sm:justify-between",
+        compact ? "mb-5 gap-3" : "mb-8 gap-4",
+      )}
+    >
       <div className="min-w-0">
         <h1
           className={cn(
@@ -1419,7 +1433,12 @@ export function PageTitle({
           {title}
         </h1>
         {description && (
-          <p className={cn("mt-1 max-w-2xl text-ink/60", compact ? "text-[14px]" : "mt-2 text-[15px]")}>
+          <p
+            className={cn(
+              "mt-1 max-w-2xl text-ink/60",
+              compact ? "text-[14px]" : "mt-2 text-[15px]",
+            )}
+          >
             {description}
           </p>
         )}

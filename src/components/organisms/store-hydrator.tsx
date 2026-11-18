@@ -2,6 +2,8 @@
 
 import { useEffect } from "react";
 import { hydrateStore, useApp } from "@/lib/store";
+// Registers the install-prompt listener as early as possible on every page.
+import "@/lib/install";
 
 /**
  * Loads the demo data once, and keeps tabs in sync: when an admin approves an
