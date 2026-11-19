@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Clock, Star } from "lucide-react";
 import { categoryIcons } from "@/components/atoms/icons";
 import { AddToCartButton } from "@/components/cart/cart";
+import { ServiceImage } from "@/components/molecules/service-image";
 import { formatDuration, priceLabel } from "@/lib/format";
 import { getCategory, type Service } from "@/lib/mock-data";
 
@@ -28,10 +29,19 @@ export function ServiceCard({ service, index }: { service: Service; index?: numb
             </span>
           )}
         </div>
-        <div className="relative mt-10 flex h-14 w-14 items-center justify-center rounded-2xl bg-cream text-ink transition-all duration-700 group-hover:rotate-[-8deg] group-hover:scale-110">
-          <Icon className="h-6 w-6" />
+        <div className="relative mt-5">
+          <ServiceImage
+            categorySlug={service.categorySlug}
+            slug={service.slug}
+            alt={service.title}
+            className="aspect-16/10 w-full rounded-2xl ring-1 ring-ink/8 transition-transform duration-700 ease-out-expo group-hover:scale-[1.02]"
+            sizes="(min-width: 1024px) 360px, (min-width: 640px) 45vw, 90vw"
+          />
+          <span className="absolute -bottom-4 left-4 flex h-11 w-11 items-center justify-center rounded-xl border border-ink/10 bg-paper text-ink shadow-sm transition-transform duration-700 group-hover:rotate-[-8deg]">
+            <Icon className="h-5 w-5" />
+          </span>
         </div>
-        <h3 className="relative mt-6 text-[26px] font-bold leading-[1.05] tracking-[-0.035em] text-ink transition-colors duration-500 group-hover:text-cream">{service.title}</h3>
+        <h3 className="relative mt-8 text-[26px] font-bold leading-[1.05] tracking-[-0.035em] text-ink transition-colors duration-500 group-hover:text-cream">{service.title}</h3>
         <p className="relative mt-2 line-clamp-2 text-sm text-ink/60 transition-colors duration-500 group-hover:text-cream/65">{service.short}</p>
         <div className="relative mt-auto pr-16 pt-8">
           <div className="text-xl font-bold tracking-[-0.02em] text-ink transition-colors duration-500 group-hover:text-cream">{priceLabel(service.pricePaise, service.pricingType)}</div>
