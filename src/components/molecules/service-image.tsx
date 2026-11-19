@@ -26,36 +26,115 @@ export function hasServicePhoto(categorySlug: string) {
   return !!PHOTOS[categorySlug];
 }
 
+/** Real crew photo for a trade (brand film), if there is one. */
+export function tradePhoto(categorySlug: string) {
+  return PHOTOS[categorySlug];
+}
+
+/** Every service has its own illustration (public/media/services/s/<slug>.webp). */
+const ILLUSTRATED = new Set([
+  "pipe-leak-repair",
+  "tap-repair-replacement",
+  "drain-unclogging",
+  "flush-tank-repair",
+  "shower-mixer-installation",
+  "switch-socket-repair",
+  "fan-installation",
+  "light-fitting-installation",
+  "wiring-fault-inspection",
+  "full-home-deep-cleaning",
+  "bathroom-deep-cleaning",
+  "kitchen-deep-cleaning",
+  "sofa-cleaning",
+  "water-tank-cleaning",
+  "ac-service",
+  "ac-repair",
+  "washing-machine-repair",
+  "refrigerator-repair",
+  "geyser-installation",
+  "furniture-assembly",
+  "door-lock-repair",
+  "cabinet-hinge-repair",
+  "room-painting",
+  "touch-up-painting",
+  "waterproofing-inspection",
+  "general-pest-control",
+  "termite-inspection",
+  "bed-bug-treatment",
+]);
+
 export function ServiceImage({
   categorySlug,
+  slug,
   alt,
   className,
   priority = false,
   sizes = "(min-width: 1024px) 240px, 45vw",
 }: {
   categorySlug: string;
+  /** The service — shows its own illustration. Without it, the trade photo/cover is used. */
+  slug?: string;
   alt: string;
   className?: string;
   priority?: boolean;
   sizes?: string;
 }) {
+  if (slug && ILLUSTRATED.has(slug))
+    return (
+      <div className={cn("relative overflow-hidden bg-cream", className)}>
+        <Image
+          src={`/media/services/s/${slug}.webp`}
+          alt={alt}
+          fill
+          sizes={sizes}
+          priority={priority}
+          className="object-cover"
+        />
+      </div>
+    );
+
   const photo = PHOTOS[categorySlug];
   if (photo)
     return (
       <div className={cn("relative overflow-hidden bg-cream", className)}>
-        <Image src={photo.src} alt={alt} fill sizes={sizes} priority={priority} className="object-cover" style={{ objectPosition: photo.position ?? "50% 50%" }} />
+        <Image
+          src={photo.src}
+          alt={alt}
+          fill
+          sizes={sizes}
+          priority={priority}
+          className="object-cover"
+          style={{ objectPosition: photo.position ?? "50% 50%" }}
+        />
       </div>
     );
 
   const cat = getCategory(categorySlug);
   const Icon = cat ? categoryIcons[cat.icon] : null;
   return (
-    <div role="img" aria-label={alt} className={cn("relative flex items-center justify-center overflow-hidden bg-linear-to-br", COVER_TINT[categorySlug] ?? "from-cream to-paper", className)}>
+    <div
+      role="img"
+      aria-label={alt}
+      className={cn(
+        "relative flex items-center justify-center overflow-hidden bg-linear-to-br",
+        COVER_TINT[categorySlug] ?? "from-cream to-paper",
+        className,
+      )}
+    >
       {/* soft rings behind the trade mark */}
-      <span aria-hidden className="absolute h-[140%] w-[140%] rounded-full border border-white/30" />
-      <span aria-hidden className="absolute h-[90%] w-[90%] rounded-full border border-white/40" />
+      <span
+        aria-hidden
+        className="absolute h-[140%] w-[140%] rounded-full border border-white/30"
+      />
+      <span
+        aria-hidden
+        className="absolute h-[90%] w-[90%] rounded-full border border-white/40"
+      />
       {Icon && (
-        <span className="relative flex h-[42%] max-h-24 min-h-12 items-center justify-center rounded-2xl bg-white/80 p-[6%] text-ink shadow-[0_12px_30px_-16px_rgba(40,43,74,0.5)] backdrop-blur" style={{ aspectRatio: "1 / 1" }}>
+        <span
+          className="relative flex h-[42%] max-h-24 min-h-12 items-center justify-center rounded-2xl bg-white/80 p-[6%] text-ink shadow-[0_12px_30px_-16px_rgba(40,43,74,0.5)] backdrop-blur"
+          style={{ aspectRatio: "1 / 1" }}
+        >
           <Icon className="h-full w-full" strokeWidth={1.6} />
         </span>
       )}

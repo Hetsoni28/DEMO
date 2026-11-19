@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, BadgeCheck, Check, Clock, Plus, QrCode, ShieldCheck, Star, Wallet, X } from "lucide-react";
-import { ServiceImage } from "@/components/molecules/service-image";
+import Image from "next/image";
+import { ServiceImage, tradePhoto } from "@/components/molecules/service-image";
 import { ServiceTile } from "@/components/molecules/service-tile";
 import { formatDuration, formatINR, priceBreakdown, pricingTypeLabel } from "@/lib/format";
 import { getCategory, getService, GST_RATE, services } from "@/lib/mock-data";
@@ -35,6 +36,7 @@ export function AppServiceDetail({ slug }: { slug: string }) {
     );
 
   const cat = getCategory(service.categorySlug)!;
+  const crew = tradePhoto(service.categorySlug);
   const price = priceBreakdown(service.pricePaise);
   const related = services.filter((s) => s.categorySlug === service.categorySlug && s.slug !== service.slug).slice(0, 5);
   const fromLabel = service.pricingType === "STARTING" ? "from " : service.pricingType === "INSPECTION" ? "visit " : "";
@@ -48,7 +50,7 @@ export function AppServiceDetail({ slug }: { slug: string }) {
         <div className="min-w-0">
           {/* photo */}
           <div className="relative -mx-4 sm:mx-0">
-            <ServiceImage categorySlug={service.categorySlug} alt={service.title} priority sizes="(min-width: 1024px) 720px, 100vw" className="aspect-16/10 w-full sm:rounded-2xl" />
+            <ServiceImage categorySlug={service.categorySlug} slug={service.slug} alt={service.title} priority sizes="(min-width: 1024px) 720px, 100vw" className="aspect-16/10 w-full sm:rounded-2xl" />
             <button
               type="button"
               onClick={() => (window.history.length > 1 ? router.back() : router.push("/customer/services"))}
@@ -88,6 +90,18 @@ export function AppServiceDetail({ slug }: { slug: string }) {
             <h2 className="text-[16px] font-bold text-ink">About this service</h2>
             <p className="mt-1.5 text-[14px] leading-relaxed text-ink/70">{service.description}</p>
           </section>
+
+          {/* real crew photo for trades we have footage of */}
+          {crew && (
+            <section className="mt-3 overflow-hidden rounded-2xl border border-ink/8 bg-white">
+              <div className="relative aspect-21/9 w-full">
+                <Image src={crew.src} alt={`A HomeCrew ${cat.name.toLowerCase()} professional at work`} fill sizes="(min-width: 1024px) 720px, 100vw" className="object-cover" style={{ objectPosition: crew.position ?? "50% 40%" }} />
+              </div>
+              <div className="flex items-center gap-2 p-3 text-[13px] text-ink/70">
+                <BadgeCheck className="h-4 w-4 text-emerald-700" /> Your HomeCrew {cat.name.toLowerCase()} crew at work · verified, uniformed, QR-checked
+              </div>
+            </section>
+          )}
 
           {/* included / not included */}
           <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
