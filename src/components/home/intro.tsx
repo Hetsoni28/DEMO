@@ -102,6 +102,8 @@ const HOLD_MS = 2900;
 /* ───────────── Provider ───────────── */
 export function IntroProvider({ children }: { children: ReactNode }) {
   const seen = useSyncExternalStore(noopSubscribe, readSeen, () => false);
+  // Touch screens: tapping is the obvious gesture, so say so and offer a big Tap to open button.
+  const touch = useSyncExternalStore(noopSubscribe, () => window.matchMedia("(pointer: coarse)").matches, () => false);
   const [finished, setFinished] = useState(false);
   const [phase, setPhase] = useState<Phase>("idle");
   const [pct, setPct] = useState(0);
@@ -260,13 +262,22 @@ export function IntroProvider({ children }: { children: ReactNode }) {
                   <Corner k="Made by" v="HomeCrew" />
                 </div>
                 <Corner
-                  k="Turn to open"
-                  v="or press Enter"
+                  k={touch ? "Tap to open" : "Turn to open"}
+                  v={touch ? "or turn the key" : "or press Enter"}
                   className="text-right"
                 />
               </div>
               <div className="absolute inset-x-0 bottom-0 z-10 flex items-end justify-between px-5 py-6 sm:px-8">
                 <Corner k="2026" v="Home services · Ahmedabad" />
+                {touch && (
+                  <button
+                    type="button"
+                    onClick={autoTurn}
+                    className="absolute bottom-24 left-1/2 inline-flex h-12 -translate-x-1/2 items-center gap-2 rounded-full bg-cream px-6 text-[14.5px] font-semibold text-ink shadow-[0_14px_30px_-12px_rgba(0,0,0,0.6)] transition-transform active:scale-95"
+                  >
+                    Tap to open <ArrowRight className="h-4 w-4" />
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={finish}
