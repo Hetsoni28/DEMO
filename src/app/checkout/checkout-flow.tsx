@@ -12,9 +12,10 @@ import { useApp } from "@/lib/store";
  * Takes a snapshot of the basket when checkout starts, so the flow (and the
  * confirmation screen) stay stable even after payment empties the basket.
  */
-function Checkout() {
+function Checkout({ servicesHref, only }: { servicesHref: string; only?: string }) {
   const cart = useApp((s) => s.cart);
-  const [slugs] = useState(() => cart);
+  // "Book now" on a service books just that one; otherwise the whole basket.
+  const [slugs] = useState(() => (only ? [only] : cart));
 
   if (!slugs.length)
     return (
@@ -22,16 +23,16 @@ function Checkout() {
         <ShoppingBag className="mx-auto h-10 w-10 text-slate-300" />
         <h1 className="mt-5 text-3xl font-black tracking-[-0.04em]">Your basket is empty.</h1>
         <p className="mt-2 text-slate-500">Add every service you need, then book them together with a single payment.</p>
-        <Link href="/services" className="mt-8 inline-flex h-12 items-center gap-2 rounded-full bg-ink px-6 text-[15px] font-semibold text-cream">
+        <Link href={servicesHref} className="mt-8 inline-flex h-12 items-center gap-2 rounded-full bg-ink px-6 text-[15px] font-semibold text-cream">
           Browse services <ArrowRight className="h-4 w-4" />
         </Link>
       </div>
     );
 
-  return <BookingFlow slugs={slugs} backHref="/services" backLabel="Keep browsing services" />;
+  return <BookingFlow slugs={slugs} backHref={servicesHref} backLabel="Keep browsing services" />;
 }
 
-export function CheckoutFlow() {
+export function CheckoutFlow({ servicesHref = "/services", only }: { servicesHref?: string; only?: string } = {}) {
   return (
     <ReadyGate
       fallback={
@@ -41,7 +42,7 @@ export function CheckoutFlow() {
         </div>
       }
     >
-      <Checkout />
+      <Checkout servicesHref={servicesHref} only={only} />
     </ReadyGate>
   );
 }

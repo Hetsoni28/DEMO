@@ -116,7 +116,8 @@ export function CartButton() {
 
 /* ───────────── Drawer ───────────── */
 
-export function CartDrawer() {
+/** `servicesHref` / `checkoutHref` let the customer app keep people inside the app. */
+export function CartDrawer({ servicesHref = "/services", checkoutHref = "/checkout" }: { servicesHref?: string; checkoutHref?: string } = {}) {
   const open = useCartUi((s) => s.open);
   const setOpen = useCartUi((s) => s.setOpen);
   const cart = useApp((s) => s.cart);
@@ -179,7 +180,7 @@ export function CartDrawer() {
                 <ShoppingBag className="h-10 w-10 text-ink/25" />
                 <div className="mt-4 text-[20px] font-bold tracking-[-0.02em]">Nothing added yet</div>
                 <p className="mt-1 max-w-xs text-[14px] text-ink/55">Add every job you need done — AC service, a leaking tap, deep cleaning — and pay for all of them at once.</p>
-                <Link href="/services" onClick={() => setOpen(false)} className="mt-6 inline-flex h-11 items-center gap-2 rounded-full bg-ink px-5 text-[14px] font-semibold text-cream">
+                <Link href={servicesHref} onClick={() => setOpen(false)} className="mt-6 inline-flex h-11 items-center gap-2 rounded-full bg-ink px-5 text-[14px] font-semibold text-cream">
                   Browse services <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
@@ -220,7 +221,7 @@ export function CartDrawer() {
                     })}
                   </AnimatePresence>
                   <li>
-                    <Link href="/services" onClick={() => setOpen(false)} className="flex items-center justify-center gap-2 rounded-[20px] border border-dashed border-ink/20 p-3 text-[13.5px] font-medium text-ink/60 hover:border-ink/40 hover:text-ink">
+                    <Link href={servicesHref} onClick={() => setOpen(false)} className="flex items-center justify-center gap-2 rounded-[20px] border border-dashed border-ink/20 p-3 text-[13.5px] font-medium text-ink/60 hover:border-ink/40 hover:text-ink">
                       <Plus className="h-4 w-4" /> Add another service
                     </Link>
                   </li>
@@ -242,7 +243,7 @@ export function CartDrawer() {
                     </div>
                   </dl>
                   <Link
-                    href="/checkout"
+                    href={checkoutHref}
                     onClick={() => setOpen(false)}
                     className="group mt-4 flex h-13 items-center justify-center gap-2 rounded-full bg-ink text-[15px] font-semibold text-cream"
                   >

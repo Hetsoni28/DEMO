@@ -163,12 +163,12 @@ function CustomerHome() {
       )}
 
       {/* trades */}
-      <Section title="Book by trade" href="/services">
+      <Section title="Book by trade" href="/customer/services">
         <div className="grid grid-cols-4 gap-2.5 sm:grid-cols-7">
           {categories.map((c) => {
             const Icon = categoryIcons[c.icon];
             return (
-              <Link key={c.slug} href={`/services?category=${c.slug}`} className="group flex flex-col items-center gap-1.5 text-center">
+              <Link key={c.slug} href={`/customer/services?category=${c.slug}`} className="group flex flex-col items-center gap-1.5 text-center">
                 <span className="flex aspect-square w-full items-center justify-center rounded-2xl border border-ink/8 bg-white transition-colors group-hover:border-ink/25 lg:aspect-auto lg:h-24">
                   <Icon className="h-6 w-6 text-ink" strokeWidth={1.8} />
                 </span>
@@ -180,7 +180,7 @@ function CustomerHome() {
       </Section>
 
       {/* popular */}
-      <Section title={`Popular in ${zone}`} href="/services">
+      <Section title={`Popular in ${zone}`} href="/customer/services">
         <div className="no-scrollbar -mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0 lg:grid-cols-5">
           {popular.map((s) => (
             <ServiceTile key={s.slug} service={s} className="w-40 shrink-0 snap-start sm:w-auto" />

@@ -199,7 +199,7 @@ export function DashboardShell({
           {role === "customer" && (
             <>
               <BasketBar />
-              <CartDrawer />
+              <CartDrawer servicesHref="/customer/services" checkoutHref="/customer/checkout" />
             </>
           )}
           <MobileTabBar nav={nav} isActive={isActive} hidden={sheet} />
@@ -776,8 +776,8 @@ function AppSearch({
         e.preventDefault();
         router.push(
           q.trim()
-            ? `/services?q=${encodeURIComponent(q.trim())}`
-            : "/services",
+            ? `/customer/services?q=${encodeURIComponent(q.trim())}`
+            : "/customer/services",
         );
       }}
       className={cn(
@@ -862,10 +862,15 @@ function BasketButton() {
 /** Sticky "View basket" bar, like the cart bar in Blinkit / Zepto. Opens the basket. */
 function BasketBar() {
   const { items, subtotal } = useBasket();
+  const pathname = usePathname();
+  // Service detail + checkout have their own bottom action bar.
+  const ownBar =
+    pathname.startsWith("/customer/checkout") ||
+    (pathname.startsWith("/customer/services/") && pathname.split("/").length === 4);
   const openBasket = useCartUi((st) => st.setOpen);
   return (
     <AnimatePresence>
-      {items.length > 0 && (
+      {items.length > 0 && !ownBar && (
         <motion.div
           initial={{ y: 40, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}

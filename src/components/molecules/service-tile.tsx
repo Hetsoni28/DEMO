@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { Check, Clock, Plus, Star } from "lucide-react";
-import { categoryIcons } from "@/components/atoms/icons";
+import { ServiceImage } from "@/components/molecules/service-image";
 import { formatDuration, formatINR, priceLabel } from "@/lib/format";
-import { getCategory, type Service } from "@/lib/mock-data";
+import { type Service } from "@/lib/mock-data";
 import { useApp } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
@@ -12,18 +12,16 @@ import { cn } from "@/lib/utils";
  * App-style service tile (Blinkit/Zepto pattern): every tile is the same size —
  * icon area, two-line title, time + rating, price and an ADD button.
  */
-export function ServiceTile({ service, className }: { service: Service; className?: string }) {
+export function ServiceTile({ service, className, href }: { service: Service; className?: string; href?: string }) {
   const inCart = useApp((s) => s.cart.includes(service.slug));
   const add = useApp((s) => s.addToCart);
   const remove = useApp((s) => s.removeFromCart);
-  const cat = getCategory(service.categorySlug);
-  const Icon = cat ? categoryIcons[cat.icon] : Star;
 
   return (
-    <div className={cn("relative flex h-full flex-col rounded-2xl border border-ink/8 bg-white p-3 transition-shadow hover:shadow-[0_12px_30px_-18px_rgba(40,43,74,0.35)]", className)}>
-      <Link href={`/services/${service.slug}`} className="flex flex-1 flex-col after:absolute after:inset-0 after:content-['']" aria-label={`${service.title}, ${priceLabel(service.pricePaise, service.pricingType)}`}>
-        <div className="relative flex h-20 items-center justify-center rounded-xl bg-cream">
-          <Icon className="h-7 w-7 text-ink" strokeWidth={1.8} />
+    <div className={cn("relative flex h-full flex-col rounded-2xl border border-ink/8 bg-white p-2.5 transition-shadow hover:shadow-[0_12px_30px_-18px_rgba(40,43,74,0.35)]", className)}>
+      <Link href={href ?? `/customer/services/${service.slug}`} className="flex flex-1 flex-col after:absolute after:inset-0 after:content-['']" aria-label={`${service.title}, ${priceLabel(service.pricePaise, service.pricingType)}`}>
+        <div className="relative">
+          <ServiceImage categorySlug={service.categorySlug} alt={service.title} className="aspect-4/3 w-full rounded-xl" />
           {service.popular && <span className="absolute left-2 top-2 rounded-md bg-ink px-1.5 py-0.5 text-[9.5px] font-bold uppercase tracking-wide text-cream">Popular</span>}
         </div>
         <div className="mt-2.5 line-clamp-2 min-h-[2.6em] text-[13.5px] font-semibold leading-[1.3] text-ink">{service.title}</div>
