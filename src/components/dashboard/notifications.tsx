@@ -82,13 +82,13 @@ export function Notifications({ role }: { role: Role }) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -6, scale: 0.98 }}
             transition={{ duration: 0.22, ease: EASE }}
-            className="absolute right-0 top-12 z-40 w-85 origin-top-right overflow-hidden rounded-[22px] border border-ink/10 bg-paper shadow-[0_30px_80px_-30px_rgba(40,43,74,0.55)]"
+            className="fixed inset-x-3 top-[calc(4.5rem+env(safe-area-inset-top))] z-60 origin-top overflow-hidden rounded-2xl border border-ink/10 bg-paper shadow-[0_30px_80px_-30px_rgba(40,43,74,0.55)] sm:absolute sm:inset-x-auto sm:right-0 sm:top-12 sm:w-85 sm:origin-top-right sm:rounded-[22px]"
           >
             <div className="flex items-center justify-between border-b border-ink/10 px-5 py-3.5">
               <span className="text-[14px] font-bold">Activity</span>
-              <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink/45">Latest {items.length}</span>
+              <span className="text-[12px] font-medium text-ink/45">Latest {items.length}</span>
             </div>
-            <ul className="stagger-fast max-h-[60vh] overflow-y-auto py-1">
+            <ul className="stagger-fast max-h-[min(60vh,32rem)] overflow-y-auto overscroll-contain py-1">
               {items.map((n) => (
                 <li key={n.id}>
                   <Link href={n.href} onClick={() => setOpen(false)} className="flex gap-3 px-5 py-3 transition-colors hover:bg-ink/4">

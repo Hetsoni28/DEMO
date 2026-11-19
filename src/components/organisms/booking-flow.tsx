@@ -223,7 +223,7 @@ function AddressStep({
   const chosen = addresses.find((a) => a.id === choice);
 
   return (
-    <Card className="p-6">
+    <Card className="p-6 in-data-app:p-4">
       <h2 className="text-lg font-semibold text-slate-900">
         Where do you need the professional?
       </h2>
@@ -395,7 +395,7 @@ function SlotStep({ slugs, selected, onBack, onNext }: { slugs: string[]; select
   ];
 
   return (
-    <Card className="p-6">
+    <Card className="p-6 in-data-app:p-4">
       <h2 className="text-lg font-semibold text-slate-900">Choose a time</h2>
       <p className="mt-1 text-sm text-slate-500">
         {visits.length > 1
@@ -489,7 +489,7 @@ function ReviewStep({
   const start = new Date(slotISO).getTime();
 
   return (
-    <Card className="p-6">
+    <Card className="p-6 in-data-app:p-4">
       <h2 className="text-lg font-semibold text-slate-900">Review your booking</h2>
       <dl className="mt-5 divide-y divide-slate-100 text-sm">
         <Row k="Address" v={address.line} />
@@ -501,23 +501,26 @@ function ReviewStep({
         {visits.map((v) => {
           let cursor = start;
           return (
-            <div key={v.category} className="rounded-xl border border-slate-200 p-4">
-              <div className="flex items-center justify-between text-xs font-medium uppercase tracking-wide text-slate-400">
-                <span>{getCategory(v.category)?.name ?? v.category} · one professional</span>
-                <span>{formatDuration(v.durationMin)}</span>
+            <div key={v.category} className="rounded-xl border border-slate-200 p-4 in-data-app:border-ink/10 in-data-app:p-3">
+              <div className="flex items-center justify-between gap-3 text-[12px] font-semibold text-slate-400 in-data-app:text-ink/50">
+                <span className="min-w-0">{getCategory(v.category)?.name ?? v.category} · one professional</span>
+                <span className="shrink-0 tabular-nums">{formatDuration(v.durationMin)}</span>
               </div>
-              <ul className="mt-2 space-y-1.5 text-sm">
+              <ul className="mt-2 space-y-2 text-sm">
                 {v.slugs.map((slug) => {
                   const svc = getService(slug)!;
                   const from = new Date(cursor).toISOString();
                   cursor += svc.durationMin * 60_000;
                   const to = new Date(cursor).toISOString();
                   return (
-                    <li key={slug} className="flex justify-between gap-3">
-                      <span className="font-medium text-slate-900">{svc.title}</span>
-                      <span className="shrink-0 text-slate-500 tabular-nums">
-                        {fmtTime(from)} – {fmtTime(to)} · {formatINR(svc.pricePaise)}
+                    <li key={slug} className="flex items-start justify-between gap-3">
+                      <span className="min-w-0">
+                        <span className="block font-medium text-slate-900 in-data-app:font-semibold in-data-app:text-ink">{svc.title}</span>
+                        <span className="block text-[12.5px] tabular-nums text-slate-500 in-data-app:text-ink/55">
+                          {fmtTime(from)} – {fmtTime(to)}
+                        </span>
                       </span>
+                      <span className="shrink-0 font-semibold tabular-nums text-slate-900 in-data-app:text-ink">{formatINR(svc.pricePaise)}</span>
                     </li>
                   );
                 })}
@@ -536,13 +539,14 @@ function ReviewStep({
       <label className="mt-4 flex items-start gap-2 text-sm text-slate-600">
         <input type="checkbox" checked={agree} onChange={(e) => setAgree(e.target.checked)} className="mt-0.5 accent-teal-700" />I agree to the cancellation & refund policy (free cancellation up to 2 h before the visit).
       </label>
-      <div className="mt-6 flex justify-between">
-        <Button variant="ghost" onClick={onBack}>
+      <div className="mt-6 flex items-center gap-2 sm:justify-between">
+        <Button variant="ghost" onClick={onBack} className="shrink-0">
           Back
         </Button>
         <Button
           size="lg"
           variant="teal"
+          className="min-w-0 flex-1 whitespace-nowrap sm:flex-none"
           disabled={!agree || busy}
           onClick={() => {
             setBusy(true);

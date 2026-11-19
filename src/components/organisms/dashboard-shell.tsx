@@ -202,7 +202,7 @@ export function DashboardShell({
               <CartDrawer servicesHref="/customer/services" checkoutHref="/customer/checkout" />
             </>
           )}
-          <MobileTabBar nav={nav} isActive={isActive} hidden={sheet} />
+          <MobileTabBar nav={nav} isActive={isActive} hidden={sheet || pathname.startsWith("/customer/checkout")} />
           <AccountSheet
             open={sheet}
             onClose={() => setSheet(false)}
