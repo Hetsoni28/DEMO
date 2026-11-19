@@ -6,16 +6,16 @@ type Variant = "primary" | "secondary" | "ghost" | "danger" | "teal";
 type Size = "sm" | "md" | "lg";
 
 const variants: Record<Variant, string> = {
-  primary: "bg-navy-800 text-white hover:bg-navy-700 shadow-sm",
-  teal: "bg-teal-brand text-white hover:brightness-110 shadow-sm",
+  primary: "bg-navy-800 text-white hover:bg-navy-700 shadow-sm in-data-app:bg-ink in-data-app:shadow-none in-data-app:hover:bg-ink/90",
+  teal: "bg-teal-brand text-white hover:brightness-110 shadow-sm in-data-app:bg-emerald-600 in-data-app:shadow-none",
   secondary: "bg-transparent text-ink border border-ink/20 hover:border-ink hover:bg-ink hover:text-cream",
-  ghost: "text-slate-700 hover:bg-slate-100",
-  danger: "bg-white text-red-600 border border-red-200 hover:bg-red-50",
+  ghost: "text-slate-700 hover:bg-slate-100 in-data-app:text-ink/70 in-data-app:hover:bg-ink/5",
+  danger: "bg-white text-red-600 border border-red-200 hover:bg-red-50 in-data-app:border-ink/10",
 };
 const sizes: Record<Size, string> = {
-  sm: "h-8 px-3 text-sm",
-  md: "h-10 px-4 text-sm",
-  lg: "h-12 px-6 text-base",
+  sm: "h-8 px-3 text-sm in-data-app:text-[13px] in-data-app:font-semibold",
+  md: "h-10 px-4 text-sm in-data-app:font-semibold in-data-app:rounded-xl",
+  lg: "h-12 px-6 text-base in-data-app:h-12 in-data-app:rounded-xl in-data-app:text-[15px] in-data-app:font-bold",
 };
 
 export function buttonClass(variant: Variant = "primary", size: Size = "md", className?: string) {
@@ -36,7 +36,7 @@ export function LinkButton({ variant, size, className, ...props }: ComponentProp
 }
 
 export function Card({ className, ...props }: ComponentProps<"div">) {
-  return <div className={cn("rounded-3xl border border-ink/10 bg-paper", className)} {...props} />;
+  return <div className={cn("rounded-3xl border border-ink/10 bg-paper in-data-app:rounded-2xl in-data-app:border-ink/8 in-data-app:bg-white", className)} {...props} />;
 }
 
 const tones = {
@@ -58,7 +58,7 @@ export function Input({ className, ...props }: ComponentProps<"input">) {
   return (
     <input
       className={cn(
-        "h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none placeholder:text-slate-400 focus:border-teal-brand focus:ring-2 focus:ring-teal-brand/20",
+        "h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none placeholder:text-slate-400 focus:border-teal-brand focus:ring-2 focus:ring-teal-brand/20 in-data-app:h-11 in-data-app:border-ink/12 in-data-app:bg-cream/40 in-data-app:focus:border-ink/40 in-data-app:focus:ring-ink/8",
         className,
       )}
       {...props}
@@ -70,7 +70,7 @@ export function Textarea({ className, ...props }: ComponentProps<"textarea">) {
   return (
     <textarea
       className={cn(
-        "w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none placeholder:text-slate-400 focus:border-teal-brand focus:ring-2 focus:ring-teal-brand/20",
+        "w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none placeholder:text-slate-400 focus:border-teal-brand focus:ring-2 focus:ring-teal-brand/20 in-data-app:border-ink/12 in-data-app:bg-cream/40 in-data-app:focus:border-ink/40 in-data-app:focus:ring-ink/8",
         className,
       )}
       {...props}
@@ -79,7 +79,7 @@ export function Textarea({ className, ...props }: ComponentProps<"textarea">) {
 }
 
 export function Label({ className, ...props }: ComponentProps<"label">) {
-  return <label className={cn("mb-1.5 block text-sm font-medium text-slate-700", className)} {...props} />;
+  return <label className={cn("mb-1.5 block text-sm font-medium text-slate-700 in-data-app:text-[12.5px] in-data-app:font-semibold in-data-app:text-ink/60", className)} {...props} />;
 }
 
 export function Skeleton({ className }: { className?: string }) {
@@ -93,7 +93,7 @@ export function Avatar({ name, className }: { name: string; className?: string }
     .slice(0, 2)
     .join("");
   return (
-    <span className={cn("inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-navy-100 text-sm font-semibold text-navy-800", className)}>
+    <span className={cn("inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-navy-100 text-sm font-semibold text-navy-800 in-data-app:bg-cream in-data-app:text-ink", className)}>
       {initials}
     </span>
   );

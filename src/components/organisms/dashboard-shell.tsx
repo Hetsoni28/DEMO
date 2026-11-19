@@ -190,7 +190,7 @@ export function DashboardShell({
             }}
             onSearch={() => setPalette(true)}
           />
-          <main className="mx-auto w-full max-w-6xl px-4 pb-[calc(10rem+env(safe-area-inset-bottom))] pt-4 lg:px-6 lg:pb-24 lg:pt-6">
+          <main data-app className="mx-auto w-full max-w-6xl px-4 pb-[calc(10rem+env(safe-area-inset-bottom))] pt-4 lg:px-6 lg:pb-24 lg:pt-6">
             <InstallBanner
               app={role === "customer" ? "customer" : "professional"}
             />
@@ -863,10 +863,10 @@ function BasketButton() {
 function BasketBar() {
   const { items, subtotal } = useBasket();
   const pathname = usePathname();
-  // Service detail + checkout have their own bottom action bar.
+  // Service detail, booking detail + checkout have their own bottom action bar.
   const ownBar =
     pathname.startsWith("/customer/checkout") ||
-    (pathname.startsWith("/customer/services/") && pathname.split("/").length === 4);
+    (/^\/customer\/(services|bookings)\//.test(pathname) && pathname.split("/").length === 4);
   const openBasket = useCartUi((st) => st.setOpen);
   return (
     <AnimatePresence>
