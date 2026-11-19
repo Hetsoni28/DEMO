@@ -351,12 +351,41 @@ export function AreaChart({
   const max = Math.max(1, ...data.map((d) => d.value)) * 1.12;
   const x = (i: number) => (i / Math.max(1, data.length - 1)) * W;
   const y = (v: number) => top + (1 - v / max) * (H - top - bottom);
-  const line = data.map((d, i) => `${i ? "L" : "M"}${x(i).toFixed(1)} ${y(d.value).toFixed(1)}`).join(" ");
+  // Smooth curve (Catmull-Rom → cubic Bézier), clamped inside the plot area.
+  const pts = data.map((d, i) => [x(i), y(d.value)] as const);
+  const clampY = (v: number) => Math.min(H - bottom, Math.max(top, v));
+  const line = pts
+    .map((p, i) => {
+      if (i === 0) return `M${p[0].toFixed(1)} ${p[1].toFixed(1)}`;
+      const p0 = pts[i - 2] ?? pts[i - 1];
+      const p1 = pts[i - 1];
+      const p3 = pts[i + 1] ?? p;
+      const c1x = p1[0] + (p[0] - p0[0]) / 6;
+      const c1y = clampY(p1[1] + (p[1] - p0[1]) / 6);
+      const c2x = p[0] - (p3[0] - p1[0]) / 6;
+      const c2y = clampY(p[1] - (p3[1] - p1[1]) / 6);
+      return `C${c1x.toFixed(1)} ${c1y.toFixed(1)} ${c2x.toFixed(1)} ${c2y.toFixed(1)} ${p[0].toFixed(1)} ${p[1].toFixed(1)}`;
+    })
+    .join(" ");
   const area = `${line} L${W} ${H - bottom} L0 ${H - bottom} Z`;
   const ticks = [0.25, 0.5, 0.75, 1].map((f) => (max / 1.12) * f);
+  const peakIdx = data.reduce((best, d, i) => (d.value > data[best].value ? i : best), 0);
+  const avg = data.length ? data.reduce((n, d) => n + d.value, 0) / data.length : 0;
+  const xLabels = data.length > 1 ? [0, 0.25, 0.5, 0.75, 1].map((f) => Math.round(f * (data.length - 1))) : [0];
+  const pct = (i: number) => `${(i / Math.max(1, data.length - 1)) * 100}%`;
 
   return (
     <figure aria-label={label} className="relative select-none">
+      {data.length > 0 && (
+        <div className="mb-3 flex flex-wrap gap-x-5 gap-y-1 text-[12px] text-ink/55">
+          <span>
+            Peak <strong className="font-semibold text-ink">{format(data[peakIdx].value)}</strong> · {data[peakIdx].label}
+          </span>
+          <span>
+            Daily average <strong className="font-semibold text-ink">{format(Math.round(avg))}</strong>
+          </span>
+        </div>
+      )}
       <div
         className="relative"
         style={{ height: H }}
@@ -370,7 +399,8 @@ export function AreaChart({
         <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" className="absolute inset-0 h-full w-full" aria-hidden>
           <defs>
             <linearGradient id="area-fill" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stopColor="#282B4A" stopOpacity="0.22" />
+              <stop offset="0%" stopColor="#282B4A" stopOpacity="0.38" />
+              <stop offset="70%" stopColor="#282B4A" stopOpacity="0.08" />
               <stop offset="100%" stopColor="#282B4A" stopOpacity="0" />
             </linearGradient>
           </defs>
@@ -383,7 +413,7 @@ export function AreaChart({
             d={line}
             fill="none"
             stroke="#282B4A"
-            strokeWidth="2"
+            strokeWidth="2.5"
             strokeLinejoin="round"
             strokeLinecap="round"
             vectorEffect="non-scaling-stroke"
@@ -400,6 +430,14 @@ export function AreaChart({
             {format(Math.round(t))}
           </span>
         ))}
+
+        {/* peak + latest markers */}
+        {data.length > 1 && hover === null && (
+          <>
+            <span aria-hidden className="pointer-events-none absolute h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-paper bg-emerald-600" style={{ left: pct(peakIdx), top: y(data[peakIdx].value) }} />
+            <span aria-hidden className="pointer-events-none absolute h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-paper bg-ink" style={{ left: pct(data.length - 1), top: y(data[data.length - 1].value) }} />
+          </>
+        )}
 
         {hover !== null && (
           <>
@@ -423,10 +461,12 @@ export function AreaChart({
           </>
         )}
       </div>
-      <figcaption className="mt-2 flex justify-between font-mono text-[10px] uppercase tracking-widest text-ink/40">
-        <span>{data[0]?.label}</span>
-        <span>{data[Math.floor(data.length / 2)]?.label}</span>
-        <span>{data.at(-1)?.label}</span>
+      <figcaption className="relative mt-2 h-4 font-mono text-[10px] uppercase tracking-wider text-ink/45">
+        {xLabels.map((i, n) => (
+          <span key={n} className="absolute whitespace-nowrap" style={{ left: pct(i), transform: `translateX(${n === 0 ? "0" : n === xLabels.length - 1 ? "-100%" : "-50%"})` }}>
+            {data[i]?.label}
+          </span>
+        ))}
       </figcaption>
     </figure>
   );

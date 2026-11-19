@@ -83,7 +83,7 @@ export function SiteFooter() {
         </ul>
 
         {/* Link grid */}
-        <div className="grid grid-cols-1 gap-12 py-16 lg:grid-cols-[1.5fr_1fr_1fr_1fr_1fr] lg:gap-8">
+        <div className="grid grid-cols-1 gap-12 py-16 lg:grid-cols-[1.4fr_repeat(5,1fr)] lg:gap-8">
           <div className="max-w-sm">
             <Logo light />
             <p className="mt-5 text-[14px] leading-relaxed text-cream/60">
@@ -137,7 +137,7 @@ export function SiteFooter() {
             )}
           </div>
 
-          <div className="grid grid-cols-2 gap-10 sm:grid-cols-4 lg:contents">
+          <div className="grid grid-cols-2 gap-10 sm:grid-cols-3 lg:contents">
             {footerColumns.map((c) => (
               <nav key={c.title} aria-label={c.title}>
                 <h3 className="text-[11px] font-medium uppercase tracking-[0.18em] text-cream/40">{c.title}</h3>
@@ -152,6 +152,16 @@ export function SiteFooter() {
                 </ul>
               </nav>
             ))}
+            <nav aria-label="Service areas">
+              <h3 className="text-[11px] font-medium uppercase tracking-[0.18em] text-cream/40">Service areas</h3>
+              <ul className="mt-5 space-y-3 text-[14px]">
+                {SERVICE_AREA.zones.map((z) => (
+                  <li key={z} className="text-cream/75">
+                    {z}
+                  </li>
+                ))}
+              </ul>
+            </nav>
           </div>
         </div>
       </div>
